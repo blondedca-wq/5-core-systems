@@ -339,25 +339,24 @@ function eventsForDay(date) {
   const work = isWorkDay(date);
   const dow = date.getDay();
 
+  // Morning workout (1h) before the 7–7 block, every day
+  events.push({ cat: 'workout', label: 'Workout (AM)', start: '5:45 AM', end: '6:45 AM', color: CAT_COLORS.workout });
+
   if (work) {
     events.push({ cat: 'job', label: 'Job shift', start: '7:00 AM', end: '7:00 PM', color: CAT_COLORS.job });
-    if (dow === 6) events.push({ cat: 'grocery', label: 'Buy groceries', start: '7:15 PM', end: '8:15 PM', color: CAT_COLORS.grocery });
-    if (dow === 0) {
-      events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '7:15 PM', end: '10:15 PM', color: CAT_COLORS.meal });
-      events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: CAT_COLORS.winddown });
-    } else {
-      events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: CAT_COLORS.winddown });
-    }
   } else {
-    events.push({ cat: 'workout', label: 'Workout', start: '5:30 AM', end: '6:45 AM', color: CAT_COLORS.workout });
     events.push({ cat: 'drop', label: 'Dropshipping', start: '7:00 AM', end: '7:00 PM', color: CAT_COLORS.drop });
-    if (dow === 0) {
-      events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '7:15 PM', end: '10:15 PM', color: CAT_COLORS.meal });
-      events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: CAT_COLORS.winddown });
-    } else {
-      events.push({ cat: 'family', label: 'Family time', start: '7:15 PM', end: '9:30 PM', color: CAT_COLORS.family });
-      events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: CAT_COLORS.winddown });
-    }
+  }
+
+  // Evening workout (1h) after the 7–7 block, every day
+  events.push({ cat: 'workout', label: 'Workout (PM)', start: '7:15 PM', end: '8:15 PM', color: CAT_COLORS.workout });
+
+  if (work && dow === 6) events.push({ cat: 'grocery', label: 'Buy groceries', start: '8:30 PM', end: '9:30 PM', color: CAT_COLORS.grocery });
+  if (dow === 0) {
+    events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '8:30 PM', end: '10:30 PM', color: CAT_COLORS.meal });
+    events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: CAT_COLORS.winddown });
+  } else {
+    events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: CAT_COLORS.winddown });
   }
   return events;
 }
