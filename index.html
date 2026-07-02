@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#4f46e5" />
+<title>5 Core Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'] },
+        colors: {
+          ink: { 50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',850:'#172033',900:'#0f172a',950:'#0a0f1e' }
+        },
+        boxShadow: {
+          card: '0 1px 2px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.05)',
+          nav: '0 -4px 24px rgba(15,23,42,0.08)'
+        }
+      }
+    }
+  };
+</script>
+<style>
+  html, body { -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-feature-settings: "tnum" 1, "cv11" 1; }
+  .chip { font-size: 9px; font-weight: 600; line-height: 1.15; padding: 2px 5px; border-radius: 5px; color: white; display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: 0.01em; }
+  .day-cell { min-height: 82px; }
+  @media (min-width: 640px) { .day-cell { min-height: 116px; } .chip { font-size: 10px; padding: 2.5px 6px; } }
+  .modal-open { overflow: hidden; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.35); border-radius: 3px; }
+  .dark ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.3); }
+  .fade-up { animation: fadeUp .28s cubic-bezier(.21,.8,.35,1) both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .sheet-in { animation: sheetIn .3s cubic-bezier(.21,.8,.35,1) both; }
+  @keyframes sheetIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+  .tab-btn svg { transition: transform .18s ease; }
+  .tab-btn:active svg { transform: scale(0.88); }
+  input[type="checkbox"] { cursor: pointer; }
+</style>
+</head>
+<body class="bg-ink-100 dark:bg-ink-950 text-ink-800 dark:text-ink-100 min-h-screen pb-24 antialiased selection:bg-indigo-200 dark:selection:bg-indigo-800">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-30 bg-white/85 dark:bg-ink-900/85 backdrop-blur-xl border-b border-ink-200/70 dark:border-ink-800 px-4 py-3 flex items-center justify-between">
+  <div class="flex items-center gap-2.5">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-[13px] font-extrabold shadow-sm">5</div>
+    <div class="leading-tight">
+      <h1 class="text-[15px] sm:text-base font-bold tracking-tight">Core Systems</h1>
+      <p class="text-[10px] text-ink-400 dark:text-ink-500 font-medium">Plan · Pay · Pray · Lift · Ship</p>
+    </div>
+  </div>
+  <button id="darkToggle" class="w-9 h-9 rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 flex items-center justify-center text-ink-500 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-700 transition" aria-label="Toggle dark mode">
+    <svg id="iconMoon" class="w-4.5 h-4.5" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg id="iconSun" class="hidden" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+  </button>
+</header>
+
+<!-- OFFLINE BANNER -->
+<div id="offlineBanner" class="hidden bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-xs text-center px-3 py-2 border-b border-amber-200/70 dark:border-amber-800/60 font-medium">
+  Prayer times unavailable — connect to internet to load
+</div>
+
+<!-- ============================================================== -->
+<!-- CALENDAR TAB -->
+<!-- ============================================================== -->
+<section id="tab-calendar" class="px-2 sm:px-4 py-3 max-w-5xl mx-auto">
+  <!-- Month navigation -->
+  <div class="flex items-center justify-between mb-3 px-1">
+    <button id="prevMonth" class="w-9 h-9 rounded-xl bg-white dark:bg-ink-800 shadow-card border border-ink-200 dark:border-ink-700 flex items-center justify-center text-ink-500 dark:text-ink-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:scale-95 transition" aria-label="Previous month">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <h2 id="monthLabel" class="text-base sm:text-xl font-bold tracking-tight"></h2>
+    <button id="nextMonth" class="w-9 h-9 rounded-xl bg-white dark:bg-ink-800 shadow-card border border-ink-200 dark:border-ink-700 flex items-center justify-center text-ink-500 dark:text-ink-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:scale-95 transition" aria-label="Next month">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <!-- Legend -->
+  <div class="flex flex-wrap gap-1.5 mb-3 px-1">
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-blue-900"></span>Job</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-green-600"></span>Drop</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-orange-500"></span>Workout</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-purple-600"></span>Meal/Review</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-amber-600"></span>Groceries</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-pink-500"></span>Family</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-gray-500"></span>Wind-down</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-teal-500"></span>Prayer</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Bill</span>
+  </div>
+
+  <!-- Day-of-week headers -->
+  <div class="grid grid-cols-7 gap-1 sm:gap-1.5 mb-1.5 text-center text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500">
+    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+  </div>
+
+  <!-- Grid -->
+  <div id="calendarGrid" class="grid grid-cols-7 gap-1 sm:gap-1.5"></div>
+</section>
+
+<!-- ============================================================== -->
+<!-- BILLS TAB -->
+<!-- ============================================================== -->
+<section id="tab-bills" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto">
+  <h2 class="text-xl font-bold tracking-tight mb-1" id="billsMonthLabel"></h2>
+  <p class="text-xs text-ink-400 dark:text-ink-500 mb-4">Tap to mark as paid. Saved per month.</p>
+
+  <!-- Summary card -->
+  <div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 mb-4 border border-ink-200/70 dark:border-ink-800 fade-up">
+    <div class="grid grid-cols-2 gap-4 text-sm">
+      <div>
+        <div class="text-[11px] font-medium uppercase tracking-wide text-ink-400 dark:text-ink-500">Monthly outflow</div>
+        <div class="text-xl font-bold mt-0.5" id="billsTotalOutflow">—</div>
+      </div>
+      <div>
+        <div class="text-[11px] font-medium uppercase tracking-wide text-ink-400 dark:text-ink-500">After savings</div>
+        <div class="text-xl font-bold mt-0.5" id="billsAfterSavings">—</div>
+      </div>
+      <div>
+        <div class="text-[11px] font-medium uppercase tracking-wide text-ink-400 dark:text-ink-500">% of $3,200 income</div>
+        <div class="text-xl font-bold mt-0.5" id="billsPctIncome">—</div>
+      </div>
+      <div>
+        <div class="text-[11px] font-medium uppercase tracking-wide text-ink-400 dark:text-ink-500">Remainder</div>
+        <div class="text-xl font-bold mt-0.5 text-emerald-600 dark:text-emerald-400" id="billsRemainder">—</div>
+      </div>
+    </div>
+    <div class="mt-5">
+      <div class="flex justify-between text-xs font-medium mb-1.5">
+        <span class="text-ink-500 dark:text-ink-400">Paid this month</span>
+        <span id="paidProgressText" class="font-bold">0 / 0</span>
+      </div>
+      <div class="w-full h-2 bg-ink-100 dark:bg-ink-800 rounded-full overflow-hidden">
+        <div id="paidProgressBar" class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bills list -->
+  <div id="billsList" class="space-y-2"></div>
+</section>
+
+<!-- ============================================================== -->
+<!-- SUMMARY TAB -->
+<!-- ============================================================== -->
+<section id="tab-summary" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto">
+  <h2 class="text-xl font-bold tracking-tight mb-1" id="summaryMonthLabel"></h2>
+  <p class="text-xs text-ink-400 dark:text-ink-500 mb-4">Quick monthly snapshot.</p>
+
+  <div class="space-y-3">
+    <div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 border border-ink-200/70 dark:border-ink-800 fade-up">
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-3">Money</div>
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Income</div><div class="font-bold text-lg mt-0.5">$3,200</div></div>
+        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Fixed outflow</div><div class="font-bold text-lg mt-0.5" id="sumOutflow">—</div></div>
+        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Savings</div><div class="font-bold text-lg mt-0.5">$1,000</div></div>
+        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Residual</div><div class="font-bold text-lg mt-0.5 text-emerald-600 dark:text-emerald-400" id="sumResidual">—</div></div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 border border-ink-200/70 dark:border-ink-800 fade-up">
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-3">Activity</div>
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Bills paid</div><div class="font-bold text-lg mt-0.5" id="sumBillsPaid">—</div></div>
+        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Workouts logged</div><div class="font-bold text-lg mt-0.5 text-ink-300 dark:text-ink-600">manual</div></div>
+        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Prayer logging</div><div class="font-bold text-lg mt-0.5 text-ink-300 dark:text-ink-600">manual</div></div>
+        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Off days</div><div class="font-bold text-lg mt-0.5" id="sumOffDays">—</div></div>
+      </div>
+    </div>
+
+    <div class="bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 text-white rounded-2xl p-5 shadow-card fade-up">
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-indigo-200 mb-2">This month</div>
+      <p class="text-sm leading-relaxed font-medium" id="sumSentence">Loading…</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- GROCERIES TAB -->
+<!-- ====================================================================== -->
+<section id="tab-groceries" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28">
+  <div class="flex items-start justify-between mb-1 gap-3">
+    <div class="min-w-0">
+      <h2 class="text-xl font-bold tracking-tight">Weekly Groceries</h2>
+      <p class="text-xs text-ink-400 dark:text-ink-500">Zehrs run · tap to check off</p>
+    </div>
+    <button id="groceriesClear" class="shrink-0 text-xs px-3.5 py-2 rounded-xl bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 shadow-card hover:bg-ink-50 dark:hover:bg-ink-700 font-semibold text-ink-600 dark:text-ink-200 active:scale-95 transition">
+      Start fresh week
+    </button>
+  </div>
+
+  <div id="groceriesProgress" class="text-xs font-medium text-ink-400 dark:text-ink-500 mt-2 mb-3"></div>
+
+  <div id="groceriesList" class="space-y-3"></div>
+
+  <div class="mt-6 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white p-5 shadow-card">
+    <div class="flex justify-between text-sm font-semibold">
+      <span>Weekly total</span><span>$65–85</span>
+    </div>
+    <div class="flex justify-between text-sm font-semibold mt-1.5">
+      <span>Monthly total</span><span>$260–340</span>
+    </div>
+    <p class="text-xs text-emerald-100 mt-3 leading-relaxed">Prices based on normal Zehrs pricing — watch the flyer for sales on beef and yogurt.</p>
+  </div>
+</section>
+
+<!-- ============================================================== -->
+<!-- DAY DETAIL MODAL -->
+<!-- ============================================================== -->
+<div id="dayModal" class="hidden fixed inset-0 z-50 bg-ink-950/60 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
+  <div class="bg-white dark:bg-ink-900 w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[85vh] overflow-y-auto sheet-in border-t sm:border border-ink-200/70 dark:border-ink-800">
+    <div class="sm:hidden pt-2.5 flex justify-center"><div class="w-9 h-1 rounded-full bg-ink-200 dark:bg-ink-700"></div></div>
+    <div class="sticky top-0 bg-white/90 dark:bg-ink-900/90 backdrop-blur-lg border-b border-ink-100 dark:border-ink-800 px-5 py-3.5 flex items-center justify-between">
+      <h3 id="modalTitle" class="font-bold text-lg tracking-tight"></h3>
+      <button id="modalClose" class="w-8 h-8 rounded-full bg-ink-100 dark:bg-ink-800 flex items-center justify-center text-ink-400 hover:text-ink-700 dark:hover:text-white transition" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="modalBody" class="px-5 py-4"></div>
+  </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- BOTTOM TAB BAR -->
+<!-- ============================================================== -->
+<nav class="fixed bottom-0 inset-x-0 z-30 bg-white/90 dark:bg-ink-900/90 backdrop-blur-xl border-t border-ink-200/70 dark:border-ink-800 shadow-nav pb-[env(safe-area-inset-bottom)]">
+  <div class="grid grid-cols-4 max-w-2xl mx-auto">
+    <button data-tab="calendar" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>Calendar</span>
+    </button>
+    <button data-tab="bills" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg>
+      <span>Bills</span>
+    </button>
+    <button data-tab="summary" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 13l3-3 4 4 5-6"/></svg>
+      <span>Summary</span>
+    </button>
+    <button data-tab="groceries" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.5l2.3 12.2a2 2 0 0 0 2 1.8h8.6a2 2 0 0 0 2-1.6L21 7H6"/></svg>
+      <span>Groceries</span>
+    </button>
+  </div>
+</nav>
+
+<script>
+/* =====================================================================
+   CORE STATE
+===================================================================== */
+const TODAY = new Date();
+let viewYear = TODAY.getFullYear();
+let viewMonth = TODAY.getMonth(); // 0-11
+let activeTab = 'calendar';
+
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+/* =====================================================================
+   BILLS
+===================================================================== */
+const BILLS = [
+  { id: 'claude', name: 'Claude subscription', amount: 140, dueDay: 4, type: 'fixed' },
+  { id: 'higgs', name: 'Higgsfield subscription', amount: 450, dueDay: 15, type: 'fixed' },
+  { id: 'insurance', name: 'Car insurance', amount: 250, dueDay: 21, type: 'fixed' },
+  { id: 'savings', name: 'Savings transfer', amount: 1000, dueDay: 30, type: 'fixed' },
+  { id: 'gas', name: 'Gas (weekly fill)', amount: 100, weekly: true, dayOfWeek: 0, type: 'weekly', monthlyBudget: 400 },
+  { id: 'food', name: 'Food / groceries', amount: 170, weekly: true, dayOfWeek: 0, type: 'weekly', monthlyBudget: 720 },
+];
+
+/* Generate per-month bill instances (each bill on its specific day) */
+function getMonthBills(year, month) {
+  const list = [];
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  BILLS.forEach(b => {
+    if (b.type === 'fixed') {
+      const day = Math.min(b.dueDay, daysInMonth);
+      list.push({ instanceId: `${b.id}-${year}-${month}-${day}`, billId: b.id, name: b.name, amount: b.amount, day });
+    } else if (b.weekly) {
+      // For each Sunday in the month, create an instance
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dt = new Date(year, month, d);
+        if (dt.getDay() === b.dayOfWeek) {
+          list.push({ instanceId: `${b.id}-${year}-${month}-${d}`, billId: b.id, name: b.name, amount: b.amount, day: d });
+        }
+      }
+    }
+  });
+  return list.sort((a, b) => a.day - b.day);
+}
+
+function totalMonthlyOutflow(year, month) {
+  return getMonthBills(year, month).reduce((sum, b) => sum + b.amount, 0);
+}
+
+/* =====================================================================
+   CONTINENTAL SHIFT PATTERN
+   Anchor: Mon 2026-06-29 = start of Week A
+   Week A: work Mon, Tue, Fri, Sat, Sun
+   Week B: work Wed, Thu only
+   Alternates each week (2-week cycle)
+===================================================================== */
+const SHIFT_ANCHOR = new Date(2026, 5, 29); // Mon June 29, 2026
+
+function getMondayOf(date) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const dow = d.getDay();
+  const offset = dow === 0 ? -6 : 1 - dow;
+  d.setDate(d.getDate() + offset);
+  return d;
+}
+
+function isWeekA(date) {
+  const monday = getMondayOf(date);
+  const anchorMonday = getMondayOf(SHIFT_ANCHOR);
+  const diffDays = Math.round((monday - anchorMonday) / 86400000);
+  const weekIndex = Math.round(diffDays / 7);
+  return ((weekIndex % 2) + 2) % 2 === 0;
+}
+
+function isWorkDay(date) {
+  const dow = date.getDay(); // 0=Sun..6=Sat
+  if (isWeekA(date)) {
+    // Mon(1) Tue(2) Fri(5) Sat(6) Sun(0)
+    return dow === 1 || dow === 2 || dow === 5 || dow === 6 || dow === 0;
+  } else {
+    // Wed(3) Thu(4)
+    return dow === 3 || dow === 4;
+  }
+}
+
+/* =====================================================================
+   EVENT BUILDER PER DAY
+===================================================================== */
+function eventsForDay(date) {
+  const events = [];
+  const work = isWorkDay(date);
+  const dow = date.getDay(); // 0=Sun..6=Sat
+
+  if (work) {
+    events.push({ cat: 'job', label: 'Job shift', start: '7:00 AM', end: '7:00 PM', color: 'bg-blue-900' });
+    if (dow === 6) {
+      // Saturday work day: grocery run after shift
+      events.push({ cat: 'grocery', label: 'Buy groceries', start: '7:15 PM', end: '8:15 PM', color: 'bg-amber-600' });
+    }
+    if (dow === 0) {
+      // Sunday work day: meal prep (3h) after shift, wind-down late
+      events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '7:15 PM', end: '10:15 PM', color: 'bg-purple-600' });
+      events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: 'bg-gray-500' });
+    } else {
+      events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: 'bg-gray-500' });
+    }
+  } else {
+    events.push({ cat: 'workout', label: 'Workout', start: '5:30 AM', end: '6:45 AM', color: 'bg-orange-500' });
+    events.push({ cat: 'drop', label: 'Dropshipping', start: '7:00 AM', end: '7:00 PM', color: 'bg-green-600' });
+    if (dow === 0) {
+      // Off-day Sunday: meal prep (3h) right after dropshipping
+      events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '7:15 PM', end: '10:15 PM', color: 'bg-purple-600' });
+      events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: 'bg-gray-500' });
+    } else {
+      events.push({ cat: 'family', label: 'Family time', start: '7:15 PM', end: '9:30 PM', color: 'bg-pink-500' });
+      events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: 'bg-gray-500' });
+    }
+  }
+
+  return events;
+}
+
+/* Parse "5:30 AM" or "12:15 PM" → minutes since midnight (for sorting) */
+function timeToMinutes(s) {
+  if (!s) return 0;
+  const m = String(s).match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+  if (!m) return 0;
+  let h = parseInt(m[1], 10);
+  const min = parseInt(m[2], 10);
+  const p = m[3].toUpperCase();
+  if (p === 'PM' && h !== 12) h += 12;
+  if (p === 'AM' && h === 12) h = 0;
+  return h * 60 + min;
+}
+
+/* Merged + chronologically sorted day timeline (prayers slotted in) */
+function buildDayTimeline(date, dayPrayers) {
+  const items = eventsForDay(date).map(e => ({ ...e, isPrayer: false }));
+  if (dayPrayers) {
+    PRAYER_LABELS.forEach(p => {
+      items.push({
+        cat: 'prayer',
+        label: p,
+        start: dayPrayers[p],
+        end: null,
+        color: 'bg-teal-500',
+        isPrayer: true,
+      });
+    });
+  }
+  items.sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
+  return items;
+}
+
+/* =====================================================================
+   PRAYER TIMES — Aladhan API
+===================================================================== */
+const PRAYER_LABELS = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+
+async function fetchPrayerTimes(year, month) {
+  const key = `prayers-${year}-${month + 1}`;
+  const cached = localStorage.getItem(key);
+  if (cached) {
+    try { return JSON.parse(cached); } catch (e) { /* fallthrough */ }
+  }
+  try {
+    const url = `https://api.aladhan.com/v1/calendarByCity/${year}/${month + 1}?city=Toronto&country=Canada&method=2`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('fetch failed');
+    const json = await res.json();
+    if (json.code !== 200 || !json.data) throw new Error('bad payload');
+    // Build map: day -> { Fajr, Dhuhr, Asr, Maghrib, Isha }
+    const map = {};
+    json.data.forEach(d => {
+      const day = parseInt(d.date.gregorian.day, 10);
+      const t = d.timings;
+      const clean = s => s.split(' ')[0]; // strip timezone like (EDT)
+      map[day] = {
+        Fajr: to12h(clean(t.Fajr)),
+        Dhuhr: to12h(clean(t.Dhuhr)),
+        Asr: to12h(clean(t.Asr)),
+        Maghrib: to12h(clean(t.Maghrib)),
+        Isha: to12h(clean(t.Isha)),
+      };
+    });
+    localStorage.setItem(key, JSON.stringify(map));
+    document.getElementById('offlineBanner').classList.add('hidden');
+    return map;
+  } catch (e) {
+    document.getElementById('offlineBanner').classList.remove('hidden');
+    return null;
+  }
+}
+
+function to12h(hhmm) {
+  const [h, m] = hhmm.split(':').map(Number);
+  const period = h >= 12 ? 'PM' : 'AM';
+  const hr = h % 12 === 0 ? 12 : h % 12;
+  return `${hr}:${m.toString().padStart(2,'0')} ${period}`;
+}
+
+let prayerCache = {};
+async function ensurePrayers(year, month) {
+  const key = `${year}-${month}`;
+  if (prayerCache[key]) return prayerCache[key];
+  const data = await fetchPrayerTimes(year, month);
+  prayerCache[key] = data;
+  return data;
+}
+
+/* =====================================================================
+   LOCALSTORAGE — bills paid
+===================================================================== */
+function billsKey(year, month) { return `bills-paid-${year}-${month + 1}`; }
+/* ===== Cloud sync via ntfy.sh — paid bills ===== */
+const NTFY_TOPIC = "5core-ahmeed-bills-stable-2026-06-27";
+const NTFY_BASE = "https://ntfy.sh/" + NTFY_TOPIC;
+let CLOUD_PAID = {}; // { "YYYY-Mplus1": [instanceId, ...] }
+let CLOUD_INIT_DONE = false;
+function _ckey(year, month) { return year + "-" + (month + 1); }
+function _parseCkey(k) { const [y, mPlus1] = k.split("-").map(Number); return [y, mPlus1 - 1]; }
+
+function _localGet(year, month) {
+  try { const raw = localStorage.getItem(billsKey(year, month)); return raw ? JSON.parse(raw) : []; }
+  catch (e) { return []; }
+}
+function _localSet(year, month, arr) {
+  try { localStorage.setItem(billsKey(year, month), JSON.stringify(arr)); } catch (e) {}
+}
+
+function getPaidSet(year, month) {
+  const key = _ckey(year, month);
+  const cloud = CLOUD_PAID[key] || [];
+  const local = _localGet(year, month);
+  return new Set([...cloud, ...local]);
+}
+function setPaidSet(year, month, set) {
+  const key = _ckey(year, month);
+  const arr = [...set];
+  CLOUD_PAID[key] = arr;
+  _localSet(year, month, arr);
+  try {
+    fetch(NTFY_BASE, {method:"POST", headers:{"Cache":"yes"}, body: JSON.stringify({paid: CLOUD_PAID, _t: Date.now()})}).catch(function(){});
+  } catch (e) {}
+}
+
+async function cloudFetchLatest() {
+  try {
+    const r = await fetch(NTFY_BASE + "/json?poll=1&since=all");
+    if (!r.ok) return null;
+    const text = await r.text();
+    const lines = text.trim().split("\n").filter(Boolean);
+    let latest = null;
+    for (const line of lines) {
+      try {
+        const msg = JSON.parse(line);
+        if (msg.event === "message" && msg.message) {
+          const payload = JSON.parse(msg.message);
+          if (payload && payload.paid && typeof payload.paid === "object") {
+            if (!latest || msg.time > latest._time) {
+              latest = {paid: payload.paid, _time: msg.time};
+            }
+          }
+        }
+      } catch(e){}
+    }
+    return latest;
+  } catch (e) { return null; }
+}
+
+function _validKey(k) {
+  if (!k || typeof k !== "string") return false;
+  const [y, mPlus1] = k.split("-").map(Number);
+  return Number.isFinite(y) && Number.isFinite(mPlus1) && mPlus1 >= 1 && mPlus1 <= 12;
+}
+
+// Scan localStorage for legitimate "bills-paid-YYYY-M" entries
+function _scanLocalPaid() {
+  const out = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k || !k.startsWith("bills-paid-")) continue;
+      const parts = k.split("-");
+      if (parts.length < 4) continue;
+      const y = Number(parts[2]);
+      const mPlus1 = Number(parts[3]);
+      if (!Number.isFinite(y) || !Number.isFinite(mPlus1) || mPlus1 < 1 || mPlus1 > 12) {
+        // Junk key from earlier bug — remove it
+        localStorage.removeItem(k); i--; continue;
+      }
+      try { out[y + "-" + mPlus1] = JSON.parse(localStorage.getItem(k)); } catch(e){}
+    }
+  } catch (e) {}
+  return out;
+}
+
+async function syncFromCloud(initial) {
+  const latest = await cloudFetchLatest();
+  const cloudPaid = (latest && latest.paid) || {};
+  const local = _scanLocalPaid();
+  const merged = {};
+  const allKeys = new Set([...Object.keys(cloudPaid), ...Object.keys(local)]);
+  allKeys.forEach(k => {
+    if (!_validKey(k)) return; // drop junk keys
+    const c = cloudPaid[k] || [];
+    const l = local[k] || [];
+    merged[k] = [...new Set([...c, ...l])];
+  });
+  // Write merged back to localStorage
+  Object.keys(merged).forEach(k => {
+    const [y, m] = _parseCkey(k);
+    _localSet(y, m, merged[k]);
+  });
+  const changed = JSON.stringify(CLOUD_PAID) !== JSON.stringify(merged);
+  CLOUD_PAID = merged;
+  if (changed) {
+    try { renderBills(); } catch(e){}
+    try { renderCalendar(); } catch(e){}
+    try { renderSummary(); } catch(e){}
+  }
+  // On initial load: republish merged state if it diverged from what cloud had
+  if (initial) {
+    if (JSON.stringify(cloudPaid) !== JSON.stringify(merged)) {
+      try { fetch(NTFY_BASE, {method:"POST", headers:{"Cache":"yes"}, body: JSON.stringify({paid: merged, _t: Date.now()})}); } catch(e){}
+    }
+  }
+}
+
+(async function initCloudSync(){
+  await syncFromCloud(true);
+  CLOUD_INIT_DONE = true;
+  try { renderBills(); } catch(e){}
+  try { renderCalendar(); } catch(e){}
+  try { renderSummary(); } catch(e){}
+  setInterval(function(){ syncFromCloud(false); }, 5000);
+})();
+
+/* =====================================================================
+   RENDER CALENDAR
+===================================================================== */
+async function renderCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  const monthLabel = document.getElementById('monthLabel');
+  monthLabel.textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
+  grid.innerHTML = '';
+
+  const firstDay = new Date(viewYear, viewMonth, 1);
+  const startDow = firstDay.getDay(); // 0=Sun
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const monthBills = getMonthBills(viewYear, viewMonth);
+  const paid = getPaidSet(viewYear, viewMonth);
+
+  // Leading blanks
+  for (let i = 0; i < startDow; i++) {
+    const blank = document.createElement('div');
+    blank.className = 'day-cell bg-transparent';
+    grid.appendChild(blank);
+  }
+
+  const prayers = await ensurePrayers(viewYear, viewMonth);
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(viewYear, viewMonth, d);
+    const dow = date.getDay();
+    const events = eventsForDay(date);
+    const dayBills = monthBills.filter(b => b.day === d);
+    const isToday = (date.getFullYear() === TODAY.getFullYear() && date.getMonth() === TODAY.getMonth() && date.getDate() === TODAY.getDate());
+
+    const cell = document.createElement('button');
+    cell.type = 'button';
+    cell.className = `day-cell text-left p-1 sm:p-1.5 rounded-xl border transition active:scale-[0.97] ${
+      isToday
+        ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-400 dark:border-indigo-600 ring-2 ring-indigo-300/60 dark:ring-indigo-700/60 shadow-card'
+        : (isWorkDay(date) ? 'bg-white dark:bg-ink-850 border-ink-200 dark:border-ink-800 shadow-card hover:border-ink-300 dark:hover:border-ink-700' : 'bg-ink-50/70 dark:bg-ink-900/60 border-ink-200/80 dark:border-ink-800 hover:border-ink-300 dark:hover:border-ink-700')
+    }`;
+    cell.dataset.day = d;
+
+    // Header row: day number + work/off badge
+    const head = document.createElement('div');
+    head.className = 'flex items-center justify-between';
+    const dayNum = document.createElement('span');
+    dayNum.className = `text-[11px] sm:text-sm font-bold ${isToday ? 'text-indigo-600 dark:text-indigo-300' : ''}`;
+    dayNum.textContent = d;
+    head.appendChild(dayNum);
+    const badge = document.createElement('span');
+    badge.className = `text-[8px] sm:text-[9px] font-bold tracking-wide px-1.5 py-0.5 rounded-md ${isWorkDay(date) ? 'bg-blue-900 text-white' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'}`;
+    badge.textContent = isWorkDay(date) ? 'WORK' : 'OFF';
+    head.appendChild(badge);
+    cell.appendChild(head);
+
+    // Build a chronological mini-timeline for this cell (prayers slotted in by time)
+    const timeline = buildDayTimeline(date, prayers ? prayers[d] : null);
+
+    const chipBox = document.createElement('div');
+    chipBox.className = 'mt-1';
+
+    // Compact: show first 3 items on mobile, more on desktop, chronologically
+    const mobileLimit = 3;
+    const desktopLimit = 6;
+    timeline.forEach((e, idx) => {
+      const label = e.isPrayer ? `🕌 ${e.label} ${e.start}` : e.label;
+      const chip = makeChip(label, e.color);
+      if (idx >= mobileLimit && idx < desktopLimit) chip.classList.add('hidden', 'sm:block');
+      if (idx >= desktopLimit) chip.classList.add('hidden');
+      chipBox.appendChild(chip);
+    });
+
+    // Bill chips (always shown — they're red flags)
+    dayBills.forEach(b => {
+      const isPaid = paid.has(b.instanceId);
+      const c = makeChip(`💵 $${b.amount}`, isPaid ? 'bg-red-600/40 line-through' : 'bg-red-600');
+      chipBox.appendChild(c);
+    });
+
+    cell.appendChild(chipBox);
+
+    cell.addEventListener('click', () => openDayModal(date));
+    grid.appendChild(cell);
+  }
+}
+
+function makeChip(label, colorClass) {
+  const span = document.createElement('span');
+  span.className = `chip ${colorClass}`;
+  span.textContent = label;
+  return span;
+}
+
+/* =====================================================================
+   DAY MODAL
+===================================================================== */
+async function openDayModal(date) {
+  const modal = document.getElementById('dayModal');
+  const title = document.getElementById('modalTitle');
+  const body = document.getElementById('modalBody');
+  const dow = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][date.getDay()];
+  title.textContent = `${dow}, ${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`;
+
+  const events = eventsForDay(date);
+  const monthBills = getMonthBills(date.getFullYear(), date.getMonth());
+  const dayBills = monthBills.filter(b => b.day === date.getDate());
+  const paid = getPaidSet(date.getFullYear(), date.getMonth());
+  const prayers = await ensurePrayers(date.getFullYear(), date.getMonth());
+  const dayPrayers = prayers ? prayers[date.getDate()] : null;
+
+  let html = '';
+
+  // Shift badge
+  html += `<div class="mb-4 inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wide ${isWorkDay(date) ? 'bg-blue-900 text-white' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'}">
+    ${isWorkDay(date) ? 'Work day' : 'Off day'} · Week ${isWeekA(date) ? 'A' : 'B'}
+  </div>`;
+
+  if (!dayPrayers) {
+    html += `<div class="mb-3 text-xs text-amber-600 dark:text-amber-300 italic">Prayer times unavailable — connect to internet to load.</div>`;
+  }
+
+  // Unified chronological timeline (events + prayers slotted in by time)
+  const timeline = buildDayTimeline(date, dayPrayers);
+  html += `<div class="mb-5">
+    <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-2.5">Daily schedule</div>
+    <div class="space-y-2">`;
+  timeline.forEach(e => {
+    const timeStr = e.end ? `${e.start} – ${e.end}` : e.start;
+    if (e.isPrayer) {
+      html += `<div class="flex items-center gap-3 bg-teal-50 dark:bg-teal-900/25 border border-teal-200/80 dark:border-teal-800/60 rounded-xl px-3 py-2">
+        <span class="w-1.5 h-8 rounded-full ${e.color} flex-shrink-0"></span>
+        <div class="flex-1 flex items-baseline justify-between gap-2">
+          <span class="font-semibold text-sm text-teal-800 dark:text-teal-200">🕌 ${e.label}</span>
+          <span class="text-xs font-bold text-teal-700 dark:text-teal-300">${e.start}</span>
+        </div>
+      </div>`;
+    } else {
+      html += `<div class="flex items-start gap-3 rounded-xl px-3 py-2 bg-ink-50/80 dark:bg-ink-800/50 border border-ink-100 dark:border-ink-800">
+        <span class="w-1.5 h-11 rounded-full ${e.color} flex-shrink-0 mt-0.5"></span>
+        <div class="flex-1">
+          <div class="font-semibold text-sm">${e.label}</div>
+          <div class="text-xs text-ink-400 dark:text-ink-500 font-medium mt-0.5">${timeStr}</div>
+        </div>
+      </div>`;
+    }
+  });
+  html += `</div></div>`;
+
+  // Bills due today
+  if (dayBills.length) {
+    html += `<div class="mb-2">
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-2.5">Bills due today</div>
+      <div class="space-y-2">`;
+    dayBills.forEach(b => {
+      const isPaid = paid.has(b.instanceId);
+      html += `<div class="flex items-center gap-3 p-3 rounded-xl border ${isPaid ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/25 dark:border-emerald-800' : 'border-red-200 bg-red-50 dark:bg-red-900/25 dark:border-red-800'}">
+        <input type="checkbox" data-bill-toggle="${b.instanceId}" data-year="${date.getFullYear()}" data-month="${date.getMonth()}" ${isPaid ? 'checked' : ''} class="w-5 h-5 rounded accent-emerald-600" />
+        <div class="flex-1">
+          <div class="font-semibold text-sm ${isPaid ? 'line-through text-ink-400' : ''}">${b.name}</div>
+          <div class="text-xs text-ink-400 dark:text-ink-500">8:00 AM · Pay ${b.name} — $${b.amount}</div>
+        </div>
+        <div class="font-bold ${isPaid ? 'line-through text-ink-400' : 'text-red-600 dark:text-red-400'}">$${b.amount}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
+
+  body.innerHTML = html;
+  modal.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+
+  // Wire bill checkboxes inside modal
+  body.querySelectorAll('[data-bill-toggle]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const id = e.target.dataset.billToggle;
+      const y = parseInt(e.target.dataset.year, 10);
+      const m = parseInt(e.target.dataset.month, 10);
+      const set = getPaidSet(y, m);
+      if (e.target.checked) set.add(id); else set.delete(id);
+      setPaidSet(y, m, set);
+      renderCalendar();
+      renderBills();
+      renderSummary();
+      openDayModal(date); // refresh modal styles
+    });
+  });
+}
+
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('dayModal').addEventListener('click', (e) => {
+  if (e.target.id === 'dayModal') closeModal();
+});
+function closeModal() {
+  document.getElementById('dayModal').classList.add('hidden');
+  document.body.classList.remove('modal-open');
+}
+
+/* =====================================================================
+   RENDER BILLS TAB
+===================================================================== */
+function renderBills() {
+  document.getElementById('billsMonthLabel').textContent = `${MONTH_NAMES[viewMonth]} ${viewYear} bills`;
+  const list = document.getElementById('billsList');
+  const monthBills = getMonthBills(viewYear, viewMonth);
+  const paid = getPaidSet(viewYear, viewMonth);
+  list.innerHTML = '';
+
+  monthBills.forEach(b => {
+    const isPaid = paid.has(b.instanceId);
+    const row = document.createElement('label');
+    row.className = `flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition active:scale-[0.99] ${isPaid ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300/80 dark:border-emerald-800' : 'bg-white dark:bg-ink-850 border-ink-200/80 dark:border-ink-800 shadow-card hover:border-ink-300 dark:hover:border-ink-700'}`;
+    row.innerHTML = `
+      <input type="checkbox" ${isPaid ? 'checked' : ''} class="w-5 h-5 rounded accent-emerald-600" />
+      <div class="flex-1">
+        <div class="font-semibold text-sm ${isPaid ? 'line-through text-ink-400' : ''}">${b.name}</div>
+        <div class="text-xs text-ink-400 dark:text-ink-500 mt-0.5">Due ${MONTH_NAMES[viewMonth].slice(0,3)} ${b.day} · 8:00 AM</div>
+      </div>
+      <div class="font-bold ${isPaid ? 'text-ink-300 dark:text-ink-600 line-through' : 'text-red-600 dark:text-red-400'}">$${b.amount}</div>`;
+    const cb = row.querySelector('input');
+    cb.addEventListener('change', () => {
+      const set = getPaidSet(viewYear, viewMonth);
+      if (cb.checked) set.add(b.instanceId); else set.delete(b.instanceId);
+      setPaidSet(viewYear, viewMonth, set);
+      renderBills();
+      renderCalendar();
+      renderSummary();
+    });
+    list.appendChild(row);
+  });
+
+  const total = monthBills.reduce((s, b) => s + b.amount, 0);
+  const savings = monthBills.filter(b => b.billId === 'savings').reduce((s, b) => s + b.amount, 0);
+  const afterSavings = total - savings;
+  const income = 3200;
+  const pct = ((total / income) * 100).toFixed(0);
+  const remainder = income - total;
+
+  document.getElementById('billsTotalOutflow').textContent = `$${total.toLocaleString()}`;
+  document.getElementById('billsAfterSavings').textContent = `$${afterSavings.toLocaleString()}`;
+  document.getElementById('billsPctIncome').textContent = `${pct}%`;
+  document.getElementById('billsRemainder').textContent = `$${remainder.toLocaleString()}`;
+
+  const paidCount = monthBills.filter(b => paid.has(b.instanceId)).length;
+  document.getElementById('paidProgressText').textContent = `${paidCount} / ${monthBills.length}`;
+  const progress = monthBills.length ? Math.round((paidCount / monthBills.length) * 100) : 0;
+  document.getElementById('paidProgressBar').style.width = `${progress}%`;
+}
+
+/* =====================================================================
+   RENDER SUMMARY TAB
+===================================================================== */
+function renderSummary() {
+  document.getElementById('summaryMonthLabel').textContent = `${MONTH_NAMES[viewMonth]} ${viewYear} snapshot`;
+  const monthBills = getMonthBills(viewYear, viewMonth);
+  const paid = getPaidSet(viewYear, viewMonth);
+  const total = monthBills.reduce((s, b) => s + b.amount, 0);
+  const income = 3200;
+  const residual = income - total;
+  const paidCount = monthBills.filter(b => paid.has(b.instanceId)).length;
+  const totalCount = monthBills.length;
+
+  // Off days in month
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  let off = 0;
+  for (let d = 1; d <= daysInMonth; d++) {
+    if (!isWorkDay(new Date(viewYear, viewMonth, d))) off++;
+  }
+
+  document.getElementById('sumOutflow').textContent = `$${total.toLocaleString()}`;
+  document.getElementById('sumResidual').textContent = `$${residual.toLocaleString()}`;
+  document.getElementById('sumBillsPaid').textContent = `${paidCount} / ${totalCount}`;
+  document.getElementById('sumOffDays').textContent = `${off}`;
+
+  let sentence;
+  if (residual >= 0) {
+    sentence = `You've cleared ${paidCount} of ${totalCount} bills this month, with $${residual.toLocaleString()} residual after all outflow including your $1,000 savings — keep stacking.`;
+  } else {
+    sentence = `Heads up: bills exceed income by $${Math.abs(residual).toLocaleString()} this month. Consider adjusting the gas or food budget.`;
+  }
+  document.getElementById('sumSentence').textContent = sentence;
+}
+
+/* =====================================================================
+   TAB SWITCHING
+===================================================================== */
+function setTab(name) {
+  activeTab = name;
+  document.getElementById('tab-calendar').classList.toggle('hidden', name !== 'calendar');
+  document.getElementById('tab-bills').classList.toggle('hidden', name !== 'bills');
+  document.getElementById('tab-summary').classList.toggle('hidden', name !== 'summary');
+  document.getElementById('tab-groceries').classList.toggle('hidden', name !== 'groceries');
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    const isActive = btn.dataset.tab === name;
+    btn.classList.toggle('text-indigo-600', isActive);
+    btn.classList.toggle('dark:text-indigo-400', isActive);
+    btn.classList.toggle('text-slate-500', !isActive);
+    btn.classList.toggle('dark:text-slate-400', !isActive);
+  });
+  if (name === 'bills') renderBills();
+  if (name === 'summary') renderSummary();
+  if (name === 'groceries') renderGroceries();
+}
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => setTab(btn.dataset.tab));
+});
+
+/* =====================================================================
+   MONTH NAVIGATION
+===================================================================== */
+document.getElementById('prevMonth').addEventListener('click', () => {
+  viewMonth--;
+  if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+  refreshAll();
+});
+document.getElementById('nextMonth').addEventListener('click', () => {
+  viewMonth++;
+  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+  refreshAll();
+});
+
+async function refreshAll() {
+  await renderCalendar();
+  renderBills();
+  renderSummary();
+}
+
+/* =====================================================================
+   DARK MODE
+===================================================================== */
+const darkToggle = document.getElementById('darkToggle');
+function applyDark(on) {
+  document.documentElement.classList.toggle('dark', on);
+  document.getElementById('iconMoon').classList.toggle('hidden', on);
+  document.getElementById('iconSun').classList.toggle('hidden', !on);
+  localStorage.setItem('dark-mode', on ? '1' : '0');
+}
+darkToggle.addEventListener('click', () => {
+  applyDark(!document.documentElement.classList.contains('dark'));
+});
+const savedDark = localStorage.getItem('dark-mode');
+if (savedDark === '1') applyDark(true);
+else if (savedDark === null && window.matchMedia('(prefers-color-scheme: dark)').matches) applyDark(true);
+
+/* =====================================================================
+   INIT
+===================================================================== */
+
+/* ============================================================
+   GROCERIES TAB
+============================================================ */
+const GROCERIES_DATA = [
+  { cat: 'Proteins', emoji: '🥩', items: [
+    { name: 'Lean ground beef (93%+)', qty: '2–2.5 kg', price: '$25–35' },
+    { name: 'Rotisserie chicken', qty: '1–2', price: '$13–26' },
+    { name: 'Eggs (large)', qty: '5–6 dozen', price: '$20–30' },
+    { name: 'Egg whites carton', qty: '~60–70 whites', price: '$10–15' },
+    { name: 'High-protein yogurt (Oikos Pro or similar)', qty: '14 tubs', price: '$15–20' },
+    { name: 'Protein powder', qty: '1 tub (~28 scoops, amortized)', price: '$8–12' },
+  ]},
+  { cat: 'Dairy', emoji: '🥛', items: [
+    { name: 'Fairlife 2% milk', qty: '10–12 L', price: '$30–40' },
+  ]},
+  { cat: 'Carbs', emoji: '🌾', items: [
+    { name: 'Rolled oats', qty: '1–2 large packages', price: '$5–8' },
+    { name: 'Canned beans (black or kidney)', qty: '7–8 cans', price: '$12–15' },
+  ]},
+  { cat: 'Produce', emoji: '🥗', items: [
+    { name: 'Lettuce heads', qty: '7–8', price: 'share of $15–20' },
+    { name: 'Tomatoes', qty: '2–3 kg', price: 'share of $15–20' },
+    { name: 'Onions', qty: '2 kg', price: 'share of $15–20' },
+  ]},
+  { cat: 'Other', emoji: '☕', items: [
+    { name: 'Espresso grounds', qty: '1 bag', price: '~$10' },
+  ]},
+];
+const GROC_KEY = 'planner.groceries.checked.v1';
+function gLoad() { try { return JSON.parse(localStorage.getItem(GROC_KEY) || '{}'); } catch(e) { return {}; } }
+function gSave(s) { localStorage.setItem(GROC_KEY, JSON.stringify(s)); }
+function gId(cat, name) { return cat.toLowerCase() + '__' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
+function gEsc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function renderGroceries() {
+  const root = document.getElementById('groceriesList');
+  if (!root) return;
+  const state = gLoad();
+  let total = 0, checked = 0;
+  const html = GROCERIES_DATA.map(group => {
+    return '<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/80 dark:border-ink-800 overflow-hidden fade-up">' +
+      '<div class="px-4 py-3 bg-ink-50/80 dark:bg-ink-800/50 border-b border-ink-100 dark:border-ink-800 flex items-center gap-2.5">' +
+        '<span class="text-lg">' + group.emoji + '</span>' +
+        '<h3 class="font-bold text-sm tracking-tight">' + gEsc(group.cat) + '</h3>' +
+      '</div>' +
+      '<ul class="divide-y divide-ink-100 dark:divide-ink-800">' +
+      group.items.map(it => {
+        const id = gId(group.cat, it.name);
+        const ch = !!state[id];
+        total++; if (ch) checked++;
+        return '<li>' +
+          '<label class="flex items-center gap-3 px-4 py-3 cursor-pointer active:bg-ink-50 dark:active:bg-ink-800/60 min-h-[56px] transition">' +
+            '<input type="checkbox" data-gid="' + id + '" ' + (ch ? 'checked' : '') +
+            ' class="w-5 h-5 rounded accent-emerald-600 border-ink-300 dark:border-ink-600 shrink-0" />' +
+            '<div class="flex-1 min-w-0">' +
+              '<div class="text-sm font-semibold ' + (ch ? 'line-through text-ink-300 dark:text-ink-600' : '') + '">' + gEsc(it.name) + '</div>' +
+              '<div class="text-xs text-ink-400 dark:text-ink-500 mt-0.5">' + gEsc(it.qty) + '</div>' +
+            '</div>' +
+            '<div class="text-xs font-bold text-emerald-700 dark:text-emerald-400 shrink-0">' + gEsc(it.price) + '</div>' +
+          '</label>' +
+        '</li>';
+      }).join('') +
+      '</ul></div>';
+  }).join('');
+  root.innerHTML = html;
+  const prog = document.getElementById('groceriesProgress');
+  if (prog) prog.textContent = checked + ' of ' + total + ' items checked';
+  root.querySelectorAll('input[data-gid]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const s = gLoad();
+      if (cb.checked) s[cb.dataset.gid] = true; else delete s[cb.dataset.gid];
+      gSave(s);
+      renderGroceries();
+    });
+  });
+}
+document.getElementById('groceriesClear') && document.getElementById('groceriesClear').addEventListener('click', () => {
+  if (confirm('Clear all checked items and start a fresh week?')) {
+    gSave({});
+    renderGroceries();
+  }
+});
+
+setTab('calendar');
+refreshAll();
+renderGroceries();
+</script>
+</body>
+</html>
