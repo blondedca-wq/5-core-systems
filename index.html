@@ -4,12 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="theme-color" content="#4f46e5" />
 <title>5 Core Systems</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -22,6 +23,7 @@
         },
         boxShadow: {
           card: '0 1px 2px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.05)',
+          glow: '0 8px 32px rgba(79,70,229,0.25)',
           nav: '0 -4px 24px rgba(15,23,42,0.08)'
         }
       }
@@ -38,13 +40,22 @@
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.35); border-radius: 3px; }
   .dark ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.3); }
-  .fade-up { animation: fadeUp .28s cubic-bezier(.21,.8,.35,1) both; }
+  .fade-up { animation: fadeUp .32s cubic-bezier(.21,.8,.35,1) both; }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
   .sheet-in { animation: sheetIn .3s cubic-bezier(.21,.8,.35,1) both; }
   @keyframes sheetIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+  .grid-swap { animation: gridSwap .28s cubic-bezier(.21,.8,.35,1) both; }
+  @keyframes gridSwap { from { opacity: 0; transform: translateY(8px) scale(.995); } to { opacity: 1; transform: translateY(0) scale(1); } }
   .tab-btn svg { transition: transform .18s ease; }
   .tab-btn:active svg { transform: scale(0.88); }
   input[type="checkbox"] { cursor: pointer; }
+  .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+  @keyframes pulseDot { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+  .confetti-bit { position: fixed; top: -20px; z-index: 100; font-size: 18px; pointer-events: none; animation: confFall linear forwards; }
+  @keyframes confFall { to { transform: translateY(110vh) rotate(720deg); opacity: .9; } }
+  .habit-pill { transition: all .15s ease; }
+  .habit-pill:active { transform: scale(.92); }
+  .ring-anim { transition: stroke-dashoffset .8s cubic-bezier(.21,.8,.35,1); }
 </style>
 </head>
 <body class="bg-ink-100 dark:bg-ink-950 text-ink-800 dark:text-ink-100 min-h-screen pb-24 antialiased selection:bg-indigo-200 dark:selection:bg-indigo-800">
@@ -58,10 +69,13 @@
       <p class="text-[10px] text-ink-400 dark:text-ink-500 font-medium">Plan · Pay · Pray · Lift · Ship</p>
     </div>
   </div>
-  <button id="darkToggle" class="w-9 h-9 rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 flex items-center justify-center text-ink-500 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-700 transition" aria-label="Toggle dark mode">
-    <svg id="iconMoon" class="w-4.5 h-4.5" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    <svg id="iconSun" class="hidden" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-  </button>
+  <div class="flex items-center gap-2">
+    <button id="jumpToday" class="h-9 px-3 rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 text-xs font-bold text-ink-500 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-700 transition">Today</button>
+    <button id="darkToggle" class="w-9 h-9 rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 flex items-center justify-center text-ink-500 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-700 transition" aria-label="Toggle dark mode">
+      <svg id="iconMoon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="iconSun" class="hidden" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    </button>
+  </div>
 </header>
 
 <!-- OFFLINE BANNER -->
@@ -70,21 +84,26 @@
 </div>
 
 <!-- ============================================================== -->
+<!-- TODAY TAB -->
+<!-- ============================================================== -->
+<section id="tab-today" class="px-3 sm:px-4 py-4 max-w-2xl mx-auto">
+  <div id="todayRoot"></div>
+</section>
+
+<!-- ============================================================== -->
 <!-- CALENDAR TAB -->
 <!-- ============================================================== -->
-<section id="tab-calendar" class="px-2 sm:px-4 py-3 max-w-5xl mx-auto">
-  <!-- Month navigation -->
+<section id="tab-calendar" class="hidden px-2 sm:px-4 py-3 max-w-5xl mx-auto">
   <div class="flex items-center justify-between mb-3 px-1">
     <button id="prevMonth" class="w-9 h-9 rounded-xl bg-white dark:bg-ink-800 shadow-card border border-ink-200 dark:border-ink-700 flex items-center justify-center text-ink-500 dark:text-ink-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:scale-95 transition" aria-label="Previous month">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     </button>
-    <h2 id="monthLabel" class="text-base sm:text-xl font-bold tracking-tight"></h2>
+    <button id="monthLabelBtn" class="active:scale-95 transition"><h2 id="monthLabel" class="text-base sm:text-xl font-bold tracking-tight"></h2></button>
     <button id="nextMonth" class="w-9 h-9 rounded-xl bg-white dark:bg-ink-800 shadow-card border border-ink-200 dark:border-ink-700 flex items-center justify-center text-ink-500 dark:text-ink-300 hover:text-indigo-600 dark:hover:text-indigo-400 active:scale-95 transition" aria-label="Next month">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
     </button>
   </div>
 
-  <!-- Legend -->
   <div class="flex flex-wrap gap-1.5 mb-3 px-1">
     <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-blue-900"></span>Job</span>
     <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-green-600"></span>Drop</span>
@@ -95,15 +114,15 @@
     <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-gray-500"></span>Wind-down</span>
     <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-teal-500"></span>Prayer</span>
     <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Bill</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-indigo-500"></span>Custom</span>
   </div>
 
-  <!-- Day-of-week headers -->
   <div class="grid grid-cols-7 gap-1 sm:gap-1.5 mb-1.5 text-center text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500">
     <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
   </div>
 
-  <!-- Grid -->
   <div id="calendarGrid" class="grid grid-cols-7 gap-1 sm:gap-1.5"></div>
+  <p class="text-center text-[10px] text-ink-300 dark:text-ink-600 mt-3 font-medium">swipe ← → to change month · tap a day for details</p>
 </section>
 
 <!-- ============================================================== -->
@@ -111,9 +130,8 @@
 <!-- ============================================================== -->
 <section id="tab-bills" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto">
   <h2 class="text-xl font-bold tracking-tight mb-1" id="billsMonthLabel"></h2>
-  <p class="text-xs text-ink-400 dark:text-ink-500 mb-4">Tap to mark as paid. Saved per month.</p>
+  <p class="text-xs text-ink-400 dark:text-ink-500 mb-4">Tap to mark as paid. Synced to all your devices.</p>
 
-  <!-- Summary card -->
   <div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 mb-4 border border-ink-200/70 dark:border-ink-800 fade-up">
     <div class="grid grid-cols-2 gap-4 text-sm">
       <div>
@@ -144,7 +162,6 @@
     </div>
   </div>
 
-  <!-- Bills list -->
   <div id="billsList" class="space-y-2"></div>
 </section>
 
@@ -153,34 +170,8 @@
 <!-- ============================================================== -->
 <section id="tab-summary" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto">
   <h2 class="text-xl font-bold tracking-tight mb-1" id="summaryMonthLabel"></h2>
-  <p class="text-xs text-ink-400 dark:text-ink-500 mb-4">Quick monthly snapshot.</p>
-
-  <div class="space-y-3">
-    <div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 border border-ink-200/70 dark:border-ink-800 fade-up">
-      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-3">Money</div>
-      <div class="grid grid-cols-2 gap-4 text-sm">
-        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Income</div><div class="font-bold text-lg mt-0.5">$3,200</div></div>
-        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Fixed outflow</div><div class="font-bold text-lg mt-0.5" id="sumOutflow">—</div></div>
-        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Savings</div><div class="font-bold text-lg mt-0.5">$1,000</div></div>
-        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Residual</div><div class="font-bold text-lg mt-0.5 text-emerald-600 dark:text-emerald-400" id="sumResidual">—</div></div>
-      </div>
-    </div>
-
-    <div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 border border-ink-200/70 dark:border-ink-800 fade-up">
-      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-3">Activity</div>
-      <div class="grid grid-cols-2 gap-4 text-sm">
-        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Bills paid</div><div class="font-bold text-lg mt-0.5" id="sumBillsPaid">—</div></div>
-        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Workouts logged</div><div class="font-bold text-lg mt-0.5 text-ink-300 dark:text-ink-600">manual</div></div>
-        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Prayer logging</div><div class="font-bold text-lg mt-0.5 text-ink-300 dark:text-ink-600">manual</div></div>
-        <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Off days</div><div class="font-bold text-lg mt-0.5" id="sumOffDays">—</div></div>
-      </div>
-    </div>
-
-    <div class="bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 text-white rounded-2xl p-5 shadow-card fade-up">
-      <div class="text-[11px] font-semibold uppercase tracking-wider text-indigo-200 mb-2">This month</div>
-      <p class="text-sm leading-relaxed font-medium" id="sumSentence">Loading…</p>
-    </div>
-  </div>
+  <p class="text-xs text-ink-400 dark:text-ink-500 mb-4">Your month at a glance — live from your logs.</p>
+  <div id="summaryRoot" class="space-y-3"></div>
 </section>
 
 <!-- ====================================================================== -->
@@ -197,7 +188,12 @@
     </button>
   </div>
 
-  <div id="groceriesProgress" class="text-xs font-medium text-ink-400 dark:text-ink-500 mt-2 mb-3"></div>
+  <div class="mt-3 mb-3">
+    <div id="groceriesProgress" class="text-xs font-medium text-ink-400 dark:text-ink-500 mb-1.5"></div>
+    <div class="w-full h-1.5 bg-ink-200/60 dark:bg-ink-800 rounded-full overflow-hidden">
+      <div id="groceriesBar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500" style="width:0%"></div>
+    </div>
+  </div>
 
   <div id="groceriesList" class="space-y-3"></div>
 
@@ -218,7 +214,7 @@
 <div id="dayModal" class="hidden fixed inset-0 z-50 bg-ink-950/60 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
   <div class="bg-white dark:bg-ink-900 w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[85vh] overflow-y-auto sheet-in border-t sm:border border-ink-200/70 dark:border-ink-800">
     <div class="sm:hidden pt-2.5 flex justify-center"><div class="w-9 h-1 rounded-full bg-ink-200 dark:bg-ink-700"></div></div>
-    <div class="sticky top-0 bg-white/90 dark:bg-ink-900/90 backdrop-blur-lg border-b border-ink-100 dark:border-ink-800 px-5 py-3.5 flex items-center justify-between">
+    <div class="sticky top-0 z-10 bg-white/90 dark:bg-ink-900/90 backdrop-blur-lg border-b border-ink-100 dark:border-ink-800 px-5 py-3.5 flex items-center justify-between">
       <h3 id="modalTitle" class="font-bold text-lg tracking-tight"></h3>
       <button id="modalClose" class="w-8 h-8 rounded-full bg-ink-100 dark:bg-ink-800 flex items-center justify-center text-ink-400 hover:text-ink-700 dark:hover:text-white transition" aria-label="Close">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -232,20 +228,24 @@
 <!-- BOTTOM TAB BAR -->
 <!-- ============================================================== -->
 <nav class="fixed bottom-0 inset-x-0 z-30 bg-white/90 dark:bg-ink-900/90 backdrop-blur-xl border-t border-ink-200/70 dark:border-ink-800 shadow-nav pb-[env(safe-area-inset-bottom)]">
-  <div class="grid grid-cols-4 max-w-2xl mx-auto">
-    <button data-tab="calendar" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition">
+  <div class="grid grid-cols-5 max-w-2xl mx-auto">
+    <button data-tab="today" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span>Today</span>
+    </button>
+    <button data-tab="calendar" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       <span>Calendar</span>
     </button>
-    <button data-tab="bills" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition">
+    <button data-tab="bills" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg>
       <span>Bills</span>
     </button>
-    <button data-tab="summary" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition">
+    <button data-tab="summary" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 13l3-3 4 4 5-6"/></svg>
       <span>Summary</span>
     </button>
-    <button data-tab="groceries" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold transition">
+    <button data-tab="groceries" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h2.5l2.3 12.2a2 2 0 0 0 2 1.8h8.6a2 2 0 0 0 2-1.6L21 7H6"/></svg>
       <span>Groceries</span>
     </button>
@@ -259,36 +259,42 @@
 const TODAY = new Date();
 let viewYear = TODAY.getFullYear();
 let viewMonth = TODAY.getMonth(); // 0-11
-let activeTab = 'calendar';
+let activeTab = 'today';
 
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOW_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+const CAT_COLORS = { job:'bg-blue-900', drop:'bg-green-600', workout:'bg-orange-500', meal:'bg-purple-600', grocery:'bg-amber-600', family:'bg-pink-500', winddown:'bg-gray-500', prayer:'bg-teal-500', custom:'bg-indigo-500' };
+const CAT_NAMES = { job:'Job', drop:'Dropshipping', workout:'Workout', meal:'Meal/Review', grocery:'Groceries', family:'Family', winddown:'Wind-down', prayer:'Prayer', custom:'Custom' };
+
+function dateKey(y, m, d) { return `${y}-${m + 1}-${d}`; }
+function sameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+function isPastOrToday(date) { const t = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()); return date <= t; }
 
 /* =====================================================================
    BILLS
 ===================================================================== */
 const BILLS = [
-  { id: 'claude', name: 'Claude subscription', amount: 140, dueDay: 4, type: 'fixed' },
-  { id: 'higgs', name: 'Higgsfield subscription', amount: 450, dueDay: 15, type: 'fixed' },
-  { id: 'insurance', name: 'Car insurance', amount: 250, dueDay: 21, type: 'fixed' },
-  { id: 'savings', name: 'Savings transfer', amount: 1000, dueDay: 30, type: 'fixed' },
-  { id: 'gas', name: 'Gas (weekly fill)', amount: 100, weekly: true, dayOfWeek: 0, type: 'weekly', monthlyBudget: 400 },
-  { id: 'food', name: 'Food / groceries', amount: 170, weekly: true, dayOfWeek: 0, type: 'weekly', monthlyBudget: 720 },
+  { id: 'claude', name: 'Claude subscription', amount: 140, dueDay: 4, type: 'fixed', emoji: '🤖' },
+  { id: 'higgs', name: 'Higgsfield subscription', amount: 450, dueDay: 15, type: 'fixed', emoji: '🎬' },
+  { id: 'insurance', name: 'Car insurance', amount: 250, dueDay: 21, type: 'fixed', emoji: '🚗' },
+  { id: 'savings', name: 'Savings transfer', amount: 1000, dueDay: 30, type: 'fixed', emoji: '🏦' },
+  { id: 'gas', name: 'Gas (weekly fill)', amount: 100, weekly: true, dayOfWeek: 0, type: 'weekly', monthlyBudget: 400, emoji: '⛽' },
+  { id: 'food', name: 'Food / groceries', amount: 170, weekly: true, dayOfWeek: 0, type: 'weekly', monthlyBudget: 720, emoji: '🛒' },
 ];
 
-/* Generate per-month bill instances (each bill on its specific day) */
 function getMonthBills(year, month) {
   const list = [];
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   BILLS.forEach(b => {
     if (b.type === 'fixed') {
       const day = Math.min(b.dueDay, daysInMonth);
-      list.push({ instanceId: `${b.id}-${year}-${month}-${day}`, billId: b.id, name: b.name, amount: b.amount, day });
+      list.push({ instanceId: `${b.id}-${year}-${month}-${day}`, billId: b.id, name: b.name, amount: b.amount, day, emoji: b.emoji });
     } else if (b.weekly) {
-      // For each Sunday in the month, create an instance
       for (let d = 1; d <= daysInMonth; d++) {
         const dt = new Date(year, month, d);
         if (dt.getDay() === b.dayOfWeek) {
-          list.push({ instanceId: `${b.id}-${year}-${month}-${d}`, billId: b.id, name: b.name, amount: b.amount, day: d });
+          list.push({ instanceId: `${b.id}-${year}-${month}-${d}`, billId: b.id, name: b.name, amount: b.amount, day: d, emoji: b.emoji });
         }
       }
     }
@@ -296,18 +302,12 @@ function getMonthBills(year, month) {
   return list.sort((a, b) => a.day - b.day);
 }
 
-function totalMonthlyOutflow(year, month) {
-  return getMonthBills(year, month).reduce((sum, b) => sum + b.amount, 0);
-}
-
 /* =====================================================================
    CONTINENTAL SHIFT PATTERN
    Anchor: Mon 2026-06-29 = start of Week A
-   Week A: work Mon, Tue, Fri, Sat, Sun
-   Week B: work Wed, Thu only
-   Alternates each week (2-week cycle)
+   Week A: work Mon, Tue, Fri, Sat, Sun · Week B: work Wed, Thu only
 ===================================================================== */
-const SHIFT_ANCHOR = new Date(2026, 5, 29); // Mon June 29, 2026
+const SHIFT_ANCHOR = new Date(2026, 5, 29);
 
 function getMondayOf(date) {
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -326,54 +326,42 @@ function isWeekA(date) {
 }
 
 function isWorkDay(date) {
-  const dow = date.getDay(); // 0=Sun..6=Sat
-  if (isWeekA(date)) {
-    // Mon(1) Tue(2) Fri(5) Sat(6) Sun(0)
-    return dow === 1 || dow === 2 || dow === 5 || dow === 6 || dow === 0;
-  } else {
-    // Wed(3) Thu(4)
-    return dow === 3 || dow === 4;
-  }
+  const dow = date.getDay();
+  if (isWeekA(date)) return dow === 1 || dow === 2 || dow === 5 || dow === 6 || dow === 0;
+  return dow === 3 || dow === 4;
 }
 
 /* =====================================================================
-   EVENT BUILDER PER DAY
+   EVENT BUILDER PER DAY (auto schedule)
 ===================================================================== */
 function eventsForDay(date) {
   const events = [];
   const work = isWorkDay(date);
-  const dow = date.getDay(); // 0=Sun..6=Sat
+  const dow = date.getDay();
 
   if (work) {
-    events.push({ cat: 'job', label: 'Job shift', start: '7:00 AM', end: '7:00 PM', color: 'bg-blue-900' });
-    if (dow === 6) {
-      // Saturday work day: grocery run after shift
-      events.push({ cat: 'grocery', label: 'Buy groceries', start: '7:15 PM', end: '8:15 PM', color: 'bg-amber-600' });
-    }
+    events.push({ cat: 'job', label: 'Job shift', start: '7:00 AM', end: '7:00 PM', color: CAT_COLORS.job });
+    if (dow === 6) events.push({ cat: 'grocery', label: 'Buy groceries', start: '7:15 PM', end: '8:15 PM', color: CAT_COLORS.grocery });
     if (dow === 0) {
-      // Sunday work day: meal prep (3h) after shift, wind-down late
-      events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '7:15 PM', end: '10:15 PM', color: 'bg-purple-600' });
-      events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: 'bg-gray-500' });
+      events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '7:15 PM', end: '10:15 PM', color: CAT_COLORS.meal });
+      events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: CAT_COLORS.winddown });
     } else {
-      events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: 'bg-gray-500' });
+      events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: CAT_COLORS.winddown });
     }
   } else {
-    events.push({ cat: 'workout', label: 'Workout', start: '5:30 AM', end: '6:45 AM', color: 'bg-orange-500' });
-    events.push({ cat: 'drop', label: 'Dropshipping', start: '7:00 AM', end: '7:00 PM', color: 'bg-green-600' });
+    events.push({ cat: 'workout', label: 'Workout', start: '5:30 AM', end: '6:45 AM', color: CAT_COLORS.workout });
+    events.push({ cat: 'drop', label: 'Dropshipping', start: '7:00 AM', end: '7:00 PM', color: CAT_COLORS.drop });
     if (dow === 0) {
-      // Off-day Sunday: meal prep (3h) right after dropshipping
-      events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '7:15 PM', end: '10:15 PM', color: 'bg-purple-600' });
-      events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: 'bg-gray-500' });
+      events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '7:15 PM', end: '10:15 PM', color: CAT_COLORS.meal });
+      events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: CAT_COLORS.winddown });
     } else {
-      events.push({ cat: 'family', label: 'Family time', start: '7:15 PM', end: '9:30 PM', color: 'bg-pink-500' });
-      events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: 'bg-gray-500' });
+      events.push({ cat: 'family', label: 'Family time', start: '7:15 PM', end: '9:30 PM', color: CAT_COLORS.family });
+      events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: CAT_COLORS.winddown });
     }
   }
-
   return events;
 }
 
-/* Parse "5:30 AM" or "12:15 PM" → minutes since midnight (for sorting) */
 function timeToMinutes(s) {
   if (!s) return 0;
   const m = String(s).match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
@@ -386,19 +374,79 @@ function timeToMinutes(s) {
   return h * 60 + min;
 }
 
-/* Merged + chronologically sorted day timeline (prayers slotted in) */
+/* =====================================================================
+   CUSTOM EVENTS (user-added, cloud-synced)
+===================================================================== */
+const CUSTOM_KEY = 'planner.custom.events.v1';
+let CUSTOM = {}; // { id: {id, date:'2026-7-15', label, start, end, cat, deleted, _m} }
+
+function customLoad() { try { return JSON.parse(localStorage.getItem(CUSTOM_KEY) || '{}'); } catch (e) { return {}; } }
+function customSave() { try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(CUSTOM)); } catch (e) {} }
+CUSTOM = customLoad();
+
+function customEventsForDay(date) {
+  const key = dateKey(date.getFullYear(), date.getMonth(), date.getDate());
+  return Object.values(CUSTOM)
+    .filter(e => e && e.date === key && !e.deleted)
+    .map(e => ({ ...e, cat: e.cat || 'custom', color: CAT_COLORS[e.cat] || CAT_COLORS.custom, isCustom: true }));
+}
+
+function addCustomEvent(date, label, start, end, cat) {
+  const id = 'c' + Date.now() + Math.random().toString(36).slice(2, 6);
+  CUSTOM[id] = { id, date: dateKey(date.getFullYear(), date.getMonth(), date.getDate()), label, start, end: end || null, cat: cat || 'custom', _m: Date.now() };
+  customSave();
+  cloudPublish();
+}
+
+function deleteCustomEvent(id) {
+  if (CUSTOM[id]) { CUSTOM[id] = { ...CUSTOM[id], deleted: true, _m: Date.now() }; customSave(); cloudPublish(); }
+}
+
+/* =====================================================================
+   HABITS (prayers + workout, cloud-synced, streaks)
+===================================================================== */
+const HABITS_KEY = 'planner.habits.v1';
+let HABITS = {}; // { '2026-7-2': { v: {Fajr:true,...,Workout:true}, m: ts } }
+
+function habitsLoad() { try { return JSON.parse(localStorage.getItem(HABITS_KEY) || '{}'); } catch (e) { return {}; } }
+function habitsSave() { try { localStorage.setItem(HABITS_KEY, JSON.stringify(HABITS)); } catch (e) {} }
+HABITS = habitsLoad();
+
+function getHabits(date) {
+  const k = dateKey(date.getFullYear(), date.getMonth(), date.getDate());
+  return (HABITS[k] && HABITS[k].v) || {};
+}
+function toggleHabit(date, name) {
+  const k = dateKey(date.getFullYear(), date.getMonth(), date.getDate());
+  const cur = (HABITS[k] && HABITS[k].v) || {};
+  const v = { ...cur, [name]: !cur[name] };
+  if (!v[name]) delete v[name];
+  HABITS[k] = { v, m: Date.now() };
+  habitsSave();
+  cloudPublish();
+}
+
+function prayerStreak() {
+  let streak = 0;
+  const d = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+  // today counts if complete, otherwise streak continues from yesterday
+  const todayH = getHabits(d);
+  if (!PRAYER_LABELS.every(p => todayH[p])) d.setDate(d.getDate() - 1);
+  while (streak < 1000) {
+    const h = getHabits(d);
+    if (PRAYER_LABELS.every(p => h[p])) { streak++; d.setDate(d.getDate() - 1); }
+    else break;
+  }
+  return streak;
+}
+
+/* Merged + chronologically sorted day timeline (prayers + custom slotted in) */
 function buildDayTimeline(date, dayPrayers) {
   const items = eventsForDay(date).map(e => ({ ...e, isPrayer: false }));
+  customEventsForDay(date).forEach(e => items.push({ ...e, isPrayer: false }));
   if (dayPrayers) {
     PRAYER_LABELS.forEach(p => {
-      items.push({
-        cat: 'prayer',
-        label: p,
-        start: dayPrayers[p],
-        end: null,
-        color: 'bg-teal-500',
-        isPrayer: true,
-      });
+      items.push({ cat: 'prayer', label: p, start: dayPrayers[p], end: null, color: CAT_COLORS.prayer, isPrayer: true });
     });
   }
   items.sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
@@ -422,18 +470,14 @@ async function fetchPrayerTimes(year, month) {
     if (!res.ok) throw new Error('fetch failed');
     const json = await res.json();
     if (json.code !== 200 || !json.data) throw new Error('bad payload');
-    // Build map: day -> { Fajr, Dhuhr, Asr, Maghrib, Isha }
     const map = {};
     json.data.forEach(d => {
       const day = parseInt(d.date.gregorian.day, 10);
       const t = d.timings;
-      const clean = s => s.split(' ')[0]; // strip timezone like (EDT)
+      const clean = s => s.split(' ')[0];
       map[day] = {
-        Fajr: to12h(clean(t.Fajr)),
-        Dhuhr: to12h(clean(t.Dhuhr)),
-        Asr: to12h(clean(t.Asr)),
-        Maghrib: to12h(clean(t.Maghrib)),
-        Isha: to12h(clean(t.Isha)),
+        Fajr: to12h(clean(t.Fajr)), Dhuhr: to12h(clean(t.Dhuhr)), Asr: to12h(clean(t.Asr)),
+        Maghrib: to12h(clean(t.Maghrib)), Isha: to12h(clean(t.Isha)),
       };
     });
     localStorage.setItem(key, JSON.stringify(map));
@@ -461,14 +505,20 @@ async function ensurePrayers(year, month) {
   return data;
 }
 
+/* Hijri date (built-in Intl, no API) */
+function hijriDate(date) {
+  try {
+    return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' }).format(date).replace(' AH', ' AH');
+  } catch (e) { return ''; }
+}
+
 /* =====================================================================
-   LOCALSTORAGE — bills paid
+   LOCALSTORAGE — bills paid + CLOUD SYNC via ntfy.sh
 ===================================================================== */
 function billsKey(year, month) { return `bills-paid-${year}-${month + 1}`; }
-/* ===== Cloud sync via ntfy.sh — paid bills ===== */
 const NTFY_TOPIC = "5core-ahmeed-bills-stable-2026-06-27";
 const NTFY_BASE = "https://ntfy.sh/" + NTFY_TOPIC;
-let CLOUD_PAID = {}; // { "YYYY-Mplus1": [instanceId, ...] }
+let CLOUD_PAID = {};
 let CLOUD_INIT_DONE = false;
 function _ckey(year, month) { return year + "-" + (month + 1); }
 function _parseCkey(k) { const [y, mPlus1] = k.split("-").map(Number); return [y, mPlus1 - 1]; }
@@ -492,9 +542,17 @@ function setPaidSet(year, month, set) {
   const arr = [...set];
   CLOUD_PAID[key] = arr;
   _localSet(year, month, arr);
-  try {
-    fetch(NTFY_BASE, {method:"POST", headers:{"Cache":"yes"}, body: JSON.stringify({paid: CLOUD_PAID, _t: Date.now()})}).catch(function(){});
-  } catch (e) {}
+  cloudPublish();
+}
+
+let _pubTimer = null;
+function cloudPublish() {
+  clearTimeout(_pubTimer);
+  _pubTimer = setTimeout(() => {
+    try {
+      fetch(NTFY_BASE, { method: "POST", headers: { "Cache": "yes" }, body: JSON.stringify({ paid: CLOUD_PAID, custom: CUSTOM, habits: HABITS, _t: Date.now() }) }).catch(function(){});
+    } catch (e) {}
+  }, 600);
 }
 
 async function cloudFetchLatest() {
@@ -511,7 +569,7 @@ async function cloudFetchLatest() {
           const payload = JSON.parse(msg.message);
           if (payload && payload.paid && typeof payload.paid === "object") {
             if (!latest || msg.time > latest._time) {
-              latest = {paid: payload.paid, _time: msg.time};
+              latest = { paid: payload.paid, custom: payload.custom || null, habits: payload.habits || null, _time: msg.time };
             }
           }
         }
@@ -527,7 +585,6 @@ function _validKey(k) {
   return Number.isFinite(y) && Number.isFinite(mPlus1) && mPlus1 >= 1 && mPlus1 <= 12;
 }
 
-// Scan localStorage for legitimate "bills-paid-YYYY-M" entries
 function _scanLocalPaid() {
   const out = {};
   try {
@@ -539,12 +596,27 @@ function _scanLocalPaid() {
       const y = Number(parts[2]);
       const mPlus1 = Number(parts[3]);
       if (!Number.isFinite(y) || !Number.isFinite(mPlus1) || mPlus1 < 1 || mPlus1 > 12) {
-        // Junk key from earlier bug — remove it
         localStorage.removeItem(k); i--; continue;
       }
       try { out[y + "-" + mPlus1] = JSON.parse(localStorage.getItem(k)); } catch(e){}
     }
   } catch (e) {}
+  return out;
+}
+
+function _mergeByTimestamp(local, cloud) {
+  const out = { ...local };
+  if (cloud && typeof cloud === 'object') {
+    Object.keys(cloud).forEach(k => {
+      const c = cloud[k], l = out[k];
+      if (!l) { out[k] = c; }
+      else {
+        const cm = (c && c._m) || (c && c.m) || 0;
+        const lm = (l && l._m) || (l && l.m) || 0;
+        if (cm > lm) out[k] = c;
+      }
+    });
+  }
   return out;
 }
 
@@ -555,27 +627,40 @@ async function syncFromCloud(initial) {
   const merged = {};
   const allKeys = new Set([...Object.keys(cloudPaid), ...Object.keys(local)]);
   allKeys.forEach(k => {
-    if (!_validKey(k)) return; // drop junk keys
+    if (!_validKey(k)) return;
     const c = cloudPaid[k] || [];
     const l = local[k] || [];
     merged[k] = [...new Set([...c, ...l])];
   });
-  // Write merged back to localStorage
   Object.keys(merged).forEach(k => {
     const [y, m] = _parseCkey(k);
     _localSet(y, m, merged[k]);
   });
-  const changed = JSON.stringify(CLOUD_PAID) !== JSON.stringify(merged);
+  const paidChanged = JSON.stringify(CLOUD_PAID) !== JSON.stringify(merged);
   CLOUD_PAID = merged;
-  if (changed) {
+
+  // Merge custom events + habits (timestamp-wins per entry)
+  let extraChanged = false;
+  if (latest && latest.custom) {
+    const m2 = _mergeByTimestamp(CUSTOM, latest.custom);
+    if (JSON.stringify(m2) !== JSON.stringify(CUSTOM)) { CUSTOM = m2; customSave(); extraChanged = true; }
+  }
+  if (latest && latest.habits) {
+    const m3 = _mergeByTimestamp(HABITS, latest.habits);
+    if (JSON.stringify(m3) !== JSON.stringify(HABITS)) { HABITS = m3; habitsSave(); extraChanged = true; }
+  }
+
+  if (paidChanged || extraChanged) {
     try { renderBills(); } catch(e){}
     try { renderCalendar(); } catch(e){}
     try { renderSummary(); } catch(e){}
+    try { renderToday(); } catch(e){}
   }
-  // On initial load: republish merged state if it diverged from what cloud had
   if (initial) {
-    if (JSON.stringify(cloudPaid) !== JSON.stringify(merged)) {
-      try { fetch(NTFY_BASE, {method:"POST", headers:{"Cache":"yes"}, body: JSON.stringify({paid: merged, _t: Date.now()})}); } catch(e){}
+    const cloudHadCustom = latest && latest.custom;
+    const cloudHadHabits = latest && latest.habits;
+    if (JSON.stringify(cloudPaid) !== JSON.stringify(merged) || !cloudHadCustom && Object.keys(CUSTOM).length || !cloudHadHabits && Object.keys(HABITS).length) {
+      cloudPublish();
     }
   }
 }
@@ -586,8 +671,241 @@ async function syncFromCloud(initial) {
   try { renderBills(); } catch(e){}
   try { renderCalendar(); } catch(e){}
   try { renderSummary(); } catch(e){}
+  try { renderToday(); } catch(e){}
   setInterval(function(){ syncFromCloud(false); }, 5000);
 })();
+
+/* =====================================================================
+   TODAY TAB
+===================================================================== */
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 5) return 'Late night grind';
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  if (h < 21) return 'Good evening';
+  return 'Wind-down time';
+}
+
+function nextPrayerInfo(dayPrayers, tomorrowPrayers) {
+  const now = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  if (dayPrayers) {
+    for (const p of PRAYER_LABELS) {
+      const t = timeToMinutes(dayPrayers[p]);
+      if (t > nowMin) return { name: p, time: dayPrayers[p], minsLeft: t - nowMin, tomorrow: false };
+    }
+  }
+  if (tomorrowPrayers) {
+    const t = timeToMinutes(tomorrowPrayers.Fajr);
+    return { name: 'Fajr', time: tomorrowPrayers.Fajr, minsLeft: (1440 - nowMin) + t, tomorrow: true };
+  }
+  return null;
+}
+
+function fmtLeft(mins) {
+  const h = Math.floor(mins / 60), m = mins % 60;
+  if (h <= 0) return `${m}m`;
+  return `${h}h ${m}m`;
+}
+
+async function renderToday() {
+  const root = document.getElementById('todayRoot');
+  if (!root) return;
+  const now = new Date();
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const prayers = await ensurePrayers(d.getFullYear(), d.getMonth());
+  const dayPrayers = prayers ? prayers[d.getDate()] : null;
+  // tomorrow (may cross month)
+  const tm = new Date(d); tm.setDate(tm.getDate() + 1);
+  const tmPrayers = (tm.getMonth() === d.getMonth()) ? (prayers ? prayers[tm.getDate()] : null) : ((await ensurePrayers(tm.getFullYear(), tm.getMonth())) || {})[tm.getDate()] || null;
+
+  const work = isWorkDay(d);
+  const timeline = buildDayTimeline(d, dayPrayers);
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+
+  // current + next event (non-prayer aware: any timeline item)
+  let current = null, next = null;
+  for (const e of timeline) {
+    const s = timeToMinutes(e.start);
+    const en = e.end ? timeToMinutes(e.end) : s + 20;
+    if (nowMin >= s && nowMin < en) current = e;
+    if (s > nowMin && !next) next = e;
+  }
+
+  const np = nextPrayerInfo(dayPrayers, tmPrayers);
+  const habits = getHabits(d);
+  const prayersDone = PRAYER_LABELS.filter(p => habits[p]).length;
+  const pStreak = prayerStreak();
+
+  const monthBills = getMonthBills(d.getFullYear(), d.getMonth());
+  const dayBills = monthBills.filter(b => b.day === d.getDate());
+  const paid = getPaidSet(d.getFullYear(), d.getMonth());
+
+  const dayPct = Math.round((nowMin / 1440) * 100);
+  const hijri = hijriDate(d);
+
+  let html = '';
+
+  // ---- HERO ----
+  html += `<div class="rounded-3xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 text-white p-5 shadow-glow fade-up relative overflow-hidden">
+    <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-white/10 blur-2xl"></div>
+    <div class="absolute -bottom-10 -left-6 w-32 h-32 rounded-full bg-violet-300/10 blur-2xl"></div>
+    <div class="relative">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-widest text-indigo-200">${greeting()}, Ahmed</div>
+          <div class="text-2xl font-extrabold tracking-tight mt-1">${DOW_NAMES[d.getDay()]}, ${MONTH_NAMES[d.getMonth()]} ${d.getDate()}</div>
+          ${hijri ? `<div class="text-xs font-medium text-indigo-200 mt-0.5">☪️ ${hijri}</div>` : ''}
+        </div>
+        <span class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-extrabold tracking-wide ${work ? 'bg-white/20 text-white' : 'bg-emerald-400/90 text-emerald-950'}">${work ? '💼 WORK' : '🌿 OFF'} · Wk ${isWeekA(d) ? 'A' : 'B'}</span>
+      </div>
+      <div class="mt-4">
+        <div class="flex justify-between text-[11px] font-semibold text-indigo-200 mb-1"><span>Day progress</span><span>${dayPct}%</span></div>
+        <div class="h-1.5 bg-white/20 rounded-full overflow-hidden"><div class="h-full bg-white/90 rounded-full transition-all duration-700" style="width:${dayPct}%"></div></div>
+      </div>
+    </div>
+  </div>`;
+
+  // ---- NEXT PRAYER ----
+  if (np) {
+    html += `<div class="mt-3 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-600 text-white p-4 shadow-card fade-up flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-white/15 flex items-center justify-center text-lg">🕌</div>
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-widest text-teal-100">Next prayer${np.tomorrow ? ' · tomorrow' : ''}</div>
+          <div class="text-lg font-extrabold tracking-tight">${np.name} · ${np.time}</div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div id="prayerCountdown" class="text-xl font-extrabold tabular-nums">${fmtLeft(np.minsLeft)}</div>
+        <div class="text-[10px] font-semibold text-teal-100 uppercase tracking-wide">remaining</div>
+      </div>
+    </div>`;
+  }
+
+  // ---- NOW / NEXT ----
+  html += `<div class="mt-3 grid grid-cols-2 gap-3 fade-up">
+    <div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4">
+      <div class="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-dot"></span>Now</div>
+      <div class="mt-1.5 font-bold text-sm leading-snug">${current ? (current.isPrayer ? '🕌 ' : '') + current.label : 'Free time'}</div>
+      <div class="text-[11px] text-ink-400 dark:text-ink-500 font-medium mt-0.5">${current ? (current.end ? current.start + ' – ' + current.end : current.start) : 'Nothing scheduled'}</div>
+    </div>
+    <div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4">
+      <div class="text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500">Up next</div>
+      <div class="mt-1.5 font-bold text-sm leading-snug">${next ? (next.isPrayer ? '🕌 ' : '') + next.label : 'Done for today'}</div>
+      <div class="text-[11px] text-ink-400 dark:text-ink-500 font-medium mt-0.5">${next ? next.start : '—'}</div>
+    </div>
+  </div>`;
+
+  // ---- HABITS ----
+  html += `<div class="mt-3 bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4 fade-up">
+    <div class="flex items-center justify-between mb-3">
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500">Today's log</div>
+      <div class="flex items-center gap-2 text-[11px] font-bold">
+        ${pStreak > 0 ? `<span class="px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300">🔥 ${pStreak}d prayers</span>` : ''}
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-1.5">
+      ${PRAYER_LABELS.map(p => {
+        const on = !!habits[p];
+        const t = dayPrayers ? dayPrayers[p] : '';
+        return `<button data-habit="${p}" class="habit-pill px-3 py-2 rounded-xl text-xs font-bold border ${on ? 'bg-teal-500 border-teal-500 text-white shadow-sm' : 'bg-ink-50 dark:bg-ink-800 border-ink-200 dark:border-ink-700 text-ink-500 dark:text-ink-400'}">${on ? '✓ ' : ''}${p}${t ? `<span class="block text-[9px] font-semibold ${on ? 'text-teal-100' : 'text-ink-400 dark:text-ink-500'}">${t}</span>` : ''}</button>`;
+      }).join('')}
+      <button data-habit="Workout" class="habit-pill px-3 py-2 rounded-xl text-xs font-bold border ${habits.Workout ? 'bg-orange-500 border-orange-500 text-white shadow-sm' : 'bg-ink-50 dark:bg-ink-800 border-ink-200 dark:border-ink-700 text-ink-500 dark:text-ink-400'}">${habits.Workout ? '✓ ' : ''}💪 Workout</button>
+    </div>
+    <div class="mt-3 h-1.5 bg-ink-100 dark:bg-ink-800 rounded-full overflow-hidden">
+      <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-500" style="width:${Math.round((prayersDone/5)*100)}%"></div>
+    </div>
+    <div class="mt-1.5 text-[11px] font-medium text-ink-400 dark:text-ink-500">${prayersDone} of 5 prayers logged${habits.Workout ? ' · workout done 💪' : ''}</div>
+  </div>`;
+
+  // ---- BILLS DUE TODAY ----
+  if (dayBills.length) {
+    html += `<div class="mt-3 bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4 fade-up">
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-2.5">Bills due today</div>
+      <div class="space-y-2">${dayBills.map(b => {
+        const isPaid = paid.has(b.instanceId);
+        return `<label class="flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer ${isPaid ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/25 dark:border-emerald-800' : 'border-red-200 bg-red-50 dark:bg-red-900/25 dark:border-red-800'}">
+          <input type="checkbox" data-todaybill="${b.instanceId}" ${isPaid ? 'checked' : ''} class="w-5 h-5 rounded accent-emerald-600" />
+          <span class="text-lg">${b.emoji || '💵'}</span>
+          <span class="flex-1 font-semibold text-sm ${isPaid ? 'line-through text-ink-400' : ''}">${b.name}</span>
+          <span class="font-bold ${isPaid ? 'line-through text-ink-400' : 'text-red-600 dark:text-red-400'}">$${b.amount}</span>
+        </label>`;
+      }).join('')}</div>
+    </div>`;
+  }
+
+  // ---- TIMELINE ----
+  html += `<div class="mt-3 bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4 fade-up">
+    <div class="flex items-center justify-between mb-3">
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500">Full schedule</div>
+      <button id="todayOpenModal" class="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">Open day view →</button>
+    </div>
+    <div class="space-y-1.5">`;
+  let nowLinePlaced = false;
+  timeline.forEach(e => {
+    const s = timeToMinutes(e.start);
+    if (!nowLinePlaced && s > nowMin) {
+      html += `<div class="flex items-center gap-2 py-0.5"><span class="w-2 h-2 rounded-full bg-red-500 pulse-dot"></span><div class="flex-1 h-px bg-red-400/60"></div><span class="text-[10px] font-bold text-red-500">${to12h(String(Math.floor(nowMin/60)).padStart(2,'0') + ':' + String(nowMin%60).padStart(2,'0'))}</span></div>`;
+      nowLinePlaced = true;
+    }
+    const done = e.isPrayer && habits[e.label];
+    const past = (e.end ? timeToMinutes(e.end) : s + 20) < nowMin;
+    html += `<div class="flex items-center gap-2.5 py-1 ${past ? 'opacity-45' : ''}">
+      <span class="w-1 h-7 rounded-full ${e.color} shrink-0"></span>
+      <span class="text-xs font-semibold flex-1 ${done ? 'line-through' : ''}">${e.isPrayer ? '🕌 ' : ''}${e.label}${e.isCustom ? ' <span class="text-[9px] font-bold text-indigo-500">●</span>' : ''}</span>
+      <span class="text-[11px] font-bold text-ink-400 dark:text-ink-500 tabular-nums">${e.end ? e.start + '–' + e.end : e.start}</span>
+    </div>`;
+  });
+  if (!nowLinePlaced) {
+    html += `<div class="flex items-center gap-2 py-0.5"><span class="w-2 h-2 rounded-full bg-red-500 pulse-dot"></span><div class="flex-1 h-px bg-red-400/60"></div><span class="text-[10px] font-bold text-red-500">now</span></div>`;
+  }
+  html += `</div></div>`;
+
+  root.innerHTML = html;
+
+  // wire habit pills
+  root.querySelectorAll('[data-habit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggleHabit(d, btn.dataset.habit);
+      renderToday();
+      const h2 = getHabits(d);
+      if (PRAYER_LABELS.every(p => h2[p])) confetti('🕌✨💚');
+    });
+  });
+  // wire today bills
+  root.querySelectorAll('[data-todaybill]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const set = getPaidSet(d.getFullYear(), d.getMonth());
+      if (cb.checked) set.add(cb.dataset.todaybill); else set.delete(cb.dataset.todaybill);
+      setPaidSet(d.getFullYear(), d.getMonth(), set);
+      renderToday(); renderBills(); renderCalendar(); renderSummary();
+    });
+  });
+  const openBtn = document.getElementById('todayOpenModal');
+  if (openBtn) openBtn.addEventListener('click', () => openDayModal(d));
+}
+
+/* live countdown ticker */
+setInterval(() => { if (activeTab === 'today') renderToday(); }, 30000);
+
+/* =====================================================================
+   CONFETTI (tiny, dependency-free)
+===================================================================== */
+function confetti(chars) {
+  const bits = (chars || '🎉✨💚').split('');
+  for (let i = 0; i < 24; i++) {
+    const s = document.createElement('span');
+    s.className = 'confetti-bit';
+    s.textContent = bits[i % bits.length];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.animationDuration = (1.6 + Math.random() * 1.6) + 's';
+    s.style.fontSize = (12 + Math.random() * 14) + 'px';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 3400);
+  }
+}
 
 /* =====================================================================
    RENDER CALENDAR
@@ -597,14 +915,16 @@ async function renderCalendar() {
   const monthLabel = document.getElementById('monthLabel');
   monthLabel.textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
   grid.innerHTML = '';
+  grid.classList.remove('grid-swap');
+  void grid.offsetWidth;
+  grid.classList.add('grid-swap');
 
   const firstDay = new Date(viewYear, viewMonth, 1);
-  const startDow = firstDay.getDay(); // 0=Sun
+  const startDow = firstDay.getDay();
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   const monthBills = getMonthBills(viewYear, viewMonth);
   const paid = getPaidSet(viewYear, viewMonth);
 
-  // Leading blanks
   for (let i = 0; i < startDow; i++) {
     const blank = document.createElement('div');
     blank.className = 'day-cell bg-transparent';
@@ -615,10 +935,8 @@ async function renderCalendar() {
 
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(viewYear, viewMonth, d);
-    const dow = date.getDay();
-    const events = eventsForDay(date);
     const dayBills = monthBills.filter(b => b.day === d);
-    const isToday = (date.getFullYear() === TODAY.getFullYear() && date.getMonth() === TODAY.getMonth() && date.getDate() === TODAY.getDate());
+    const isToday = sameDay(date, TODAY);
 
     const cell = document.createElement('button');
     cell.type = 'button';
@@ -629,7 +947,6 @@ async function renderCalendar() {
     }`;
     cell.dataset.day = d;
 
-    // Header row: day number + work/off badge
     const head = document.createElement('div');
     head.className = 'flex items-center justify-between';
     const dayNum = document.createElement('span');
@@ -642,13 +959,10 @@ async function renderCalendar() {
     head.appendChild(badge);
     cell.appendChild(head);
 
-    // Build a chronological mini-timeline for this cell (prayers slotted in by time)
     const timeline = buildDayTimeline(date, prayers ? prayers[d] : null);
-
     const chipBox = document.createElement('div');
     chipBox.className = 'mt-1';
 
-    // Compact: show first 3 items on mobile, more on desktop, chronologically
     const mobileLimit = 3;
     const desktopLimit = 6;
     timeline.forEach((e, idx) => {
@@ -658,8 +972,21 @@ async function renderCalendar() {
       if (idx >= desktopLimit) chip.classList.add('hidden');
       chipBox.appendChild(chip);
     });
+    // "+N more" indicators
+    const extraMobile = timeline.length - mobileLimit;
+    const extraDesk = timeline.length - desktopLimit;
+    if (extraMobile > 0) {
+      const more = makeChip(`+${extraMobile} more`, 'bg-ink-200/80 dark:bg-ink-700 !text-ink-500 dark:!text-ink-300');
+      more.classList.add('sm:hidden');
+      more.style.color = '';
+      chipBox.appendChild(more);
+    }
+    if (extraDesk > 0) {
+      const more2 = makeChip(`+${extraDesk} more`, 'bg-ink-200/80 dark:bg-ink-700 !text-ink-500 dark:!text-ink-300');
+      more2.classList.add('hidden', 'sm:block');
+      chipBox.appendChild(more2);
+    }
 
-    // Bill chips (always shown — they're red flags)
     dayBills.forEach(b => {
       const isPaid = paid.has(b.instanceId);
       const c = makeChip(`💵 $${b.amount}`, isPaid ? 'bg-red-600/40 line-through' : 'bg-red-600');
@@ -667,7 +994,6 @@ async function renderCalendar() {
     });
 
     cell.appendChild(chipBox);
-
     cell.addEventListener('click', () => openDayModal(date));
     grid.appendChild(cell);
   }
@@ -680,6 +1006,24 @@ function makeChip(label, colorClass) {
   return span;
 }
 
+/* swipe month navigation */
+(function(){
+  const cal = document.getElementById('tab-calendar');
+  let x0 = null, y0 = null;
+  cal.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  cal.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    const dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 60 && Math.abs(dy) < 50) {
+      if (dx < 0) { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } }
+      else { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } }
+      refreshAll();
+    }
+    x0 = y0 = null;
+  }, { passive: true });
+})();
+
 /* =====================================================================
    DAY MODAL
 ===================================================================== */
@@ -687,28 +1031,29 @@ async function openDayModal(date) {
   const modal = document.getElementById('dayModal');
   const title = document.getElementById('modalTitle');
   const body = document.getElementById('modalBody');
-  const dow = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][date.getDay()];
-  title.textContent = `${dow}, ${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`;
+  title.textContent = `${DOW_NAMES[date.getDay()]}, ${MONTH_NAMES[date.getMonth()]} ${date.getDate()}`;
 
-  const events = eventsForDay(date);
   const monthBills = getMonthBills(date.getFullYear(), date.getMonth());
   const dayBills = monthBills.filter(b => b.day === date.getDate());
   const paid = getPaidSet(date.getFullYear(), date.getMonth());
   const prayers = await ensurePrayers(date.getFullYear(), date.getMonth());
   const dayPrayers = prayers ? prayers[date.getDate()] : null;
+  const habits = getHabits(date);
+  const canLog = isPastOrToday(date);
 
   let html = '';
 
-  // Shift badge
-  html += `<div class="mb-4 inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wide ${isWorkDay(date) ? 'bg-blue-900 text-white' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'}">
-    ${isWorkDay(date) ? 'Work day' : 'Off day'} · Week ${isWeekA(date) ? 'A' : 'B'}
+  html += `<div class="mb-4 flex items-center gap-2 flex-wrap">
+    <span class="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wide ${isWorkDay(date) ? 'bg-blue-900 text-white' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'}">
+      ${isWorkDay(date) ? 'Work day' : 'Off day'} · Week ${isWeekA(date) ? 'A' : 'B'}
+    </span>
+    <span class="text-[11px] font-medium text-ink-400 dark:text-ink-500">☪️ ${hijriDate(date)}</span>
   </div>`;
 
   if (!dayPrayers) {
     html += `<div class="mb-3 text-xs text-amber-600 dark:text-amber-300 italic">Prayer times unavailable — connect to internet to load.</div>`;
   }
 
-  // Unified chronological timeline (events + prayers slotted in by time)
   const timeline = buildDayTimeline(date, dayPrayers);
   html += `<div class="mb-5">
     <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-2.5">Daily schedule</div>
@@ -716,26 +1061,44 @@ async function openDayModal(date) {
   timeline.forEach(e => {
     const timeStr = e.end ? `${e.start} – ${e.end}` : e.start;
     if (e.isPrayer) {
+      const done = !!habits[e.label];
       html += `<div class="flex items-center gap-3 bg-teal-50 dark:bg-teal-900/25 border border-teal-200/80 dark:border-teal-800/60 rounded-xl px-3 py-2">
         <span class="w-1.5 h-8 rounded-full ${e.color} flex-shrink-0"></span>
         <div class="flex-1 flex items-baseline justify-between gap-2">
-          <span class="font-semibold text-sm text-teal-800 dark:text-teal-200">🕌 ${e.label}</span>
+          <span class="font-semibold text-sm text-teal-800 dark:text-teal-200 ${done ? 'line-through opacity-70' : ''}">🕌 ${e.label}</span>
           <span class="text-xs font-bold text-teal-700 dark:text-teal-300">${e.start}</span>
         </div>
+        ${canLog ? `<input type="checkbox" data-modal-habit="${e.label}" ${done ? 'checked' : ''} class="w-5 h-5 rounded accent-teal-600" />` : ''}
       </div>`;
     } else {
       html += `<div class="flex items-start gap-3 rounded-xl px-3 py-2 bg-ink-50/80 dark:bg-ink-800/50 border border-ink-100 dark:border-ink-800">
         <span class="w-1.5 h-11 rounded-full ${e.color} flex-shrink-0 mt-0.5"></span>
         <div class="flex-1">
-          <div class="font-semibold text-sm">${e.label}</div>
+          <div class="font-semibold text-sm">${e.label}${e.isCustom ? ' <span class="text-[9px] font-bold text-indigo-500 align-middle">CUSTOM</span>' : ''}</div>
           <div class="text-xs text-ink-400 dark:text-ink-500 font-medium mt-0.5">${timeStr}</div>
         </div>
+        ${e.cat === 'workout' && canLog ? `<input type="checkbox" data-modal-habit="Workout" ${habits.Workout ? 'checked' : ''} class="w-5 h-5 rounded accent-orange-500 mt-2" />` : ''}
+        ${e.isCustom ? `<button data-del-custom="${e.id}" class="w-7 h-7 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-400 hover:text-red-500 flex items-center justify-center mt-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>` : ''}
       </div>`;
     }
   });
   html += `</div></div>`;
 
-  // Bills due today
+  // Add event form
+  html += `<div class="mb-5">
+    <button id="addEventToggle" class="w-full py-2.5 rounded-xl border-2 border-dashed border-ink-200 dark:border-ink-700 text-xs font-bold text-ink-400 dark:text-ink-500 hover:border-indigo-400 hover:text-indigo-500 transition">+ Add event to this day</button>
+    <div id="addEventForm" class="hidden mt-3 p-3.5 rounded-xl bg-ink-50/80 dark:bg-ink-800/50 border border-ink-200 dark:border-ink-800 space-y-2.5">
+      <input id="evLabel" type="text" placeholder="What's happening?" class="w-full px-3 py-2.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+      <div class="flex gap-2">
+        <input id="evTime" type="time" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        <select id="evCat" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <option value="custom">Custom</option><option value="job">Job</option><option value="drop">Dropshipping</option><option value="workout">Workout</option><option value="meal">Meal/Review</option><option value="grocery">Groceries</option><option value="family">Family</option><option value="winddown">Wind-down</option>
+        </select>
+      </div>
+      <button id="evSave" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition active:scale-[0.98]">Save event</button>
+    </div>
+  </div>`;
+
   if (dayBills.length) {
     html += `<div class="mb-2">
       <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-2.5">Bills due today</div>
@@ -744,6 +1107,7 @@ async function openDayModal(date) {
       const isPaid = paid.has(b.instanceId);
       html += `<div class="flex items-center gap-3 p-3 rounded-xl border ${isPaid ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/25 dark:border-emerald-800' : 'border-red-200 bg-red-50 dark:bg-red-900/25 dark:border-red-800'}">
         <input type="checkbox" data-bill-toggle="${b.instanceId}" data-year="${date.getFullYear()}" data-month="${date.getMonth()}" ${isPaid ? 'checked' : ''} class="w-5 h-5 rounded accent-emerald-600" />
+        <span class="text-lg">${b.emoji || '💵'}</span>
         <div class="flex-1">
           <div class="font-semibold text-sm ${isPaid ? 'line-through text-ink-400' : ''}">${b.name}</div>
           <div class="text-xs text-ink-400 dark:text-ink-500">8:00 AM · Pay ${b.name} — $${b.amount}</div>
@@ -758,7 +1122,6 @@ async function openDayModal(date) {
   modal.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
-  // Wire bill checkboxes inside modal
   body.querySelectorAll('[data-bill-toggle]').forEach(cb => {
     cb.addEventListener('change', (e) => {
       const id = e.target.dataset.billToggle;
@@ -767,11 +1130,39 @@ async function openDayModal(date) {
       const set = getPaidSet(y, m);
       if (e.target.checked) set.add(id); else set.delete(id);
       setPaidSet(y, m, set);
-      renderCalendar();
-      renderBills();
-      renderSummary();
-      openDayModal(date); // refresh modal styles
+      renderCalendar(); renderBills(); renderSummary(); renderToday();
+      openDayModal(date);
     });
+  });
+
+  body.querySelectorAll('[data-modal-habit]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      toggleHabit(date, e.target.dataset.modalHabit);
+      renderToday(); renderSummary();
+      openDayModal(date);
+    });
+  });
+
+  body.querySelectorAll('[data-del-custom]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      deleteCustomEvent(btn.dataset.delCustom);
+      renderCalendar(); renderToday();
+      openDayModal(date);
+    });
+  });
+
+  const tog = document.getElementById('addEventToggle');
+  const form = document.getElementById('addEventForm');
+  tog.addEventListener('click', () => { form.classList.toggle('hidden'); if (!form.classList.contains('hidden')) document.getElementById('evLabel').focus(); });
+  document.getElementById('evSave').addEventListener('click', () => {
+    const label = document.getElementById('evLabel').value.trim();
+    const timeVal = document.getElementById('evTime').value;
+    const cat = document.getElementById('evCat').value;
+    if (!label) return;
+    const start = timeVal ? to12h(timeVal) : '12:00 PM';
+    addCustomEvent(date, label, start, null, cat);
+    renderCalendar(); renderToday();
+    openDayModal(date);
   });
 }
 
@@ -794,14 +1185,24 @@ function renderBills() {
   const paid = getPaidSet(viewYear, viewMonth);
   list.innerHTML = '';
 
+  const isCurMonth = (viewYear === TODAY.getFullYear() && viewMonth === TODAY.getMonth());
+  const todayD = TODAY.getDate();
+
   monthBills.forEach(b => {
     const isPaid = paid.has(b.instanceId);
+    const overdue = isCurMonth && !isPaid && b.day < todayD;
+    const dueToday = isCurMonth && !isPaid && b.day === todayD;
     const row = document.createElement('label');
-    row.className = `flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition active:scale-[0.99] ${isPaid ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300/80 dark:border-emerald-800' : 'bg-white dark:bg-ink-850 border-ink-200/80 dark:border-ink-800 shadow-card hover:border-ink-300 dark:hover:border-ink-700'}`;
+    row.className = `flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition active:scale-[0.99] ${
+      isPaid ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300/80 dark:border-emerald-800'
+      : overdue ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700 ring-1 ring-amber-300/50'
+      : 'bg-white dark:bg-ink-850 border-ink-200/80 dark:border-ink-800 shadow-card hover:border-ink-300 dark:hover:border-ink-700'}`;
+    const status = isPaid ? '' : overdue ? `<span class="ml-2 text-[10px] font-extrabold text-amber-600 dark:text-amber-400 uppercase">Overdue</span>` : dueToday ? `<span class="ml-2 text-[10px] font-extrabold text-red-500 uppercase">Due today</span>` : '';
     row.innerHTML = `
       <input type="checkbox" ${isPaid ? 'checked' : ''} class="w-5 h-5 rounded accent-emerald-600" />
+      <span class="text-xl">${b.emoji || '💵'}</span>
       <div class="flex-1">
-        <div class="font-semibold text-sm ${isPaid ? 'line-through text-ink-400' : ''}">${b.name}</div>
+        <div class="font-semibold text-sm ${isPaid ? 'line-through text-ink-400' : ''}">${b.name}${status}</div>
         <div class="text-xs text-ink-400 dark:text-ink-500 mt-0.5">Due ${MONTH_NAMES[viewMonth].slice(0,3)} ${b.day} · 8:00 AM</div>
       </div>
       <div class="font-bold ${isPaid ? 'text-ink-300 dark:text-ink-600 line-through' : 'text-red-600 dark:text-red-400'}">$${b.amount}</div>`;
@@ -810,9 +1211,9 @@ function renderBills() {
       const set = getPaidSet(viewYear, viewMonth);
       if (cb.checked) set.add(b.instanceId); else set.delete(b.instanceId);
       setPaidSet(viewYear, viewMonth, set);
-      renderBills();
-      renderCalendar();
-      renderSummary();
+      renderBills(); renderCalendar(); renderSummary(); renderToday();
+      const p2 = getPaidSet(viewYear, viewMonth);
+      if (monthBills.every(x => p2.has(x.instanceId))) confetti('💵🎉✅');
     });
     list.appendChild(row);
   });
@@ -836,9 +1237,27 @@ function renderBills() {
 }
 
 /* =====================================================================
-   RENDER SUMMARY TAB
+   RENDER SUMMARY TAB (rings + streaks + money)
 ===================================================================== */
+function ringSVG(pct, colorClass, label, sub) {
+  const r = 26, c = 2 * Math.PI * r;
+  const off = c - (Math.min(pct, 100) / 100) * c;
+  return `<div class="flex flex-col items-center gap-1.5">
+    <div class="relative w-[72px] h-[72px]">
+      <svg width="72" height="72" viewBox="0 0 72 72" class="-rotate-90">
+        <circle cx="36" cy="36" r="${r}" fill="none" stroke="currentColor" stroke-width="7" class="text-ink-100 dark:text-ink-800"/>
+        <circle cx="36" cy="36" r="${r}" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" class="${colorClass} ring-anim" stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
+      </svg>
+      <div class="absolute inset-0 flex items-center justify-center text-sm font-extrabold">${Math.round(pct)}%</div>
+    </div>
+    <div class="text-[11px] font-bold">${label}</div>
+    <div class="text-[10px] text-ink-400 dark:text-ink-500 font-medium -mt-1">${sub}</div>
+  </div>`;
+}
+
 function renderSummary() {
+  const root = document.getElementById('summaryRoot');
+  if (!root) return;
   document.getElementById('summaryMonthLabel').textContent = `${MONTH_NAMES[viewMonth]} ${viewYear} snapshot`;
   const monthBills = getMonthBills(viewYear, viewMonth);
   const paid = getPaidSet(viewYear, viewMonth);
@@ -848,25 +1267,80 @@ function renderSummary() {
   const paidCount = monthBills.filter(b => paid.has(b.instanceId)).length;
   const totalCount = monthBills.length;
 
-  // Off days in month
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   let off = 0;
-  for (let d = 1; d <= daysInMonth; d++) {
-    if (!isWorkDay(new Date(viewYear, viewMonth, d))) off++;
+  for (let d = 1; d <= daysInMonth; d++) if (!isWorkDay(new Date(viewYear, viewMonth, d))) off++;
+
+  // habit stats for viewed month (only days elapsed if current month)
+  const isCur = (viewYear === TODAY.getFullYear() && viewMonth === TODAY.getMonth());
+  const elapsed = isCur ? TODAY.getDate() : (new Date(viewYear, viewMonth, 1) < TODAY ? daysInMonth : 0);
+  let prayersChecked = 0, workoutsChecked = 0, offElapsed = 0, fullPrayerDays = 0;
+  for (let d = 1; d <= elapsed; d++) {
+    const date = new Date(viewYear, viewMonth, d);
+    const h = getHabits(date);
+    const pc = PRAYER_LABELS.filter(p => h[p]).length;
+    prayersChecked += pc;
+    if (pc === 5) fullPrayerDays++;
+    if (h.Workout) workoutsChecked++;
+    if (!isWorkDay(date)) offElapsed++;
   }
+  const prayerPct = elapsed ? (prayersChecked / (elapsed * 5)) * 100 : 0;
+  const workoutPct = offElapsed ? (workoutsChecked / offElapsed) * 100 : 0;
+  const billPct = totalCount ? (paidCount / totalCount) * 100 : 0;
+  const pStreak = prayerStreak();
 
-  document.getElementById('sumOutflow').textContent = `$${total.toLocaleString()}`;
-  document.getElementById('sumResidual').textContent = `$${residual.toLocaleString()}`;
-  document.getElementById('sumBillsPaid').textContent = `${paidCount} / ${totalCount}`;
-  document.getElementById('sumOffDays').textContent = `${off}`;
+  let html = '';
 
+  // Rings
+  html += `<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 border border-ink-200/70 dark:border-ink-800 fade-up">
+    <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-4">Systems health${isCur ? ' · through today' : ''}</div>
+    <div class="grid grid-cols-3 gap-2">
+      ${ringSVG(billPct, 'text-emerald-500', 'Bills', paidCount + '/' + totalCount + ' paid')}
+      ${ringSVG(prayerPct, 'text-teal-500', 'Prayers', prayersChecked + ' logged')}
+      ${ringSVG(workoutPct, 'text-orange-500', 'Workouts', workoutsChecked + '/' + offElapsed + ' off days')}
+    </div>
+    ${pStreak > 0 || fullPrayerDays > 0 ? `<div class="mt-4 flex flex-wrap gap-2">
+      ${pStreak > 0 ? `<span class="px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-[11px] font-bold">🔥 ${pStreak}-day prayer streak</span>` : ''}
+      ${fullPrayerDays > 0 ? `<span class="px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-[11px] font-bold">⭐ ${fullPrayerDays} perfect prayer days</span>` : ''}
+    </div>` : ''}
+  </div>`;
+
+  // Money
+  html += `<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 border border-ink-200/70 dark:border-ink-800 fade-up">
+    <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-3">Money</div>
+    <div class="grid grid-cols-2 gap-4 text-sm">
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Income</div><div class="font-bold text-lg mt-0.5">$3,200</div></div>
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Fixed outflow</div><div class="font-bold text-lg mt-0.5">$${total.toLocaleString()}</div></div>
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Savings</div><div class="font-bold text-lg mt-0.5">$1,000</div></div>
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Residual</div><div class="font-bold text-lg mt-0.5 text-emerald-600 dark:text-emerald-400">$${residual.toLocaleString()}</div></div>
+    </div>
+  </div>`;
+
+  // Activity
+  html += `<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 border border-ink-200/70 dark:border-ink-800 fade-up">
+    <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-3">Activity</div>
+    <div class="grid grid-cols-2 gap-4 text-sm">
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Bills paid</div><div class="font-bold text-lg mt-0.5">${paidCount} / ${totalCount}</div></div>
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Off days</div><div class="font-bold text-lg mt-0.5">${off}</div></div>
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Workouts logged</div><div class="font-bold text-lg mt-0.5">${workoutsChecked}</div></div>
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Perfect prayer days</div><div class="font-bold text-lg mt-0.5">${fullPrayerDays}</div></div>
+    </div>
+  </div>`;
+
+  // Insight sentence
   let sentence;
   if (residual >= 0) {
     sentence = `You've cleared ${paidCount} of ${totalCount} bills this month, with $${residual.toLocaleString()} residual after all outflow including your $1,000 savings — keep stacking.`;
   } else {
     sentence = `Heads up: bills exceed income by $${Math.abs(residual).toLocaleString()} this month. Consider adjusting the gas or food budget.`;
   }
-  document.getElementById('sumSentence').textContent = sentence;
+  if (isCur && pStreak >= 3) sentence += ` And that ${pStreak}-day prayer streak? Protect it. 🔥`;
+  html += `<div class="bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 text-white rounded-2xl p-5 shadow-card fade-up">
+    <div class="text-[11px] font-semibold uppercase tracking-wider text-indigo-200 mb-2">This month</div>
+    <p class="text-sm leading-relaxed font-medium">${sentence}</p>
+  </div>`;
+
+  root.innerHTML = html;
 }
 
 /* =====================================================================
@@ -874,10 +1348,9 @@ function renderSummary() {
 ===================================================================== */
 function setTab(name) {
   activeTab = name;
-  document.getElementById('tab-calendar').classList.toggle('hidden', name !== 'calendar');
-  document.getElementById('tab-bills').classList.toggle('hidden', name !== 'bills');
-  document.getElementById('tab-summary').classList.toggle('hidden', name !== 'summary');
-  document.getElementById('tab-groceries').classList.toggle('hidden', name !== 'groceries');
+  ['today','calendar','bills','summary','groceries'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('hidden', name !== t);
+  });
   document.querySelectorAll('.tab-btn').forEach(btn => {
     const isActive = btn.dataset.tab === name;
     btn.classList.toggle('text-indigo-600', isActive);
@@ -885,6 +1358,7 @@ function setTab(name) {
     btn.classList.toggle('text-slate-500', !isActive);
     btn.classList.toggle('dark:text-slate-400', !isActive);
   });
+  if (name === 'today') renderToday();
   if (name === 'bills') renderBills();
   if (name === 'summary') renderSummary();
   if (name === 'groceries') renderGroceries();
@@ -906,11 +1380,21 @@ document.getElementById('nextMonth').addEventListener('click', () => {
   if (viewMonth > 11) { viewMonth = 0; viewYear++; }
   refreshAll();
 });
+document.getElementById('monthLabelBtn').addEventListener('click', () => {
+  viewYear = TODAY.getFullYear(); viewMonth = TODAY.getMonth();
+  refreshAll();
+});
+document.getElementById('jumpToday').addEventListener('click', () => {
+  viewYear = TODAY.getFullYear(); viewMonth = TODAY.getMonth();
+  setTab('today');
+  refreshAll();
+});
 
 async function refreshAll() {
   await renderCalendar();
   renderBills();
   renderSummary();
+  if (activeTab === 'today') renderToday();
 }
 
 /* =====================================================================
@@ -929,10 +1413,6 @@ darkToggle.addEventListener('click', () => {
 const savedDark = localStorage.getItem('dark-mode');
 if (savedDark === '1') applyDark(true);
 else if (savedDark === null && window.matchMedia('(prefers-color-scheme: dark)').matches) applyDark(true);
-
-/* =====================================================================
-   INIT
-===================================================================== */
 
 /* ============================================================
    GROCERIES TAB
@@ -1000,12 +1480,18 @@ function renderGroceries() {
   root.innerHTML = html;
   const prog = document.getElementById('groceriesProgress');
   if (prog) prog.textContent = checked + ' of ' + total + ' items checked';
+  const bar = document.getElementById('groceriesBar');
+  if (bar) bar.style.width = (total ? Math.round((checked/total)*100) : 0) + '%';
   root.querySelectorAll('input[data-gid]').forEach(cb => {
     cb.addEventListener('change', () => {
       const s = gLoad();
       if (cb.checked) s[cb.dataset.gid] = true; else delete s[cb.dataset.gid];
       gSave(s);
       renderGroceries();
+      const s2 = gLoad();
+      let t2 = 0, c2 = 0;
+      GROCERIES_DATA.forEach(g => g.items.forEach(it => { t2++; if (s2[gId(g.cat, it.name)]) c2++; }));
+      if (t2 && c2 === t2) confetti('🛒✅🥦');
     });
   });
 }
@@ -1016,9 +1502,13 @@ document.getElementById('groceriesClear') && document.getElementById('groceriesC
   }
 });
 
-setTab('calendar');
+/* =====================================================================
+   INIT
+===================================================================== */
+setTab('today');
 refreshAll();
 renderGroceries();
+renderToday();
 </script>
 </body>
 </html>
