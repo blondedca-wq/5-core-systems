@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#4f46e5">
+<title>Ship · AI Automation Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'] },
+        colors: {
+          ink: { 50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',850:'#172033',900:'#0f172a',950:'#0a0f1e' }
+        },
+        boxShadow: {
+          card: '0 1px 2px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.05)',
+          glow: '0 8px 32px rgba(79,70,229,0.25)',
+          nav: '0 -4px 24px rgba(15,23,42,0.08)'
+        }
+      }
+    }
+  };
+</script>
+<style>
+html, body { -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-feature-settings: "tnum" 1, "cv11" 1; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.35); border-radius: 3px; }
+.dark ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.3); }
+.fade-up { animation: fadeUp .32s cubic-bezier(.21,.8,.35,1) both; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.sheet-in { animation: sheetIn .3s cubic-bezier(.21,.8,.35,1) both; }
+@keyframes sheetIn { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+.tab-btn svg { transition: transform .18s ease; }
+.tab-btn:active svg { transform: scale(0.88); }
+input[type="checkbox"] { cursor: pointer; }
+.ring-anim { transition: stroke-dashoffset .8s cubic-bezier(.21,.8,.35,1); }
+.modal-open { overflow: hidden; }
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] .chev { transform: rotate(90deg); }
+.chev { transition: transform .18s ease; }
+.confetti-bit { position: fixed; top: -20px; z-index: 100; font-size: 18px; pointer-events: none; animation: confFall linear forwards; }
+@keyframes confFall { to { transform: translateY(110vh) rotate(720deg); opacity: .9; } }
+</style>
+</head>
+<body class="bg-ink-100 dark:bg-ink-950 text-ink-800 dark:text-ink-100 min-h-screen pb-24 antialiased selection:bg-indigo-200 dark:selection:bg-indigo-800">
+
+<header class="sticky top-0 z-30 bg-white/85 dark:bg-ink-900/85 backdrop-blur-xl border-b border-ink-200/70 dark:border-ink-800 px-4 py-3 flex items-center justify-between">
+  <div class="flex items-center gap-2.5">
+    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-[13px] font-extrabold shadow-sm">⚡</div>
+    <div class="leading-tight">
+      <h1 class="text-[15px] sm:text-base font-bold tracking-tight">Ship</h1>
+      <p class="text-[10px] text-ink-400 dark:text-ink-500 font-medium">AI Automation Lab · GTA</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <a href="./index.html" class="h-9 px-3 rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 text-xs font-bold text-ink-500 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-700 transition flex items-center">5 Core</a>
+    <button id="darkToggle" class="w-9 h-9 rounded-xl border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 flex items-center justify-center text-ink-500 dark:text-ink-300 hover:bg-ink-50 dark:hover:bg-ink-700 transition" aria-label="Toggle dark mode">
+      <svg id="iconMoon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <svg id="iconSun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+    </button>
+  </div>
+</header>
+
+<section id="tab-sprint" class="px-3 sm:px-4 py-4 max-w-2xl mx-auto"></section>
+<section id="tab-learn" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28"></section>
+<section id="tab-build" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28"></section>
+<section id="tab-pitch" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28"></section>
+<section id="tab-pipeline" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28"></section>
+<section id="tab-money" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28"></section>
+
+<div id="sheet" class="hidden fixed inset-0 z-50 bg-ink-950/60 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
+  <div class="bg-white dark:bg-ink-900 w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[85vh] overflow-y-auto sheet-in border-t sm:border border-ink-200/70 dark:border-ink-800">
+    <div class="sm:hidden pt-2.5 flex justify-center"><div class="w-9 h-1 rounded-full bg-ink-200 dark:bg-ink-700"></div></div>
+    <div class="sticky top-0 z-10 bg-white/90 dark:bg-ink-900/90 backdrop-blur-lg border-b border-ink-100 dark:border-ink-800 px-5 py-3.5 flex items-center justify-between">
+      <h3 id="sheetTitle" class="font-bold text-lg tracking-tight"></h3>
+      <button onclick="closeSheet()" class="w-8 h-8 rounded-lg bg-ink-100 dark:bg-ink-800 flex items-center justify-center text-ink-500 hover:text-ink-700 dark:hover:text-ink-200 transition">✕</button>
+    </div>
+    <div id="sheetBody" class="px-5 py-4"></div>
+  </div>
+</div>
+
+<nav class="fixed bottom-0 inset-x-0 z-30 bg-white/90 dark:bg-ink-900/90 backdrop-blur-xl border-t border-ink-200/70 dark:border-ink-800 shadow-nav pb-[env(safe-area-inset-bottom)]">
+  <div class="grid grid-cols-6 max-w-2xl mx-auto">
+    <button data-tab="sprint" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-indigo-600 dark:text-indigo-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.09 12.97a1 1 0 0 0 .77 1.63H11l-1 7.4 8.91-10.97a1 1 0 0 0-.77-1.63H12z"/></svg>
+      <span>Sprint</span>
+    </button>
+    <button data-tab="learn" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Learn</span>
+    </button>
+    <button data-tab="build" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      <span>Build</span>
+    </button>
+    <button data-tab="pitch" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+      <span>Pitch</span>
+    </button>
+    <button data-tab="pipeline" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+      <span>Pipeline</span>
+    </button>
+    <button data-tab="money" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <span>Money</span>
+    </button>
+  </div>
+</nav>
+
+<script>
+/* ============================================================
+   SHIP — AI Automation Lab
+   Data + render + localStorage
+   ============================================================ */
+
+const K = {
+  sprint:   'lab.sprint.done.v1',
+  learn:    'lab.learn.done.v1',
+  build:    'lab.build.state.v1',
+  pipeline: 'lab.pipeline.v1',
+  money:    'lab.money.v1',
+  wow:      'lab.wow.done.v1',
+  start:    'lab.startDate.v1'
+};
+function load(key, def) { try { return JSON.parse(localStorage.getItem(key)) ?? def; } catch(e) { return def; } }
+function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
+
+let doneSprint = load(K.sprint, {});
+let doneLearn  = load(K.learn, {});
+let buildState = load(K.build, {});
+let pipeline   = load(K.pipeline, []);
+let money      = load(K.money, { goal: 10000, entries: [] });
+let doneWow    = load(K.wow, {});
+
+/* ============================================================
+   SPRINT — 30 days at ~5.5 hrs/day
+   ============================================================ */
+const SPRINT = [
+  { w:1, t:'Week 1 · Foundations + your first three builds',
+    goal:'By Sunday you can build any "trigger → logic → action" automation, and you have 3 working demos recorded.',
+    days:[
+      { d:1, title:'Pick the lane, set up the shop', hrs:5, tasks:[
+        'Choose 3 target verticals from the Pitch tab shortlist. Write them down. Do not add a 4th.',
+        'Create free accounts: n8n Cloud trial, Make.com free, Airtable, Cal.com, Twilio trial, Google Cloud (for Sheets/Gmail API), Anthropic Console.',
+        'Buy a domain for the practice ($12/yr). Set up a Google Workspace or Zoho mailbox on it — never pitch from gmail.com.',
+        'Set up a Notion or Obsidian vault: one page per build, one page per prospect. This becomes your case-study source.',
+        'Read the whole Pitch tab end to end. Do not skim it.'
+      ], out:'Domain live, 8 accounts created, 3 verticals chosen.' },
+      { d:2, title:'APIs, webhooks and JSON — the only "coding" you need', hrs:6, tasks:[
+        'Learn what an API, endpoint, HTTP verb, header, auth token and payload are. 90 min, no more.',
+        'Learn JSON structure: objects, arrays, dot notation. Practice reading a nested response until it is boring.',
+        'Make a webhook fire: use webhook.site, then a Make/n8n webhook trigger. Send it data from a form.',
+        'Do 5 reps: connect a Google Form → Sheet → Slack/email. Break it on purpose. Fix it.',
+        'Write your own one-page cheat sheet of what you learned. You will re-read this on client calls.'
+      ], out:'You can read any JSON response and wire a webhook without googling.' },
+      { d:3, title:'BUILD 1 — Missed-Call Rescue', hrs:6, tasks:[
+        'Build it: Twilio number → missed/unanswered call → instant SMS "Sorry we missed you, what do you need?" → reply routes to owner + logs to Sheet/CRM.',
+        'Add business-hours logic and an after-hours variant.',
+        'Add a 3-touch follow-up: +10 min, +1 day, +3 days, stopping on reply.',
+        'Test it 10 times from your own phone. Every edge case.',
+        'Record a 90-second Loom: the problem, the call, the text arriving, the log filling in.'
+      ], out:'Build 1 shipped + demo video. This is the single highest-converting demo you own.' },
+      { d:4, title:'BUILD 2 — Speed-to-Lead Responder', hrs:6, tasks:[
+        'Form/webchat submission → SMS + email to lead in under 60 seconds → notify owner → create CRM record.',
+        'Add AI qualification: classify the lead as hot/warm/junk and write a one-line summary for the owner.',
+        'Add a booking link that pulls real availability from Cal.com.',
+        'Instrument it: log response time so you can screenshot "avg 41 seconds".',
+        'Record the Loom. Show a stopwatch.'
+      ], out:'Build 2 shipped. You now have the two demos that close home-service businesses.' },
+      { d:5, title:'BUILD 3 — Review Engine', hrs:5, tasks:[
+        'Job marked complete → wait 2 hrs → SMS asking for a rating 1-5.',
+        'Branch: 4-5 goes straight to the Google review link; 1-3 routes privately to the owner with an alert.',
+        'Add a reminder if no response in 48 hrs, then stop forever.',
+        'Build a small dashboard (Sheet or Airtable interface) showing requests sent / reviews landed.',
+        'Record the Loom, emphasising the negative-review interception branch.'
+      ], out:'Build 3 shipped. This one sells itself because owners can see their star rating.' },
+      { d:6, title:'Error handling, security, and not blowing up a client', hrs:5, tasks:[
+        'Add retry logic, error branches and failure notifications to all three builds.',
+        'Learn credential hygiene: never store client API keys in plain text, use the platform vault, use a dedicated account per client.',
+        'Read the CASL + PIPEDA section in the Pitch tab. Add unsubscribe/STOP handling to every outbound message flow.',
+        'Write a one-page "what happens if it breaks" doc. Clients ask this. Having the answer ready closes deals.',
+        'Duplicate all 3 builds into clean, re-deployable templates.'
+      ], out:'Three production-grade templates you can deploy for a new client in under an hour.' },
+      { d:7, title:'Package week 1 into proof', hrs:4, tasks:[
+        'Write a one-page case study for each build: the problem, the numbers, the fix, the result, a screenshot.',
+        'Reframe your existing work as case studies too: the content production SOP, the product-audit engine, the multi-store payments rollout. That is 6 assets, not 3.',
+        'Put them on a single-page site. Nothing fancy. Name, what you do, 6 proofs, a Cal.com link.',
+        'Rest. You need to be sharp for the outreach weeks.'
+      ], out:'A portfolio site with 6 case studies. You have never sold a service — now you have evidence.' }
+    ]},
+  { w:2, t:'Week 2 · n8n, AI agents, voice — the stuff they cannot copy',
+    goal:'Move off no-code training wheels. By Sunday you own a server, an AI agent, and a voice receptionist.',
+    days:[
+      { d:8, title:'Self-host n8n', hrs:6, tasks:[
+        'Spin up a $6/mo VPS (Hetzner or DigitalOcean). Install Docker.',
+        'Deploy n8n with docker-compose, behind Caddy/Traefik with HTTPS and a subdomain.',
+        'Set up Postgres as the backing store, plus automated backups. Do not skip backups.',
+        'Rebuild Build 1 in n8n from scratch. Feel the difference in cost and control.',
+        'Learn n8n queue mode and why it matters when you have 10 clients.'
+      ], out:'Your own automation server. Marginal cost per new client: near zero.' },
+      { d:9, title:'n8n deep work', hrs:6, tasks:[
+        'Master the core nodes: HTTP Request, Code, Switch, Merge, Split In Batches, Wait, Error Trigger.',
+        'Learn expressions and the data-mapping panel until you stop guessing.',
+        'Build a sub-workflow and call it from a parent. This is how you stop repeating yourself.',
+        'Set up environments: one instance/project per client, or at minimum strict project separation.',
+        'Import 5 community templates, read them, then rebuild one from memory.'
+      ], out:'n8n is no longer intimidating. It is your default tool.' },
+      { d:10, title:'BUILD 4 — Inbox Triage Agent', hrs:6, tasks:[
+        'Gmail/Outlook trigger → Claude classifies each email: new lead / existing customer / supplier / spam / needs owner.',
+        'Auto-label and auto-archive. Draft a reply for the two most common categories — draft only, never auto-send.',
+        'Escalation rule: anything containing urgency or a complaint pings the owner immediately.',
+        'Learn prompt engineering properly here: system prompts, few-shot examples, forcing structured JSON output.',
+        'Record the Loom on a mock inbox you seed with 40 realistic emails.'
+      ], out:'Build 4 shipped. This is your foot in the door with professional services.' },
+      { d:11, title:'BUILD 5 — AI Voice Receptionist', hrs:6, tasks:[
+        'Pick one: Retell (fastest booking integration), Vapi (most control) or Synthflow (most no-code). Build on one, do not sample all three.',
+        'Script the agent for a dental clinic: greet, answer 8 FAQs, check availability, book, confirm by SMS, escalate emergencies to a human.',
+        'Connect it to a real calendar. Make it actually book.',
+        'Handle the hard parts: interruptions, silence, accents, "let me speak to a person".',
+        'Get the per-minute cost to a number you can quote from memory.'
+      ], out:'Build 5 shipped. This is the demo that makes owners go quiet on a call.' },
+      { d:12, title:'BUILD 6 — Database Reactivation Campaign', hrs:5, tasks:[
+        'Take a CSV of old customers → clean and dedupe → AI writes a personalised one-liner per contact from their history.',
+        'Drip it over SMS/email with strict consent and STOP handling.',
+        'Route every reply into a live "interested" board the owner can watch fill up.',
+        'Build the ROI calculator: contacts × response rate × close rate × avg job value.',
+        'Record the Loom. Lead with the dollar figure.'
+      ], out:'Build 6 shipped. This is the one that pays for your fee out of found money.' },
+      { d:13, title:'BUILD 7 + 8 — Quote-from-Photo and the Owner\'s Brief', hrs:6, tasks:[
+        'Build 7: customer texts photos of a job → vision model estimates scope → generates a branded PDF quote → sends for e-sign.',
+        'Build 8: every Monday 7am, pull from their CRM/calendar/payments → one-page brief: money in, jobs booked, leads unanswered, reviews landed, the one thing to fix.',
+        'Both get Looms.',
+        'Turn all 8 into deployable templates with a setup checklist per build.'
+      ], out:'Eight builds. Eight demos. A real portfolio.' },
+      { d:14, title:'Build the demo machine', hrs:5, tasks:[
+        'Create a "personalised demo" pipeline: given a business name + website, you can produce a branded working demo in under 45 minutes.',
+        'Pre-write the demo landing page template with their logo and name on it.',
+        'This is your unfair advantage. Nobody else shows up with the thing already built.',
+        'Update the portfolio site with all 8 case studies. Add the demo request form.'
+      ], out:'You can walk into any business with their own automation already running.' }
+    ]},
+  { w:3, t:'Week 3 · Outreach — the part that actually makes money',
+    goal:'100 businesses contacted, 10 conversations, 3 free builds agreed. Volume is the whole game.',
+    days:[
+      { d:15, title:'Build the list', hrs:5, tasks:[
+        'Pull 300 GTA businesses in your 3 verticals: Google Maps, Yelp, HomeStars, local BIA directories, Instagram location tags.',
+        'Qualify on signals: fewer than 50 Google reviews, no online booking, rating under 4.3, ads running, "call us" with no form, owner-operated.',
+        'Score each 1-3 on: do they have the problem, can they pay, can I reach the owner.',
+        'Read the CASL rules in Pitch before you send anything. Fines are real.',
+        'Load the top 100 into the Pipeline tab.'
+      ], out:'100 qualified, scored prospects with a reason-to-call on each.' },
+      { d:16, title:'Write and rehearse the pitch', hrs:5, tasks:[
+        'Memorise the 30-second opener and the free-build offer until you can say it while distracted.',
+        'Rehearse all 12 objections in the Pitch tab out loud. Record yourself. Watch it back. It will be bad. Do it again.',
+        'Write your 3 email templates and 2 DM templates. Personalise the first line only — everything else stays fixed.',
+        'Set up a simple booking page with 20-min "Automation Audit" slots.',
+        'Do 5 practice calls to businesses outside your verticals. Burn the nerves on people who do not matter.'
+      ], out:'You can pitch without reading. Nerves handled on throwaway calls.' },
+      { d:17, title:'First real outreach day', hrs:6, tasks:[
+        'Walk in to 15 local businesses. In person beats everything for GTA local — you are a face, not a spam folder.',
+        'Send 30 CASL-compliant emails with a pre-built demo link for the top 10.',
+        'Call 20. Expect most to go nowhere. Log every single one in Pipeline.',
+        'Track your numbers: contacted, reached, interested, booked. You are gathering data, not just selling.',
+        'End of day: write down the three objections you actually heard, not the ones you expected.'
+      ], out:'~65 touches. First real conversations. Real objections to work with.' },
+      { d:18, title:'Outreach day 2 + first audits', hrs:6, tasks:[
+        'Same volume: 15 walk-ins, 30 emails, 20 calls.',
+        'Run any booked audit calls. Use the discovery framework in Pitch — find the leak, quantify it in dollars, then offer the free build.',
+        'For every audit, build the personalised demo BEFORE the follow-up call.',
+        'Update your templates based on what actually landed yesterday.'
+      ], out:'130 touches total. First audits done.' },
+      { d:19, title:'Outreach day 3 + deliver free build #1', hrs:6, tasks:[
+        'Same volume. Do not drop outreach because you got busy — that is how the pipeline dies.',
+        'Deliver your first free build in a real business\'s real accounts.',
+        'Set the 30-day measurement: agree upfront on the exact number you will both look at.',
+        'Ask for a referral the moment they say "that\'s cool". Not later.'
+      ], out:'First live client system. Even unpaid, this is a real reference.' },
+      { d:20, title:'Outreach day 4 + follow-up sequence', hrs:6, tasks:[
+        'Same volume. Plus: follow up on every no-reply from days 17-19. Most deals live in follow-up 2 through 5.',
+        'Deliver free build #2.',
+        'Post one build breakdown publicly — LinkedIn or a local business FB group. Inbound compounds; start it now.'
+      ], out:'~260 touches. Two live systems.' },
+      { d:21, title:'Review the funnel honestly', hrs:4, tasks:[
+        'Compute your real rates: touches → conversations → audits → free builds agreed.',
+        'Find the weakest step and fix only that. If nobody replies, the message is wrong. If they reply but do not book, the offer is wrong. If they book but do not proceed, the discovery is wrong.',
+        'Cut the worst-performing vertical. Double the best one.',
+        'Rest.'
+      ], out:'A funnel you understand numerically instead of by feel.' }
+    ]},
+  { w:4, t:'Week 4 · Convert — free builds into paid contracts',
+    goal:'Two paying clients. Not ten. Two, done properly, who will refer you.',
+    days:[
+      { d:22, title:'Outreach + deliver', hrs:6, tasks:[
+        'Maintain volume: 15 walk-ins, 30 emails, 20 calls. Every single day this week.',
+        'Deliver free build #3.',
+        'Start collecting the numbers from build #1 — it has been running long enough to show something.'
+      ], out:'Three live systems generating real data.' },
+      { d:23, title:'The conversion conversation', hrs:6, tasks:[
+        'Run the 30-day results review on build #1. Show the number. Then go quiet and let them talk first.',
+        'Present the ladder: keep this running on retainer, or add the next automation, or both.',
+        'Do not discount. If they say no, ask what would have to be true for it to be a yes, and log the answer.',
+        'Maintain outreach volume regardless of how the call went.'
+      ], out:'First paid offer made.' },
+      { d:24, title:'Close #1', hrs:6, tasks:[
+        'Get the first signature. Simple one-page agreement — scope, price, term, cancellation, who owns what.',
+        'Set up billing: Stripe or PayPal recurring. Get paid before you build.',
+        'Onboard properly: access checklist, kickoff call, a written 14-day plan.',
+        'Keep outreach running.'
+      ], out:'First revenue. The hardest dollar you will ever earn.' },
+      { d:25, title:'Deliver like it matters', hrs:6, tasks:[
+        'Overbuild for client #1. Their testimonial and referrals are worth more than the fee.',
+        'Set up monitoring and alerting so you find out it broke before they do.',
+        'Write the client-facing documentation. This is what separates you from the guy who disappears.',
+        'Keep outreach running.'
+      ], out:'Client #1 delighted, monitored, documented.' },
+      { d:26, title:'Close #2 + systematise', hrs:6, tasks:[
+        'Run the same conversion play on free builds #2 and #3.',
+        'Write your own SOPs: onboarding, build, QA, handover, support. You already write runbooks — apply it here.',
+        'Build your own internal automations: lead capture, follow-up, reporting. Eat your own cooking, and demo it.'
+      ], out:'A repeatable delivery process, not a series of heroic efforts.' },
+      { d:27, title:'Referrals and partners', hrs:5, tasks:[
+        'Ask every client and every warm no for two introductions. Specifically two — a number gets answers, "anyone" does not.',
+        'Approach 10 GTA web designers and marketing agencies. They have clients and no automation capability. Offer them 20% referral or white-label.',
+        'Join 5 local business groups: BIA, chamber, trade associations, FB groups. Be useful before you sell.'
+      ], out:'Referral channel opened. This eventually replaces cold outreach entirely.' },
+      { d:28, title:'Raise your price', hrs:5, tasks:[
+        'You have proof now. Increase your rate for the next client. If nobody flinches, you are still too cheap.',
+        'Productise your best-selling build into a fixed-price package with a fixed timeline.',
+        'Update the portfolio with real client numbers (anonymised if needed).'
+      ], out:'A productised offer with real proof and a higher price.' },
+      { d:29, title:'The 90-day plan', hrs:5, tasks:[
+        'Set targets: clients, MRR, and the one vertical you will own.',
+        'Decide what you stop doing. You cannot run 4 dropship brands, a shift job, and an agency at full intensity.',
+        'Schedule outreach as a permanent recurring block. The month you stop is the month the pipeline dies.'
+      ], out:'A written 90-day plan with a stop-doing list.' },
+      { d:30, title:'Audit and reset', hrs:4, tasks:[
+        'Full review: what worked, what wasted time, what you would never do again.',
+        'Update every template and SOP with what you learned.',
+        'Bank the case studies. Then start the next 30 days.'
+      ], out:'Sprint one complete. You are no longer someone learning automation — you are someone selling it.' }
+    ]}
+];
+
+/* ============================================================
+   LEARN — the library, tiered
+   ============================================================ */
+const LEARN = [
+  { id:'t0', tier:'Tier 0', name:'Business literacy — learn this or nothing else matters',
+    why:'Automation is not the product. Recovered revenue is. If you cannot find the leak in a business, the best n8n skills on earth are worth nothing. This tier is the one most people skip and it is the reason most automation freelancers stay broke.',
+    color:'from-amber-600 to-orange-600',
+    items:[
+      { t:'How a local service business actually makes money', d:'Leads → booked jobs → completed jobs → repeat + referral. Learn where each stage leaks. Every automation you sell plugs one specific leak.', r:[] },
+      { t:'The five universal leaks', d:'1) Missed calls — around 62% of calls to small businesses go unanswered and most callers never call back. 2) Slow lead response. 3) No follow-up after a quote. 4) No review generation. 5) A dead customer database nobody ever contacts again.', r:[{n:'Missed-call text-back setup guide',u:'https://www.getaira.io/blog/missed-call-text-back'}] },
+      { t:'Speaking money, not features', d:'Never say "I will automate your intake". Say "you are missing about 9 calls a week, at your average job value that is roughly $2,700 a month walking away". Learn to estimate this from public info before a call.', r:[] },
+      { t:'Reading a business from the outside', d:'Google Business Profile, review count and recency, whether they answer the phone, whether there is a booking link, whether ads are running, response time to a form fill. You can diagnose a business in 10 minutes without talking to them.', r:[] },
+      { t:'What SMBs actually buy in 2026', d:'The highest-demand categories: lead follow-up, lead qualification, appointment booking, invoice processing, customer support, review requests, reporting. Lead follow-up, appointment reminders and invoicing alone typically save a 5-10 person team 8-15 hours a week.', r:[{n:'Top SMB automations 2026',u:'https://hathawk.com/top-ai-automations-smb-2026-boost-sales-ops/'}] }
+    ]},
+  { id:'t1', tier:'Tier 1', name:'No-code automation — fast demos, fast cash',
+    why:'This is where you get to a working demo in an afternoon. It is also where margin goes to die if you stay, because per-task pricing scales against you and clients can eventually rebuild it. Use it to win, then migrate to Tier 2.',
+    color:'from-teal-600 to-emerald-600',
+    items:[
+      { t:'Make.com', d:'Best value in the no-code tier. Visual scenario builder, from about $9/mo for 10,000 operations. Every module execution counts as one operation. Best for mid-complexity logic and for client-facing demos because the canvas looks impressive.', r:[{n:'Make Academy',u:'https://academy.make.com/'},{n:'Pricing comparison 2026',u:'https://www.cipherprojects.com/blog/posts/n8n-vs-zapier-vs-make-automation-comparison/'}] },
+      { t:'Zapier', d:'From about $19.99/mo, billed per task, where every action is a task. Widest app support (8,000+) and the easiest for a non-technical client to understand. Zapier Agents added autonomous execution in 2026. Expensive at volume — know this before you quote.', r:[{n:'Zapier Learn',u:'https://zapier.com/learn/'}] },
+      { t:'GoHighLevel', d:'The all-in-one CRM most local-business agencies run on. Agency Unlimited is about $297/mo with unlimited sub-accounts; SaaS Pro at about $497/mo unlocks white-label and client rebilling. Agencies typically resell it at $197-997/mo per client. Two clients at $497 covers your cost entirely.', r:[{n:'GHL agency pricing 2026',u:'https://netpartners.marketing/gohighlevel-agency-pricing-guide/'}] },
+      { t:'Airtable + Softr', d:'Your database and client-facing dashboard layer. Owners want to SEE the automation working. A simple Airtable interface showing leads landing in real time closes more deals than the workflow itself.', r:[{n:'Airtable Academy',u:'https://www.airtable.com/guides'}] },
+      { t:'Cal.com / Calendly', d:'Booking infrastructure. Cal.com is open source and self-hostable, which matters when you want the booking layer inside your own stack rather than another subscription on the client bill.', r:[{n:'Cal.com docs',u:'https://cal.com/docs'}] }
+    ]},
+  { id:'t2', tier:'Tier 2', name:'n8n — where the margin lives',
+    why:'n8n bills per workflow execution rather than per action, and self-hosted it costs roughly a VPS bill regardless of volume. For a 10-step workflow running 10,000 times a month it can cut costs 80-90% versus Zapier. This is the difference between a $500/mo client being profitable and being a chore.',
+    color:'from-indigo-600 to-violet-600',
+    items:[
+      { t:'Self-hosting n8n', d:'Docker + docker-compose on a $6-20/mo VPS, Postgres backing store, Caddy or Traefik for HTTPS, automated backups, queue mode for concurrency. This one skill is your entire cost advantage — do not skip it because Cloud is easier.', r:[{n:'n8n self-hosting docs',u:'https://docs.n8n.io/hosting/'}] },
+      { t:'Core nodes and data flow', d:'HTTP Request, Code, Switch, IF, Merge, Split In Batches, Wait, Error Trigger, Execute Workflow. Learn the data-mapping panel and expressions properly — most n8n frustration is actually data-shape confusion.', r:[{n:'n8n docs',u:'https://docs.n8n.io/'},{n:'Free n8n course',u:'https://www.mygreatlearning.com/academy/learn-for-free/courses/n8n-workflow-automation'}] },
+      { t:'AI nodes and LangChain', d:'n8n 2.0 shipped LangChain integration and 70+ AI nodes. Agent node, memory, vector stores, tool calling. This is how you build things that look like magic on a demo call.', r:[{n:'n8n AI docs',u:'https://docs.n8n.io/advanced-ai/'},{n:'17-hour n8n course',u:'https://www.youtube.com/watch?v=TZ43SRdTMs0'}] },
+      { t:'Error handling in production', d:'Error Trigger workflows, retries with backoff, dead-letter logging, alerting to your phone. A client whose automation silently failed for two weeks is a client you have lost. Build this before you need it.', r:[] },
+      { t:'Multi-tenancy', d:'Projects, separate credentials per client, environment variables, and a template library you deploy from. The goal: a new client goes live in under an hour because you are deploying, not building.', r:[] },
+      { t:'Community templates', d:'Thousands of pre-built workflows. Read them to learn patterns, then rebuild from memory. Never hand a client something you cannot debug.', r:[{n:'n8n template library',u:'https://n8n.io/workflows/'}] }
+    ]},
+  { id:'t3', tier:'Tier 3', name:'AI agents and voice — the demos that stun',
+    why:'This tier is what makes an owner stop scrolling on their phone during your call. It is also the thinnest moat, so sell it as part of a system rather than as a chatbot on its own. A chatbot is a $200 sale. A chatbot inside a lead-recovery system is a $4,000 sale.',
+    color:'from-fuchsia-600 to-pink-600',
+    items:[
+      { t:'LLM API fundamentals', d:'Claude and OpenAI APIs: system prompts, temperature, tokens and cost per call, structured JSON output, function/tool calling. Learn to force structured output — free text from an LLM breaks automations.', r:[{n:'Anthropic docs',u:'https://docs.claude.com/'},{n:'Prompt engineering guide',u:'https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview'}] },
+      { t:'Prompt engineering that survives production', d:'Few-shot examples, XML tags for structure, explicit refusal paths, and evaluation. A prompt that works 9 times out of 10 in testing fails 10% of the time in front of a paying customer.', r:[] },
+      { t:'RAG and knowledge bases', d:'Chunking, embeddings, vector stores, retrieval. This is how you build a support agent that actually knows a specific business rather than hallucinating its hours and prices.', r:[] },
+      { t:'Voice agents', d:'Retell is fastest for calendar and booking with about 600ms latency and roughly $0.07-0.15/min all-in. Vapi gives the most control over the LLM/TTS/STT stack. Bland is best for high-volume outbound with predictable per-minute pricing. Synthflow is the most no-code and offers white-label. Pick ONE and go deep.', r:[{n:'Voice platform comparison',u:'https://techsy.io/en/blog/retell-ai-vs-vapi-vs-bland'},{n:'Retell docs',u:'https://docs.retellai.com/'}] },
+      { t:'MCP and tool-using agents', d:'Model Context Protocol lets an agent use real tools and data sources. This is where agent work is heading — being early here is a genuine differentiator in 2027.', r:[{n:'MCP docs',u:'https://modelcontextprotocol.io/'}] },
+      { t:'Cost control', d:'Token budgets, caching, routing cheap models for classification and expensive ones only for generation. Know your cost per conversation before you quote a monthly price, or you will sell a loss.', r:[] }
+    ]},
+  { id:'t4', tier:'Tier 4', name:'The business of the business',
+    why:'Skills do not pay. Delivered outcomes with a signature and an invoice pay. You have run product businesses but never sold a service — this tier is your actual gap, and it is bigger than the technical one.',
+    color:'from-rose-600 to-red-600',
+    items:[
+      { t:'CASL and PIPEDA — Canada is stricter than the US', d:'CASL generally requires consent BEFORE a commercial electronic message, unlike US CAN-SPAM opt-out. Implied consent can come from a conspicuously published business email where your message is relevant to their role, or from an existing business relationship. Every message needs accurate sender ID and a working unsubscribe honoured within 10 business days. Penalties reach $1M for individuals and $10M for organisations. Walk-ins and phone calls are not CEMs — which is another reason in-person wins in the GTA.', r:[{n:'CASL cold email rules 2026',u:'https://litemail.ai/blog/casl-cold-email-compliance-canada-2026'}] },
+      { t:'Pricing without flinching', d:'See the Money tab. Setup fees for SMBs commonly run $1,500-15,000 with monthly management $300-5,000; the median small-to-mid retainer sits around $2,800-7,000. Canadian small local businesses sit at the low end. Charge for the outcome, not the hours.', r:[{n:'AAA pricing 2026',u:'https://monetizebot.ai/blogs/ai-automation-agency-pricing-2026'}] },
+      { t:'Discovery calls', d:'Talk 30%, listen 70%. Find the leak, quantify it in their dollars, get them to say the number out loud. The person who says the number is the person who buys.', r:[] },
+      { t:'Scoping and contracts', d:'One-page agreement: scope, exclusions, price, term, cancellation, who owns the accounts, what happens when it breaks. Scope creep kills solo operators faster than bad pricing.', r:[] },
+      { t:'Delivery and retention', d:'Onboarding checklist, monitoring, monthly reporting that shows the number they care about. Retainers churn when the client stops seeing value, not when the tech fails.', r:[] },
+      { t:'Referrals and partnerships', d:'Web designers and marketing agencies have local clients and no automation capability. Become their automation guy for a 20% referral fee or under white-label. This scales without cold outreach.', r:[] }
+    ]}
+];
+
+/* ============================================================
+   BUILD — portfolio projects
+   ============================================================ */
+const BUILDS = [
+  { id:'b1', n:1, name:'Missed-Call Rescue', vert:'Contractors · HVAC · Plumbing · Auto', diff:'Beginner', hrs:'4-6', stack:'Twilio + n8n/Make + Google Sheets',
+    problem:'Around 62% of calls to small businesses go unanswered, and the large majority of those callers never call back. For a contractor at a $300-800 average job, that is thousands of dollars a month evaporating silently.',
+    spec:['Twilio number forwards to their real line and detects unanswered or busy calls','Instant SMS: "Sorry we missed you — what do you need help with? We reply here."','Reply routes to the owner\'s phone and logs to a sheet or CRM','Follow-up at +10 min, +1 day, +3 days, stopping the moment they reply','Business-hours vs after-hours message variants','STOP handling and full opt-out compliance'],
+    proves:'Telephony, conditional branching, scheduled follow-up, compliance basics.',
+    wow:'Have them call their own business from your phone while you both watch the text arrive. Nothing sells faster than that.' },
+  { id:'b2', n:2, name:'Speed-to-Lead Responder', vert:'Real estate · Law · Med spa · Insurance', diff:'Beginner', hrs:'4-6', stack:'Webhook + Claude API + Twilio + Cal.com',
+    problem:'A lead that gets a reply in under 5 minutes is dramatically more likely to convert than one contacted an hour later. Most local businesses reply the next business day, if at all.',
+    spec:['Form or webchat submission fires a webhook','SMS and email to the lead within 60 seconds','Claude classifies hot/warm/junk and writes a one-line summary for the owner','Owner gets a push with the summary and a one-tap call button','Booking link with real calendar availability','Response time logged so you can prove the average'],
+    proves:'AI classification, sub-minute response architecture, calendar integration, instrumentation.',
+    wow:'Fill in their own website form live on the call. The lead alert hits your phone before you finish the sentence.' },
+  { id:'b3', n:3, name:'Review Engine', vert:'Restaurants · Salons · Auto shops · Dental', diff:'Beginner', hrs:'3-5', stack:'n8n + Twilio + Google Business Profile',
+    problem:'Reviews drive local search ranking and buying decisions, and almost nobody asks for them systematically. Worse, unhappy customers post publicly because no one gave them a private channel first.',
+    spec:['Trigger on job complete or invoice paid, wait 2 hours','SMS asking for a 1-5 rating','4-5 routes to the Google review link; 1-3 routes privately to the owner with an alert','One reminder at 48 hours, then stop permanently','Dashboard: requests sent, ratings received, reviews landed, rating trend'],
+    proves:'Branching logic, reputation workflow, negative-feedback interception, dashboards.',
+    wow:'Pull up their Google rating on the call, then show the interception branch. Owners care about their star rating more than almost anything.' },
+  { id:'b4', n:4, name:'Inbox Triage Agent', vert:'Professional services · Trades · Any owner drowning in email', diff:'Intermediate', hrs:'5-7', stack:'Gmail API + Claude + n8n',
+    problem:'The owner is the bottleneck. They spend 1-2 hours a day in an inbox where 80% of messages do not need them at all.',
+    spec:['Gmail/Outlook trigger on every inbound message','Claude classifies: new lead / existing customer / supplier / spam / needs owner','Auto-label and auto-archive by category','Draft replies for the two most common categories — drafts only, never auto-send','Urgency and complaint detection escalates immediately','Daily digest of what was handled'],
+    proves:'LLM classification at volume, structured JSON output, safe automation boundaries.',
+    wow:'Run it against 40 seeded emails live and show the inbox sort itself in about 30 seconds.' },
+  { id:'b5', n:5, name:'AI Voice Receptionist', vert:'Dental · Clinics · Salons · Trades', diff:'Advanced', hrs:'6-10', stack:'Retell or Vapi + Cal.com + n8n',
+    problem:'They cannot afford a full-time receptionist and calls go to voicemail. Voicemail is where revenue goes to die.',
+    spec:['Answers on the first ring, 24/7','Handles the 8 most common questions: hours, location, pricing, parking, services, insurance','Checks real availability and books the appointment','SMS confirmation and calendar invite','Escalates emergencies and "let me speak to a person" to a human immediately','Full transcript and recording logged for the owner'],
+    proves:'Voice AI, latency handling, real-world conversational edge cases, live booking.',
+    wow:'Give them your demo number mid-conversation and let them try to break it. This is the demo that makes the room go quiet.' },
+  { id:'b6', n:6, name:'Database Reactivation Campaign', vert:'Gyms · Med spas · Dental · Any business with an old list', diff:'Intermediate', hrs:'4-6', stack:'n8n + Claude + Twilio/email',
+    problem:'Every established business has hundreds of past customers they have never contacted again. It is the cheapest revenue in the building and nobody touches it.',
+    spec:['Import and clean the customer CSV, dedupe, validate','Claude writes a personalised opener per contact from their service history','Staggered send with strict consent checks and STOP handling','Replies route to a live board the owner can watch fill up','ROI calculator: contacts × response rate × close rate × average job value'],
+    proves:'Data hygiene, personalisation at scale, compliance discipline, and revenue attribution.',
+    wow:'This is your money demo. "You have 1,400 old customers. If 2% come back at your $400 average, that is $11,200 — from a list you already own."' },
+  { id:'b7', n:7, name:'Quote-from-Photo', vert:'Landscaping · Renovation · Painting · Roofing · Detailing', diff:'Advanced', hrs:'6-8', stack:'Vision model + n8n + PDF generation + e-sign',
+    problem:'Quoting eats evenings. The owner drives to the site, measures, goes home, builds a quote, sends it three days later, and by then the customer booked someone else.',
+    spec:['Customer texts or uploads photos of the job','Vision model estimates scope, materials and labour hours','Generates a branded PDF quote from the owner\'s own pricing table','Sends for e-signature with a deposit link','Auto follow-up at 2 and 5 days if unsigned','Owner reviews and approves before send — never fully autonomous on pricing'],
+    proves:'Vision models, document generation, payment flow, and knowing where to keep a human in the loop.',
+    wow:'Photograph something in their shop during the meeting and produce a quote before you leave.' },
+  { id:'b8', n:8, name:'The Owner\'s Monday Brief', vert:'Every business, and the easiest retainer to sell', diff:'Intermediate', hrs:'4-6', stack:'n8n + their CRM/calendar/payments + Claude',
+    problem:'The owner has no idea how the week actually went without opening five different tools, so they never do.',
+    spec:['Runs every Monday 7am','Pulls revenue, jobs booked, leads received vs answered, reviews landed, outstanding invoices','Claude writes a plain-English narrative, not a chart dump','Flags the single most important thing to fix this week','Delivered by email and SMS — one page, no login required'],
+    proves:'Multi-source integration, summarisation, and the reporting layer that makes retainers stick.',
+    wow:'This is the retainer glue. Once an owner gets used to Monday morning clarity, cancelling feels like going blind.' },
+  { id:'b9', n:9, name:'Case study — Content Production SOP', vert:'Your existing work · e-commerce', diff:'Shipped', hrs:'Done',  stack:'AI generation + scheduling + documented SOP',
+    problem:'You already built a repeatable content pipeline across multiple brands: inventory generated assets, export, schedule ahead in pairs, day-of engagement ritual, status logging.',
+    spec:['Write it up as a client-facing case study','Quantify it: hours saved per week, posts shipped per month, brands run in parallel','Screenshot the SOP doc and the schedule','Frame the outcome as "one person running content for four brands"'],
+    proves:'You have shipped real production automation, not tutorial projects.',
+    wow:'Proof that you operate systems, not just build them. Most competitors have neither.' },
+  { id:'b10', n:10, name:'Case study — Product Audit Engine', vert:'Your existing work · e-commerce research', diff:'Shipped', hrs:'Done', stack:'Scripted scoring + documented kill criteria',
+    problem:'You built a scoring engine that evaluates dozens of products against supplier age, MOQ, reviews and competitor anchoring, with a written pass/kill SOP.',
+    spec:['Write up the decision framework as a case study','Quantify: products evaluated, hours of manual research replaced','Generalise the pitch: "I build decision engines that turn a week of research into an afternoon"'],
+    proves:'Data pipeline design and, more importantly, automating judgement rather than just tasks.',
+    wow:'Retail, wholesale and distribution businesses have exactly this problem and will pay well for it.' },
+  { id:'b11', n:11, name:'Case study — Multi-Store Payments Rollout', vert:'Your existing work · e-commerce ops', diff:'Shipped', hrs:'Done', stack:'Payments integration across multiple storefronts',
+    problem:'You rolled out a payments stack with wallet support and accelerated checkout across several storefronts, and debugged the integration failures yourself.',
+    spec:['Write up the rollout as a case study','Quantify: stores live, checkout options added, failure modes resolved','Frame it as systems integration under real constraints'],
+    proves:'You can integrate payment infrastructure and survive a failing OAuth handshake without giving up.',
+    wow:'Any business with e-commerce, invoicing or online payments recognises this pain instantly.' }
+];
+
+/* ============================================================
+   WOW LIST — the things that make an owner say yes
+   ============================================================ */
+const WOW = [
+  { t:'Show up with the demo already built', d:'Before the meeting, build a working automation for THEIR business with THEIR name and logo on it. Not a slide. A live thing they can touch. Almost nobody does this, and it reframes the entire conversation from "should I hire you" to "how do I keep this".', tier:'Highest impact' },
+  { t:'Call their business from your phone, live', d:'Let it ring out. Watch the recovery text land on their screen. The moment they feel the lost call get saved, the sale is mostly done.', tier:'Highest impact' },
+  { t:'Count their missed money out loud', d:'"You are missing roughly 9 calls a week. At your $450 average job and a 30% close rate, that is about $4,800 a month." Then stop talking. Let the number sit there.', tier:'Highest impact' },
+  { t:'Give them the audit for free, in writing', d:'A one-page teardown of their lead flow with the leaks circled. Deliver it whether or not they buy. Half of them come back within 60 days.', tier:'High' },
+  { t:'Hand them your voice agent\'s number mid-meeting', d:'"Try to break it." When it books an appointment into a real calendar while they are trying to trip it up, you have their full attention.', tier:'High' },
+  { t:'Quote a job from a photo before you leave', d:'Take a picture of something in their shop. Produce a branded PDF quote in three minutes. For a quoting business this is visceral.', tier:'High' },
+  { t:'Show their own reviews interception branch', d:'Demonstrate a 2-star response being caught privately instead of hitting Google. Every owner has been burned by a public bad review.', tier:'High' },
+  { t:'Put a number on their dead list', d:'"You have 1,400 past customers. 2% at your average ticket is $11,200 in found money." Reactivation revenue feels free to them, which makes your fee feel small.', tier:'High' },
+  { t:'Send the Monday brief before you have a contract', d:'Build it on whatever data they will share and send it free for two weeks. It is the cheapest retainer hook there is.', tier:'Medium' },
+  { t:'Let them own everything', d:'Build in their accounts, their logins, their data. Say plainly: "if you fire me tomorrow it all keeps running and you owe me nothing." This removes the single biggest objection before they raise it.', tier:'Medium' },
+  { t:'Fix something small for free, unasked', d:'Their contact form is broken, their GBP hours are wrong, their booking link 404s. Fix it and mention it casually. Competence beats a pitch.', tier:'Medium' },
+  { t:'Bring a written 14-day plan', d:'Day-by-day, what you do, what you need from them, what they get. Owners have been burned by vague agency promises. Specificity reads as safety.', tier:'Medium' },
+  { t:'Show your monitoring', d:'"Here is the alert I get if your automation fails at 2am, and here is my response time." Nobody else shows them this. It makes you look like infrastructure, not a freelancer.', tier:'Medium' },
+  { t:'Speak their vertical\'s language', d:'Say "column" to a contractor, "chair time" to a dentist, "RO" to a shop, "turn" to a restaurant. Ten minutes of vocabulary research reads as ten years of experience.', tier:'Medium' },
+  { t:'Give a hard timeline and beat it', d:'Promise seven days, deliver in four. The first impression of your reliability is worth more than any discount you could offer.', tier:'Medium' }
+];
+
+/* ============================================================
+   VERTICALS — GTA shortlist
+   ============================================================ */
+const VERTICALS = [
+  { n:'HVAC · Plumbing · Electrical', job:'$300-2,500', why:'Emergency-driven, so a missed call is an immediately lost job. Owner-operated and reachable. They feel the pain daily.', lead:'Missed-Call Rescue', heat:'Hottest' },
+  { n:'Dental · Medical clinics', job:'$200-3,000', why:'High lifetime value, front desk permanently overloaded, no-shows are expensive. Budget exists. Longer sales cycle and more compliance care needed.', lead:'AI Voice Receptionist', heat:'Hottest' },
+  { n:'Auto repair · Detailing', job:'$150-1,500', why:'Reviews drive everything in this vertical, phones ring constantly, and the owner is usually under a car and unreachable.', lead:'Review Engine', heat:'Hot' },
+  { n:'Med spas · Salons · Barbers', job:'$80-800', why:'Booking-dependent, big dormant client lists, very responsive to reactivation campaigns.', lead:'Database Reactivation', heat:'Hot' },
+  { n:'Renovation · Landscaping · Roofing', job:'$2,000-50,000', why:'Huge job values mean one recovered lead pays your entire fee many times over. Quoting is their biggest time sink.', lead:'Quote-from-Photo', heat:'Hot' },
+  { n:'Real estate · Mortgage brokers', job:'Commission', why:'Speed-to-lead obsessed and already understand tooling, so an easier technical conversation. But a crowded market — everyone pitches them.', lead:'Speed-to-Lead', heat:'Warm' },
+  { n:'Law · Accounting · Consultants', job:'$500-10,000', why:'Drowning in email and intake admin, and they pay well. But slow decisions and more risk aversion.', lead:'Inbox Triage', heat:'Warm' },
+  { n:'Gyms · Studios · Trades schools', job:'$50-200/mo', why:'Membership churn and dead lists make reactivation a natural fit. Thinner margins though, so price accordingly.', lead:'Database Reactivation', heat:'Warm' }
+];
+
+/* ============================================================
+   OBJECTIONS
+   ============================================================ */
+const OBJECTIONS = [
+  { o:'"I\'m not interested."', a:'"Totally fair — I\'m not selling anything today. Can I ask one question and then I\'ll leave you alone? When someone calls and nobody picks up, what happens to that call right now?" Most owners will answer that. The honest answer is the whole pitch.' },
+  { o:'"We\'re too busy for this."', a:'"That\'s exactly why I\'m here. Busy means calls are going unanswered right now. I\'m not asking you to do anything — I do the building, you do nothing, and you keep it whether or not you ever pay me."' },
+  { o:'"How much?"', a:'"Nothing for the first one. I build one automation for you free, in your accounts, and you keep it. If in 30 days it hasn\'t made or saved you money, we shake hands and I\'m gone. If it has, we talk about the next one." Never quote a number before they have felt the value.' },
+  { o:'"What\'s the catch?"', a:'"I\'m building a portfolio in the GTA and I need results I can point to more than I need your money right now. That\'s the whole catch. You get a free system, I get a case study and hopefully a referral."' },
+  { o:'"I already have someone doing my marketing."', a:'"Good — I\'m not marketing. They bring you leads; I make sure none of them get dropped after they arrive. I work with marketing people, not against them. Happy to loop them in."' },
+  { o:'"We tried something like this and it didn\'t work."', a:'"What broke?" Then actually listen. Usually it was set-and-forget with no monitoring, or it was generic. "The difference here is it runs in your accounts, I monitor it, and you can see the numbers every Monday."' },
+  { o:'"Is this AI going to sound like a robot to my customers?"', a:'Do not argue. Hand them the phone. "Call this number and try to break it." Demonstration beats reassurance every single time.' },
+  { o:'"I don\'t want to lose the personal touch."', a:'"Neither do I — that\'s your whole advantage. The automation handles the 3am voicemail and the follow-up nobody has time for. It hands the actual human conversation to you, faster and warmer than a missed call ever could."' },
+  { o:'"I need to think about it."', a:'"Of course. Just so I know what to send you — is it the cost, the tech, or the timing?" Whichever they pick is the real objection. The generic version is never the real one.' },
+  { o:'"Send me some information."', a:'"I\'ll do one better. Give me 48 hours and I\'ll build a working version for your business and send you a two-minute video of it running. If you hate it, delete the email." A brochure gets ignored; their own name in a working demo does not.' },
+  { o:'"What happens if you disappear?"', a:'"Everything is in your accounts under your logins. If I vanish tomorrow it all keeps running. I\'ll also give you written documentation of exactly how it works." This is the single strongest thing you can say, so say it before they ask.' },
+  { o:'"My nephew/cousin does computer stuff."', a:'"Great, have them look at it — I\'ll even walk them through the build. I do this every day for local businesses; they do it on weekends. But if they can maintain it, that saves you a retainer and I\'m fine with that." Never insult the nephew.' }
+];
+
+/* ============================================================
+   PITCH — scripts and frameworks (rendered as blocks)
+   ============================================================ */
+const SCRIPTS = [
+  { id:'walkin', name:'Walk-in opener (30 seconds)', ctx:'The best channel in the GTA. Not a commercial electronic message, so CASL does not restrict it. Target: 15 a day.',
+    body:`"Hi — I'm Ahmed, I'm local. I build automated systems for businesses around here.
+
+Quick question and then I'll get out of your way: when someone calls and you're busy with a customer, what happens to that call?
+
+[Listen. The answer is almost always "voicemail" or "we miss it".]
+
+Right. That's the thing I fix. And I'm not selling anything today — I'm building a portfolio, so I'll build one for you free. Takes me about a week, costs you nothing, and it runs in your own accounts so you keep it either way.
+
+Is the owner around, or is that you?"` },
+  { id:'phone', name:'Cold call opener', ctx:'69% of buyers have accepted cold calls from new providers. Target: 20 a day. Call between 10-11am or 2-4pm.',
+    body:`"Hi, is this the owner? — Great, my name's Ahmed, I'm calling from [city]. I'll be quick, 30 seconds and you can hang up on me.
+
+I build automated follow-up systems for [trade] businesses. The thing I fix is missed calls and leads that go cold — most shops your size lose 8-10 jobs a month that way without ever knowing.
+
+I'm not selling you anything on this call. I'm building a portfolio, so I do the first build free and you keep it regardless.
+
+Worth a 15-minute look at your setup, or should I not bother you again?"` },
+  { id:'email', name:'Cold email (CASL-compliant)', ctx:'Only send to a conspicuously published business address where your message is relevant to their role and there is no "no soliciting" notice. Must include your full identity and a working unsubscribe. Target: 30 a day.',
+    body:`Subject: your after-hours calls, [Business Name]
+
+Hi [First name],
+
+I called [Business Name] at 7:40pm on Tuesday to test something — it went to voicemail, which is normal for a [trade] shop at that hour.
+
+I build systems that text those callers back within seconds so the job doesn't go to whoever picks up next. I put together a working version for [Business Name] — 90-second video here: [link]
+
+I'm building a portfolio of local case studies, so the first build is free. It runs in your accounts, you keep it whether or not we ever work together.
+
+Worth 15 minutes?
+
+Ahmed [Last name]
+[Business name], [full street address, city, ON, postal code]
+[phone] · [email]
+
+Don't want to hear from me again? Reply "unsubscribe" and I'll remove you within 10 business days.` },
+  { id:'dm', name:'Instagram / Facebook DM', ctx:'Best for salons, med spas, restaurants and gyms where the owner runs the account personally.',
+    body:`"Hey — noticed you're taking bookings through DMs. How many of these do you end up missing when you're with a client?
+
+I build systems that auto-reply, qualify and book straight into your calendar. I'm doing the first build free for a few local businesses to build my portfolio.
+
+Want me to put one together for [Business Name] so you can see it? No cost, you keep it either way."` },
+  { id:'discovery', name:'The 20-minute audit call framework', ctx:'You talk 30%, they talk 70%. Your job is to make them say the number out loud.',
+    body:`1. FRAME (1 min)
+"Thanks for the time. Twenty minutes: I'll ask about how leads come in and what happens to them, and at the end I'll tell you the one thing I'd fix first. Whether we work together or not, you keep that."
+
+2. DIAGNOSE (10 min) — ask, do not pitch
+· "Walk me through what happens from the moment someone finds you to the moment they pay."
+· "How do people usually reach you — call, form, DM, walk-in?"
+· "When a call comes in and everyone's busy, what happens?"
+· "Roughly how many calls a week do you think you miss?"
+· "When someone fills out your form, how fast do they hear back? Honestly."
+· "How do you follow up on a quote that hasn't been accepted?"
+· "How do you ask for reviews right now?"
+· "How many past customers are sitting in your system that you've never contacted again?"
+· "What's your average job worth?"
+· "What percentage of quotes turn into work?"
+
+3. QUANTIFY (3 min) — do the maths out loud, on paper
+"So 9 missed calls a week, 30% of those would have booked, at $450 a job — that's about $4,800 a month. Does that sound roughly right to you?"
+Then STOP. Let them respond. Do not fill the silence.
+
+4. OFFER (3 min)
+"Here's what I'd do. [One specific build.] I'll build it free, in your accounts, in seven days. You do nothing except give me access and 20 minutes.
+We'll agree right now on the one number we're both watching. In 30 days we look at it together.
+If it hasn't moved, we shake hands, you keep the system, and you owe me nothing.
+If it has, we talk about what's next."
+
+5. CLOSE (3 min)
+"Any reason not to try that?"
+[Silence. Let them answer.]
+"Great — I need access to X, Y and Z. I'll send a one-page summary tonight and we'll book the 30-day review right now while we're both looking at a calendar."
+Book the review meeting on the spot. Never leave without the next date.` },
+  { id:'conversion', name:'The 30-day conversion call', ctx:'This is where the free build turns into revenue. Do not wing it.',
+    body:`1. "Let's look at the number." Pull it up together. Do not present it — let them read it.
+
+2. Silence. Whoever speaks first after the number loses. Let it be them.
+
+3. "What do you want to do with it?" Open question, not a pitch.
+
+4. Present the ladder, cheapest first:
+   · "Keep this running and monitored: $X/month."
+   · "Add the next automation: $Y one-time."
+   · "Both, as a system: $Z/month, and I handle everything."
+
+5. If yes → paperwork and payment set up on the same call. Never "I'll send it over later."
+
+6. If no → "No problem, it's yours, it keeps running. What would have to be true for this to be worth paying for?" Log the answer. Then: "Who else do you know who has this same problem?" Ask for exactly two names.
+
+7. NEVER discount. Reduce scope instead. Discounting teaches them your price was invented.` }
+];
+
+/* ============================================================
+   MONEY — pricing ladder + economics
+   ============================================================ */
+const PRICING = [
+  { tier:'The Wedge (free build)', price:'$0', what:'One automation, built in their accounts, delivered in 7 days. Your cost: ~8 hours and under $20 in tooling.', note:'Cap it at ONE build. Require a booked 30-day review before you start. This is marketing spend, not charity — treat it that way and stop at three concurrent.' },
+  { tier:'Single automation', price:'$750 – $2,500', what:'One production workflow, deployed, documented, monitored for 30 days.', note:'Your default paid entry point. Canadian local SMBs sit at the low end of the global range.' },
+  { tier:'System build (3-6 workflows)', price:'$4,000 – $12,000', what:'A connected system: intake, follow-up, booking, reviews, reporting. Includes dashboards and QA.', note:'The industry range for growth-tier systems. Do not sell this until you have delivered at least three single builds.' },
+  { tier:'Care retainer', price:'$500 – $2,000 /mo', what:'Hosting, monitoring, fixes, monthly reporting, small iterations. Your actual business model.', note:'Median SMB retainers globally run higher ($2,800-7,000) but that is US mid-market. Start where you can win and raise it every third client.' },
+  { tier:'Voice agent', price:'$500-1,500 setup + $300-800 /mo', what:'Setup, scripting, integration, tuning. Usage billed at cost plus margin.', note:'Know your per-minute cost cold (roughly $0.07-0.15/min all-in) before quoting. Cap monthly minutes in the agreement.' },
+  { tier:'White-label / partner', price:'20% referral or wholesale', what:'Web designers and agencies resell your builds to their client base.', note:'Zero acquisition cost. This is how you eventually stop cold-calling.' }
+];
+
+const COSTS = [
+  { n:'VPS for self-hosted n8n', c:'$6 – $20 /mo', note:'One server serves all your clients. This is your margin engine.' },
+  { n:'Domain + business email', c:'~$20 /mo', note:'Never pitch from a gmail address.' },
+  { n:'Twilio number', c:'~$1-2 /mo + ~$0.008 /SMS', note:'Bill through to the client at cost or a small markup.' },
+  { n:'Claude / LLM API', c:'$5 – $50 /mo', note:'Route cheap models for classification, expensive ones only for generation.' },
+  { n:'Voice platform', c:'$0.07 – $0.15 /min', note:'Usage-based. Always cap client minutes in the contract.' },
+  { n:'Cal.com / booking', c:'$0 – $15 /mo', note:'Self-host to keep it free.' },
+  { n:'GoHighLevel (optional)', c:'$297 – $497 /mo', note:'Only once you have 3+ clients. Two clients at $497 covers it entirely.' }
+];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CARD = 'bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800';
+
+function ringSVG(pct, colorClass) {
+  const r = 26, c = 2 * Math.PI * r;
+  const off = c - (Math.min(pct, 100) / 100) * c;
+  return `<div class="relative w-[72px] h-[72px] shrink-0">
+    <svg width="72" height="72" viewBox="0 0 72 72" class="-rotate-90">
+      <circle cx="36" cy="36" r="${r}" fill="none" stroke="currentColor" stroke-width="7" class="text-ink-100 dark:text-ink-800"/>
+      <circle cx="36" cy="36" r="${r}" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" class="${colorClass} ring-anim" stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center text-sm font-extrabold">${Math.round(pct)}%</div>
+  </div>`;
+}
+
+function bar(pct, grad) {
+  return `<div class="h-1.5 bg-ink-100 dark:bg-ink-800 rounded-full overflow-hidden"><div class="h-full ${grad} rounded-full transition-all duration-500" style="width:${Math.min(pct,100)}%"></div></div>`;
+}
+
+function confetti() {
+  const bits = ['⚡','✅','💸','🚀','🔥'];
+  for (let i = 0; i < 24; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-bit';
+    el.textContent = bits[Math.floor(Math.random()*bits.length)];
+    el.style.left = Math.random()*100 + 'vw';
+    el.style.animationDuration = (1.6 + Math.random()*1.4) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3200);
+  }
+}
+
+function openSheet(title, html) {
+  document.getElementById('sheetTitle').textContent = title;
+  document.getElementById('sheetBody').innerHTML = html;
+  document.getElementById('sheet').classList.remove('hidden');
+  document.body.classList.add('modal-open');
+}
+function closeSheet() {
+  document.getElementById('sheet').classList.add('hidden');
+  document.body.classList.remove('modal-open');
+}
+document.getElementById('sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
+
+/* ============================================================
+   SPRINT
+   ============================================================ */
+function sprintTotals() {
+  let total = 0, done = 0;
+  SPRINT.forEach(w => w.days.forEach(d => d.tasks.forEach((_, i) => {
+    total++; if (doneSprint[`${d.d}-${i}`]) done++;
+  })));
+  return { total, done, pct: total ? done/total*100 : 0 };
+}
+function dayDone(d) {
+  return d.tasks.every((_, i) => doneSprint[`${d.d}-${i}`]);
+}
+
+function renderSprint() {
+  const { total, done, pct } = sprintTotals();
+  const startDate = load(K.start, null);
+  let dayNum = null;
+  if (startDate) {
+    const diff = Math.floor((new Date().setHours(0,0,0,0) - new Date(startDate).setHours(0,0,0,0)) / 86400000) + 1;
+    if (diff >= 1) dayNum = Math.min(diff, 30);
+  }
+  const daysDone = SPRINT.reduce((a,w) => a + w.days.filter(dayDone).length, 0);
+
+  let h = `
+  <div class="rounded-3xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 text-white p-5 shadow-glow fade-up relative overflow-hidden">
+    <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-white/10 blur-2xl"></div>
+    <div class="absolute -bottom-10 -left-6 w-32 h-32 rounded-full bg-violet-300/10 blur-2xl"></div>
+    <div class="relative">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="text-[11px] font-semibold uppercase tracking-widest text-indigo-200">30-day sprint · 40 hrs/week</div>
+          <div class="text-2xl font-extrabold tracking-tight mt-1">${dayNum ? 'Day ' + dayNum + ' of 30' : 'Not started yet'}</div>
+          <div class="text-xs font-medium text-indigo-200 mt-0.5">GTA local businesses · ${daysDone}/30 days complete</div>
+        </div>
+        <span class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-extrabold tracking-wide bg-white/20 text-white">⚡ SHIP</span>
+      </div>
+      <div class="mt-4">
+        <div class="flex justify-between text-[11px] font-semibold text-indigo-200 mb-1"><span>Tasks complete</span><span>${done} / ${total}</span></div>
+        <div class="h-1.5 bg-white/20 rounded-full overflow-hidden"><div class="h-full bg-white/90 rounded-full transition-all duration-700" style="width:${pct}%"></div></div>
+      </div>
+      <div class="mt-4 flex gap-2">
+        ${startDate
+          ? `<button onclick="resetStart()" class="px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-[11px] font-bold transition">Reset start date</button>`
+          : `<button onclick="setStart()" class="px-3 py-2 rounded-xl bg-white text-indigo-700 hover:bg-indigo-50 text-[11px] font-extrabold transition">Start the sprint today</button>`}
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 ${CARD} p-4 fade-up">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500">The bet</div>
+    <p class="text-sm font-semibold leading-snug mt-2">Thirty days, 160 hours. You end with 11 portfolio assets, a rehearsed pitch, 400+ businesses contacted and two paying clients. Not a certificate — a practice.</p>
+    <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mt-2">You have never sold a service before. That is the real gap, not the technical one. Weeks 3 and 4 exist because of it — do not let yourself skip them to keep building, which is the comfortable failure mode.</p>
+  </div>`;
+
+  SPRINT.forEach(w => {
+    const wDone = w.days.filter(dayDone).length;
+    h += `<div class="mt-5 fade-up">
+      <div class="flex items-center gap-2.5 mb-2">
+        <h2 class="text-xl font-bold tracking-tight">${esc(w.t)}</h2>
+      </div>
+      <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mb-1">${esc(w.goal)}</p>
+      <div class="flex items-center gap-2 mb-3">
+        <div class="flex-1">${bar(wDone/w.days.length*100, 'bg-gradient-to-r from-indigo-500 to-violet-400')}</div>
+        <span class="text-[10px] font-bold text-ink-400 tabular-nums">${wDone}/${w.days.length}</span>
+      </div>
+      <div class="space-y-2">`;
+
+    w.days.forEach(d => {
+      const cnt = d.tasks.filter((_, i) => doneSprint[`${d.d}-${i}`]).length;
+      const complete = cnt === d.tasks.length;
+      const isToday = dayNum === d.d;
+      h += `<details data-day="${d.d}" class="${CARD} overflow-hidden ${isToday ? 'ring-2 ring-indigo-400 dark:ring-indigo-600' : ''}" ${isToday ? 'open' : ''}>
+        <summary class="px-4 py-3 flex items-center gap-3 ${complete ? 'bg-emerald-50/60 dark:bg-emerald-900/15' : ''}">
+          <span class="chev text-ink-300 dark:text-ink-600 text-xs">▶</span>
+          <span class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-xs font-extrabold ${complete ? 'bg-emerald-600 text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400'}">${complete ? '✓' : d.d}</span>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-bold tracking-tight truncate">${esc(d.title)}</div>
+            <div class="text-[10px] font-semibold text-ink-400 dark:text-ink-500 mt-0.5">${d.hrs} hrs · ${cnt}/${d.tasks.length} done${isToday ? ' · TODAY' : ''}</div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-ink-100 dark:border-ink-800 pt-3">
+          ${d.tasks.map((t, i) => {
+            const key = `${d.d}-${i}`;
+            const on = !!doneSprint[key];
+            return `<label class="flex items-start gap-3 py-2 cursor-pointer group">
+              <input type="checkbox" data-sprint="${key}" ${on?'checked':''} class="mt-0.5 w-5 h-5 rounded accent-emerald-600 shrink-0">
+              <span class="text-[13px] font-medium leading-snug ${on ? 'line-through text-ink-400 dark:text-ink-600' : ''}">${esc(t)}</span>
+            </label>`;
+          }).join('')}
+          <div class="mt-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 px-3 py-2.5">
+            <div class="text-[9px] font-bold uppercase tracking-widest text-indigo-500 dark:text-indigo-400">End of day you have</div>
+            <div class="text-[12px] font-semibold text-indigo-900 dark:text-indigo-200 mt-0.5 leading-snug">${esc(d.out)}</div>
+          </div>
+        </div>
+      </details>`;
+    });
+    h += `</div></div>`;
+  });
+
+  document.getElementById('tab-sprint').innerHTML = h;
+  document.querySelectorAll('[data-sprint]').forEach(cb => cb.addEventListener('change', e => {
+    // remember which day accordions are open so checking a box doesn't collapse them
+    const openDays = [...document.querySelectorAll('#tab-sprint details[open]')].map(el => el.dataset.day);
+    const k = e.target.dataset.sprint;
+    if (e.target.checked) doneSprint[k] = 1; else delete doneSprint[k];
+    save(K.sprint, doneSprint);
+    const wasComplete = sprintTotals().done === sprintTotals().total;
+    renderSprint();
+    openDays.forEach(dd => {
+      const el = document.querySelector('#tab-sprint details[data-day="' + dd + '"]');
+      if (el) el.open = true;
+    });
+    if (wasComplete && e.target.checked) confetti();
+  }));
+}
+function setStart() { save(K.start, new Date().toISOString()); renderSprint(); }
+function resetStart() { if (confirm('Reset the sprint start date? Your checked tasks are kept.')) { localStorage.removeItem(K.start); renderSprint(); } }
+
+/* ============================================================
+   LEARN
+   ============================================================ */
+function renderLearn() {
+  let total = 0, done = 0;
+  LEARN.forEach(t => t.items.forEach((_, i) => { total++; if (doneLearn[`${t.id}-${i}`]) done++; }));
+
+  let h = `<div class="${CARD} p-4 fade-up flex items-center gap-4">
+    ${ringSVG(total ? done/total*100 : 0, 'text-indigo-500')}
+    <div class="flex-1 min-w-0">
+      <h2 class="text-lg font-extrabold tracking-tight">The library</h2>
+      <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mt-0.5 leading-snug">${done} of ${total} topics covered. Work top-down. Tier 0 is not optional — it is the tier that decides whether you get paid.</p>
+    </div>
+  </div>`;
+
+  LEARN.forEach(t => {
+    const cnt = t.items.filter((_, i) => doneLearn[`${t.id}-${i}`]).length;
+    h += `<div class="mt-4 fade-up">
+      <div class="rounded-2xl bg-gradient-to-br ${t.color} text-white p-4 shadow-card">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-white/70">${esc(t.tier)}</div>
+            <div class="text-base font-extrabold tracking-tight mt-0.5">${esc(t.name)}</div>
+          </div>
+          <span class="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-white/20 tabular-nums">${cnt}/${t.items.length}</span>
+        </div>
+        <p class="text-[11px] font-medium text-white/85 mt-2 leading-snug">${esc(t.why)}</p>
+      </div>
+      <div class="mt-2 ${CARD} overflow-hidden">
+        <ul class="divide-y divide-ink-100 dark:divide-ink-800">`;
+    t.items.forEach((it, i) => {
+      const key = `${t.id}-${i}`;
+      const on = !!doneLearn[key];
+      h += `<li><div class="px-4 py-3">
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" data-learn="${key}" ${on?'checked':''} class="mt-0.5 w-5 h-5 rounded accent-emerald-600 shrink-0">
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-bold tracking-tight ${on ? 'text-ink-400 dark:text-ink-600' : ''}">${esc(it.t)}</div>
+            <div class="text-[12px] font-medium text-ink-500 dark:text-ink-400 mt-1 leading-snug">${esc(it.d)}</div>
+          </div>
+        </label>
+        ${it.r.length ? `<div class="mt-2 ml-8 flex flex-wrap gap-1.5">${it.r.map(r => `<a href="${esc(r.u)}" target="_blank" rel="noopener" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition">↗ ${esc(r.n)}</a>`).join('')}</div>` : ''}
+      </div></li>`;
+    });
+    h += `</ul></div></div>`;
+  });
+
+  document.getElementById('tab-learn').innerHTML = h;
+  document.querySelectorAll('[data-learn]').forEach(cb => cb.addEventListener('change', e => {
+    const k = e.target.dataset.learn;
+    if (e.target.checked) doneLearn[k] = 1; else delete doneLearn[k];
+    save(K.learn, doneLearn); renderLearn();
+  }));
+}
+
+/* ============================================================
+   BUILD
+   ============================================================ */
+const STATUSES = ['Not started','Building','Testing','Shipped'];
+const STATUS_STYLE = {
+  'Not started':'bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400',
+  'Building':'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
+  'Testing':'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',
+  'Shipped':'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
+};
+
+function renderBuild() {
+  const shipped = BUILDS.filter(b => (buildState[b.id]?.status || 'Not started') === 'Shipped').length;
+
+  let h = `<div class="${CARD} p-4 fade-up flex items-center gap-4">
+    ${ringSVG(shipped/BUILDS.length*100, 'text-emerald-500')}
+    <div class="flex-1 min-w-0">
+      <h2 class="text-lg font-extrabold tracking-tight">Portfolio</h2>
+      <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mt-0.5 leading-snug">${shipped} of ${BUILDS.length} shipped. Builds 9-11 are work you have already done — write them up and you start this sprint with three case studies, not zero.</p>
+    </div>
+  </div>
+
+  <div class="mt-3 ${CARD} p-4 fade-up">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500">Rule</div>
+    <p class="text-sm font-semibold leading-snug mt-1.5">A build is not done until there is a 90-second Loom of it working and a one-page case study. An automation nobody can see is worth nothing to a prospect.</p>
+  </div>`;
+
+  BUILDS.forEach(b => {
+    const st = buildState[b.id] || {};
+    const status = st.status || 'Not started';
+    h += `<div class="mt-3 ${CARD} overflow-hidden fade-up">
+      <div class="px-4 py-3 bg-ink-50/80 dark:bg-ink-800/50 border-b border-ink-100 dark:border-ink-800 flex items-center gap-2.5">
+        <span class="shrink-0 w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center text-xs font-extrabold">${b.n}</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold tracking-tight truncate">${esc(b.name)}</div>
+          <div class="text-[10px] font-semibold text-ink-400 dark:text-ink-500 truncate">${esc(b.vert)}</div>
+        </div>
+        <span class="shrink-0 text-[9px] font-bold px-2 py-1 rounded-md ${STATUS_STYLE[status]}">${esc(status.toUpperCase())}</span>
+      </div>
+      <div class="p-4">
+        <div class="flex flex-wrap gap-1.5 mb-3">
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400">${esc(b.diff)}</span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400">${esc(b.hrs)} hrs</span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400">${esc(b.stack)}</span>
+        </div>
+        <div class="text-[9px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500">The problem</div>
+        <p class="text-[12px] font-medium leading-snug mt-1">${esc(b.problem)}</p>
+        <div class="text-[9px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500 mt-3">Spec</div>
+        <ul class="mt-1 space-y-1">${b.spec.map(s => `<li class="text-[12px] font-medium leading-snug flex gap-2"><span class="text-indigo-500 shrink-0">·</span><span>${esc(s)}</span></li>`).join('')}</ul>
+        <div class="mt-3 rounded-xl bg-violet-50 dark:bg-violet-950/40 border border-violet-100 dark:border-violet-900/60 px-3 py-2.5">
+          <div class="text-[9px] font-bold uppercase tracking-widest text-violet-500 dark:text-violet-400">The demo move</div>
+          <div class="text-[12px] font-semibold text-violet-900 dark:text-violet-200 mt-0.5 leading-snug">${esc(b.wow)}</div>
+        </div>
+        <div class="mt-2 text-[11px] font-medium text-ink-400 dark:text-ink-500 leading-snug"><span class="font-bold">Proves:</span> ${esc(b.proves)}</div>
+
+        <div class="mt-3 pt-3 border-t border-ink-100 dark:border-ink-800 grid grid-cols-4 gap-1.5">
+          ${STATUSES.map(s => `<button onclick="setBuildStatus('${b.id}','${s}')" class="py-2 rounded-lg text-[10px] font-bold transition ${status===s ? 'bg-indigo-600 text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400 hover:bg-ink-200 dark:hover:bg-ink-700'}">${esc(s)}</button>`).join('')}
+        </div>
+        <div class="mt-2 grid grid-cols-2 gap-2">
+          <input type="text" data-blink="${b.id}" value="${esc(st.link||'')}" placeholder="Demo / Loom link" class="px-3 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-[11px] font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <input type="text" data-bnote="${b.id}" value="${esc(st.note||'')}" placeholder="Note" class="px-3 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-[11px] font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        ${st.link ? `<a href="${esc(st.link)}" target="_blank" rel="noopener" class="mt-2 block text-center py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition">↗ Open demo</a>` : ''}
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('tab-build').innerHTML = h;
+  document.querySelectorAll('[data-blink]').forEach(el => el.addEventListener('change', e => {
+    const id = e.target.dataset.blink;
+    buildState[id] = { ...(buildState[id]||{}), link: e.target.value.trim() };
+    save(K.build, buildState); renderBuild();
+  }));
+  document.querySelectorAll('[data-bnote]').forEach(el => el.addEventListener('change', e => {
+    const id = e.target.dataset.bnote;
+    buildState[id] = { ...(buildState[id]||{}), note: e.target.value.trim() };
+    save(K.build, buildState);
+  }));
+}
+function setBuildStatus(id, s) {
+  buildState[id] = { ...(buildState[id]||{}), status: s };
+  save(K.build, buildState); renderBuild();
+  if (s === 'Shipped') confetti();
+}
+
+/* ============================================================
+   PITCH
+   ============================================================ */
+function renderPitch() {
+  const wowDone = Object.keys(doneWow).length;
+  const heat = { 'Hottest':'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300', 'Hot':'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300', 'Warm':'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' };
+
+  let h = `
+  <div class="rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 text-white p-5 shadow-glow fade-up relative overflow-hidden">
+    <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-white/10 blur-2xl"></div>
+    <div class="relative">
+      <div class="text-[11px] font-semibold uppercase tracking-widest text-emerald-100">The offer</div>
+      <div class="text-2xl font-extrabold tracking-tight mt-1">The Free Build</div>
+      <p class="text-[13px] font-semibold text-emerald-50 mt-3 leading-snug">"I'll build one automation for your business. Free. In your accounts, under your logins, in seven days.</p>
+      <p class="text-[13px] font-semibold text-emerald-50 mt-2 leading-snug">We agree on one number before I start. In 30 days we look at it together. If it hasn't moved, you keep the system anyway and you owe me nothing — I just ask what went wrong so I can learn.</p>
+      <p class="text-[13px] font-semibold text-emerald-50 mt-2 leading-snug">If it has moved, we talk about the next one."</p>
+    </div>
+  </div>
+
+  <div class="mt-3 ${CARD} p-4 fade-up">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500">Why it is hard to say no to</div>
+    <ul class="mt-2 space-y-2">
+      ${[
+        ['No money leaves their account.','Not a discount, not a trial, not a deposit. Zero. Price objections cannot happen before value exists.'],
+        ['No lock-in and no contract.','Nothing to sign to start. The single biggest fear with agencies is being trapped, and you remove it up front.'],
+        ['They keep the asset either way.','Built in their accounts under their logins. Even if they never pay you a cent, they are strictly better off than before you walked in.'],
+        ['They do almost nothing.','Twenty minutes of access and one 20-minute review call. The real currency you are asking for is attention, not effort.'],
+        ['The success metric is theirs, agreed in advance.','You are not grading your own homework. That one detail is what makes it credible instead of sounding like a gimmick.'],
+        ['You state the downside out loud.','"Worst case you waste 40 minutes and get a free system." Naming the risk yourself makes it feel smaller than leaving them to imagine it.']
+      ].map(([a,b]) => `<li class="flex gap-2.5"><span class="text-emerald-500 font-bold shrink-0">✓</span><span class="text-[12px] font-medium leading-snug"><span class="font-bold">${esc(a)}</span> ${esc(b)}</span></li>`).join('')}
+    </ul>
+  </div>
+
+  <div class="mt-3 ${CARD} p-4 fade-up border-l-4 border-l-amber-500">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">Protect yourself — this is not charity</div>
+    <ul class="mt-2 space-y-1.5">
+      ${[
+        'Maximum three free builds running at once. Ever.',
+        'One automation only. The moment they say "and could it also…", that is the paid conversation.',
+        'The 30-day review must be booked in a calendar before you write a single node.',
+        'Only for a business that meets your criteria: the owner is in the room, they have real volume, and they have the problem you fix.',
+        'Cap your build time at 10 hours. If it runs over, the scope was wrong, and that is your mistake to learn from.',
+        'If they will not commit to a metric, they are not serious. Walk away politely and spend the hours on someone who will.'
+      ].map(t => `<li class="flex gap-2.5"><span class="text-amber-500 font-bold shrink-0">!</span><span class="text-[12px] font-medium leading-snug">${esc(t)}</span></li>`).join('')}
+    </ul>
+  </div>
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-2">Scripts</h2>
+  <div class="space-y-2">`;
+
+  SCRIPTS.forEach(s => {
+    h += `<details class="${CARD} overflow-hidden">
+      <summary class="px-4 py-3 flex items-center gap-3">
+        <span class="chev text-ink-300 dark:text-ink-600 text-xs">▶</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold tracking-tight">${esc(s.name)}</div>
+          <div class="text-[10px] font-medium text-ink-400 dark:text-ink-500 mt-0.5 leading-snug">${esc(s.ctx)}</div>
+        </div>
+      </summary>
+      <div class="px-4 pb-4 border-t border-ink-100 dark:border-ink-800 pt-3">
+        <pre class="whitespace-pre-wrap text-[12px] font-medium leading-relaxed text-ink-700 dark:text-ink-200 font-sans">${esc(s.body)}</pre>
+        <button onclick="copyScript(this,'${s.id}')" class="mt-3 w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold transition active:scale-[0.98]">Copy script</button>
+      </div>
+    </details>`;
+  });
+
+  h += `</div>
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-1">GTA vertical shortlist</h2>
+  <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mb-2">Pick three. Own them. A specialist who says "I work with HVAC companies" outsells a generalist every time.</p>
+  <div class="${CARD} overflow-hidden">
+    <ul class="divide-y divide-ink-100 dark:divide-ink-800">
+      ${VERTICALS.map(v => `<li class="px-4 py-3">
+        <div class="flex items-center gap-2">
+          <div class="text-sm font-bold tracking-tight flex-1 min-w-0">${esc(v.n)}</div>
+          <span class="shrink-0 text-[9px] font-bold px-2 py-0.5 rounded-md ${heat[v.heat]}">${esc(v.heat.toUpperCase())}</span>
+        </div>
+        <div class="text-[11px] font-medium text-ink-500 dark:text-ink-400 mt-1 leading-snug">${esc(v.why)}</div>
+        <div class="flex flex-wrap gap-1.5 mt-2">
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400">Avg job ${esc(v.job)}</span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300">Lead with: ${esc(v.lead)}</span>
+        </div>
+      </li>`).join('')}
+    </ul>
+  </div>
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-1">The wow list</h2>
+  <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mb-2"><span id="wowCount">${wowDone}</span>/${WOW.length} rehearsed. These are the specific moves that change an owner's face mid-conversation.</p>
+  <div class="${CARD} overflow-hidden">
+    <ul class="divide-y divide-ink-100 dark:divide-ink-800">
+      ${WOW.map((w, i) => {
+        const on = !!doneWow[i];
+        return `<li class="px-4 py-3"><label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" data-wow="${i}" ${on?'checked':''} class="mt-0.5 w-5 h-5 rounded accent-emerald-600 shrink-0">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <div class="text-sm font-bold tracking-tight ${on ? 'text-ink-400 dark:text-ink-600' : ''}">${esc(w.t)}</div>
+            </div>
+            <div class="text-[12px] font-medium text-ink-500 dark:text-ink-400 mt-1 leading-snug">${esc(w.d)}</div>
+            <span class="inline-block mt-1.5 text-[9px] font-bold px-2 py-0.5 rounded-md ${w.tier==='Highest impact'?'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300':w.tier==='High'?'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300':'bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400'}">${esc(w.tier.toUpperCase())}</span>
+          </div>
+        </label></li>`;
+      }).join('')}
+    </ul>
+  </div>
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-1">Objection handling</h2>
+  <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mb-2">Say these out loud until they are boring. Reading them is not the same as owning them.</p>
+  <div class="space-y-2">
+    ${OBJECTIONS.map(o => `<details class="${CARD} overflow-hidden">
+      <summary class="px-4 py-3 flex items-center gap-3">
+        <span class="chev text-ink-300 dark:text-ink-600 text-xs">▶</span>
+        <div class="text-sm font-bold tracking-tight flex-1">${esc(o.o)}</div>
+      </summary>
+      <div class="px-4 pb-4 border-t border-ink-100 dark:border-ink-800 pt-3">
+        <p class="text-[12px] font-medium leading-relaxed">${esc(o.a)}</p>
+      </div>
+    </details>`).join('')}
+  </div>
+
+  <div class="mt-5 ${CARD} p-4 fade-up border-l-4 border-l-red-500">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-red-600 dark:text-red-400">Canada: read before you send anything</div>
+    <p class="text-[12px] font-medium leading-snug mt-2">CASL generally requires consent <span class="font-bold">before</span> a commercial electronic message — unlike US CAN-SPAM, opting out afterwards is not enough. Implied consent can come from a conspicuously published business address where your message is relevant to that person's role and there is no "no soliciting" notice, or from an existing business relationship.</p>
+    <p class="text-[12px] font-medium leading-snug mt-2">Every message needs accurate sender identification (real name, real mailing address, real contact) and a working unsubscribe honoured within 10 business days. Penalties reach $1M for individuals and $10M for organisations.</p>
+    <p class="text-[12px] font-semibold leading-snug mt-2">Walk-ins and phone calls are not commercial electronic messages, which is a second reason in-person outreach wins in the GTA. PIPEDA separately governs how you collect and store any personal data — including the lists you build.</p>
+    <a href="https://litemail.ai/blog/casl-cold-email-compliance-canada-2026" target="_blank" rel="noopener" class="inline-block mt-2 text-[10px] font-bold px-2 py-1 rounded-lg bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-300">↗ CASL cold email rules</a>
+  </div>`;
+
+  document.getElementById('tab-pitch').innerHTML = h;
+  // update in place rather than re-rendering, so open scripts/objections stay open
+  document.querySelectorAll('[data-wow]').forEach(cb => cb.addEventListener('change', e => {
+    const k = e.target.dataset.wow;
+    if (e.target.checked) doneWow[k] = 1; else delete doneWow[k];
+    save(K.wow, doneWow);
+    const title = e.target.parentElement.querySelector('.text-sm.font-bold');
+    if (title) {
+      title.classList.toggle('text-ink-400', e.target.checked);
+      title.classList.toggle('dark:text-ink-600', e.target.checked);
+    }
+    const c = document.getElementById('wowCount');
+    if (c) c.textContent = Object.keys(doneWow).length;
+  }));
+}
+function copyScript(btn, id) {
+  const s = SCRIPTS.find(x => x.id === id);
+  if (!s || !navigator.clipboard) return;
+  navigator.clipboard.writeText(s.body).then(() => {
+    const old = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = old; }, 1400);
+  }).catch(() => { btn.textContent = 'Copy failed — select the text above'; });
+}
+
+/* ============================================================
+   PIPELINE
+   ============================================================ */
+const STAGES = ['Prospect','Contacted','Conversation','Audit booked','Free build','Paid'];
+const STAGE_STYLE = {
+  'Prospect':'bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400',
+  'Contacted':'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',
+  'Conversation':'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300',
+  'Audit booked':'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
+  'Free build':'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300',
+  'Paid':'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
+};
+
+function renderPipeline() {
+  const counts = STAGES.map(s => pipeline.filter(p => p.stage === s).length);
+  const paid = counts[STAGES.length-1];
+
+  let h = `
+  <div class="rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white p-5 shadow-glow fade-up">
+    <div class="text-[11px] font-semibold uppercase tracking-widest text-indigo-200">Pipeline</div>
+    <div class="text-2xl font-extrabold tracking-tight mt-1">${pipeline.length} prospects · ${paid} paying</div>
+    <p class="text-[11px] font-medium text-indigo-200 mt-1">Target for the sprint: 400+ touches, 40 conversations, 3 free builds, 2 paying.</p>
+  </div>
+
+  <div class="mt-3 grid grid-cols-3 gap-2 fade-up">
+    ${STAGES.map((s, i) => `<div class="${CARD} px-3 py-2.5 text-center">
+      <div class="text-xl font-extrabold tabular-nums">${counts[i]}</div>
+      <div class="text-[9px] font-bold uppercase tracking-wide text-ink-400 dark:text-ink-500 mt-0.5">${esc(s)}</div>
+    </div>`).join('')}
+  </div>
+
+  <div class="mt-3 ${CARD} p-4 fade-up">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500 mb-2">Add a prospect</div>
+    <div class="space-y-2">
+      <input id="pName" type="text" placeholder="Business name" class="w-full px-3 py-2.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      <div class="grid grid-cols-2 gap-2">
+        <input id="pVert" type="text" placeholder="Vertical" class="px-3 py-2.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        <input id="pContact" type="text" placeholder="Phone / email" class="px-3 py-2.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      </div>
+      <input id="pLeak" type="text" placeholder="The leak you spotted (your reason to call)" class="w-full px-3 py-2.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      <button onclick="addProspect()" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition active:scale-[0.98]">Add to pipeline</button>
+    </div>
+  </div>`;
+
+  if (!pipeline.length) {
+    h += `<div class="mt-3 ${CARD} p-8 text-center fade-up">
+      <div class="text-3xl mb-2">📋</div>
+      <div class="text-sm font-bold">Pipeline is empty</div>
+      <div class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mt-1">Day 15 of the sprint is when this fills up. 100 qualified businesses.</div>
+    </div>`;
+  } else {
+    const ordered = [...pipeline].sort((a,b) => STAGES.indexOf(b.stage) - STAGES.indexOf(a.stage));
+    h += `<div class="mt-3 space-y-2">`;
+    ordered.forEach(p => {
+      h += `<div class="${CARD} p-4 fade-up">
+        <div class="flex items-start gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-bold tracking-tight">${esc(p.name)}</div>
+            <div class="text-[10px] font-semibold text-ink-400 dark:text-ink-500 mt-0.5">${esc(p.vert || '—')}${p.contact ? ' · ' + esc(p.contact) : ''}</div>
+          </div>
+          <span class="shrink-0 text-[9px] font-bold px-2 py-1 rounded-md ${STAGE_STYLE[p.stage]}">${esc(p.stage.toUpperCase())}</span>
+          <button onclick="delProspect('${p.id}')" class="shrink-0 w-7 h-7 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-400 hover:text-red-500 text-xs transition">✕</button>
+        </div>
+        ${p.leak ? `<div class="text-[11px] font-medium text-ink-500 dark:text-ink-400 mt-2 leading-snug">🔎 ${esc(p.leak)}</div>` : ''}
+        <div class="mt-3 grid grid-cols-3 gap-1.5">
+          ${STAGES.map(s => `<button onclick="setStage('${p.id}','${s}')" class="py-1.5 rounded-lg text-[9px] font-bold transition ${p.stage===s ? 'bg-indigo-600 text-white' : 'bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400 hover:bg-ink-200 dark:hover:bg-ink-700'}">${esc(s)}</button>`).join('')}
+        </div>
+        <input type="text" data-pnote="${p.id}" value="${esc(p.note||'')}" placeholder="Next action / note" class="mt-2 w-full px-3 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-[11px] font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      </div>`;
+    });
+    h += `</div>`;
+  }
+
+  document.getElementById('tab-pipeline').innerHTML = h;
+  document.querySelectorAll('[data-pnote]').forEach(el => el.addEventListener('change', e => {
+    const p = pipeline.find(x => x.id === e.target.dataset.pnote);
+    if (p) { p.note = e.target.value.trim(); save(K.pipeline, pipeline); }
+  }));
+}
+function addProspect() {
+  const name = document.getElementById('pName').value.trim();
+  if (!name) return;
+  pipeline.push({
+    id: 'p' + Date.now(),
+    name,
+    vert: document.getElementById('pVert').value.trim(),
+    contact: document.getElementById('pContact').value.trim(),
+    leak: document.getElementById('pLeak').value.trim(),
+    stage: 'Prospect', note: ''
+  });
+  save(K.pipeline, pipeline); renderPipeline();
+}
+function setStage(id, s) {
+  const p = pipeline.find(x => x.id === id);
+  if (p) { p.stage = s; save(K.pipeline, pipeline); renderPipeline(); if (s === 'Paid') confetti(); }
+}
+function delProspect(id) {
+  if (!confirm('Remove this prospect?')) return;
+  pipeline = pipeline.filter(x => x.id !== id);
+  save(K.pipeline, pipeline); renderPipeline();
+}
+
+/* ============================================================
+   MONEY
+   ============================================================ */
+function renderMoney() {
+  const total = money.entries.reduce((a,e) => a + (+e.amt || 0), 0);
+  const mrr = money.entries.filter(e => e.rec).reduce((a,e) => a + (+e.amt || 0), 0);
+  const pct = money.goal ? total / money.goal * 100 : 0;
+
+  let h = `
+  <div class="rounded-3xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white p-5 shadow-glow fade-up">
+    <div class="text-[11px] font-semibold uppercase tracking-widest text-emerald-100">Revenue</div>
+    <div class="text-3xl font-extrabold tracking-tight mt-1 tabular-nums">$${total.toLocaleString()}</div>
+    <div class="text-xs font-medium text-emerald-100 mt-0.5">$${mrr.toLocaleString()}/mo recurring · goal $${(+money.goal).toLocaleString()}</div>
+    <div class="mt-4">
+      <div class="flex justify-between text-[11px] font-semibold text-emerald-100 mb-1"><span>Progress</span><span>${Math.round(pct)}%</span></div>
+      <div class="h-1.5 bg-white/20 rounded-full overflow-hidden"><div class="h-full bg-white/90 rounded-full transition-all duration-700" style="width:${Math.min(pct,100)}%"></div></div>
+    </div>
+  </div>
+
+  <div class="mt-3 ${CARD} p-4 fade-up">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500 mb-2">Log revenue</div>
+    <div class="grid grid-cols-2 gap-2">
+      <input id="mClient" type="text" placeholder="Client" class="px-3 py-2.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      <input id="mAmt" type="number" placeholder="Amount $" class="px-3 py-2.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
+    </div>
+    <label class="flex items-center gap-2 mt-2 cursor-pointer">
+      <input id="mRec" type="checkbox" class="w-5 h-5 rounded accent-emerald-600">
+      <span class="text-[12px] font-semibold">Recurring (monthly retainer)</span>
+    </label>
+    <button onclick="addMoney()" class="mt-2 w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold transition active:scale-[0.98]">Log it</button>
+  </div>
+
+  ${money.entries.length ? `<div class="mt-3 ${CARD} overflow-hidden fade-up">
+    <ul class="divide-y divide-ink-100 dark:divide-ink-800">
+      ${money.entries.map(e => `<li class="px-4 py-3 flex items-center gap-3">
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold tracking-tight truncate">${esc(e.client)}</div>
+          <div class="text-[10px] font-semibold text-ink-400 dark:text-ink-500">${esc(e.date)}${e.rec ? ' · recurring' : ' · one-time'}</div>
+        </div>
+        <div class="font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums">$${(+e.amt).toLocaleString()}</div>
+        <button onclick="delMoney('${e.id}')" class="w-7 h-7 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-400 hover:text-red-500 text-xs transition">✕</button>
+      </li>`).join('')}
+    </ul>
+  </div>` : ''}
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-1">Pricing ladder</h2>
+  <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mb-2">Canadian local SMBs sit at the low end of global ranges. Start where you can win, then raise your price every third client.</p>
+  <div class="space-y-2">
+    ${PRICING.map(p => `<div class="${CARD} p-4">
+      <div class="flex items-start gap-2">
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold tracking-tight">${esc(p.tier)}</div>
+          <div class="text-[12px] font-medium text-ink-500 dark:text-ink-400 mt-1 leading-snug">${esc(p.what)}</div>
+        </div>
+        <div class="shrink-0 text-sm font-extrabold text-emerald-600 dark:text-emerald-400 text-right">${esc(p.price)}</div>
+      </div>
+      <div class="mt-2 text-[11px] font-medium text-ink-400 dark:text-ink-500 leading-snug border-l-2 border-ink-200 dark:border-ink-700 pl-2">${esc(p.note)}</div>
+    </div>`).join('')}
+  </div>
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-1">Your cost base</h2>
+  <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mb-2">Roughly $50-100/mo covers your whole operation until you have several clients. This is why the margin works.</p>
+  <div class="${CARD} overflow-hidden">
+    <ul class="divide-y divide-ink-100 dark:divide-ink-800">
+      ${COSTS.map(c => `<li class="px-4 py-3">
+        <div class="flex items-center gap-2">
+          <div class="text-sm font-bold tracking-tight flex-1">${esc(c.n)}</div>
+          <div class="text-[12px] font-extrabold text-ink-500 dark:text-ink-400 tabular-nums">${esc(c.c)}</div>
+        </div>
+        <div class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mt-0.5 leading-snug">${esc(c.note)}</div>
+      </li>`).join('')}
+    </ul>
+  </div>
+
+  <div class="mt-3 ${CARD} p-4 fade-up border-l-4 border-l-indigo-500">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">The maths that matters</div>
+    <p class="text-[12px] font-medium leading-snug mt-2">Four retainer clients at $750/mo is $3,000/mo against roughly $80/mo in costs. That is more than your current fixed monthly outflow, from four relationships — not four hundred.</p>
+    <p class="text-[12px] font-medium leading-snug mt-2">This is why the free build is cheap for you and expensive-looking to them: your marginal cost per client is a rounding error, and their marginal value from one recovered job is often the whole fee.</p>
+  </div>`;
+
+  document.getElementById('tab-money').innerHTML = h;
+}
+function addMoney() {
+  const client = document.getElementById('mClient').value.trim();
+  const amt = +document.getElementById('mAmt').value;
+  if (!client || !amt) return;
+  money.entries.push({ id:'m'+Date.now(), client, amt, rec: document.getElementById('mRec').checked, date: new Date().toLocaleDateString('en-CA') });
+  save(K.money, money); renderMoney(); confetti();
+}
+function delMoney(id) {
+  money.entries = money.entries.filter(e => e.id !== id);
+  save(K.money, money); renderMoney();
+}
+
+/* ============================================================
+   TABS + DARK + BOOT
+   ============================================================ */
+const TABS = ['sprint','learn','build','pitch','pipeline','money'];
+function setTab(name) {
+  TABS.forEach(t => document.getElementById('tab-' + t).classList.toggle('hidden', name !== t));
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    const active = btn.dataset.tab === name;
+    btn.classList.toggle('text-indigo-600', active);
+    btn.classList.toggle('dark:text-indigo-400', active);
+    btn.classList.toggle('text-slate-500', !active);
+    btn.classList.toggle('dark:text-slate-400', !active);
+  });
+  if (name === 'sprint')   renderSprint();
+  if (name === 'learn')    renderLearn();
+  if (name === 'build')    renderBuild();
+  if (name === 'pitch')    renderPitch();
+  if (name === 'pipeline') renderPipeline();
+  if (name === 'money')    renderMoney();
+  window.scrollTo({ top: 0 });
+}
+document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => setTab(btn.dataset.tab)));
+
+const darkToggle = document.getElementById('darkToggle');
+function applyDark(on) {
+  document.documentElement.classList.toggle('dark', on);
+  document.getElementById('iconMoon').classList.toggle('hidden', on);
+  document.getElementById('iconSun').classList.toggle('hidden', !on);
+  localStorage.setItem('dark-mode', on ? '1' : '0');
+}
+darkToggle.addEventListener('click', () => applyDark(!document.documentElement.classList.contains('dark')));
+const savedDark = localStorage.getItem('dark-mode');
+if (savedDark === '1') applyDark(true);
+else if (savedDark === '0') applyDark(false);
+else if (window.matchMedia('(prefers-color-scheme: dark)').matches) applyDark(true);
+else applyDark(false);
+
+setTab('sprint');
+</script>
+</body>
+</html>
