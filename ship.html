@@ -1338,5 +1338,147 @@ else applyDark(false);
 
 setTab('sprint');
 </script>
+
+<script>
+/* ============================================================
+   DECISION NOTES
+   A note box under every sprint task. Stored in localStorage
+   under 'lab.notes.v1', keyed by the same "day-index" key the
+   checkboxes use. window.labNotes() returns the whole object.
+   ============================================================ */
+(function () {
+  var NK = 'lab.notes.v1';
+  var NL = String.fromCharCode(10);
+  var notes = {};
+  try { notes = JSON.parse(localStorage.getItem(NK)) || {}; } catch (e) { notes = {}; }
+  function saveNotes() { try { localStorage.setItem(NK, JSON.stringify(notes)); } catch (e) {} }
+  function count() { return Object.keys(notes).length; }
+  window.labNotes = function () { return notes; };
+
+  function grow(ta) {
+    ta.style.height = 'auto';
+    var hh = ta.scrollHeight;
+    ta.style.height = (hh > 32 ? hh : 32) + 'px';
+  }
+
+  function styleFor(v) {
+    return 'w-full resize-none overflow-hidden text-[12px] leading-snug rounded-lg px-2.5 py-1.5 bg-ink-50 dark:bg-ink-800/50 text-ink-700 dark:text-ink-200 placeholder:text-ink-300 dark:placeholder:text-ink-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition border ' +
+      (v ? 'border-ink-200 dark:border-ink-700 border-l-4 border-l-indigo-500' : 'border-ink-100 dark:border-ink-800');
+  }
+
+  function exportMd() {
+    var out = [];
+    out.push('# Sprint notes - exported ' + new Date().toISOString().slice(0, 10));
+    out.push('');
+    var days = document.querySelectorAll('#tab-sprint details[data-day]');
+    for (var i = 0; i < days.length; i++) {
+      var dt = days[i];
+      var titleEl = dt.querySelector('summary .truncate');
+      var rows = [];
+      var tas = dt.querySelectorAll('textarea[data-note]');
+      for (var j = 0; j < tas.length; j++) {
+        var ta = tas[j];
+        if (!ta.value.trim()) continue;
+        var wrap = ta.parentNode;
+        var lab = wrap.previousElementSibling;
+        var span = lab ? lab.querySelector('span') : null;
+        var task = span ? span.textContent.trim() : ta.getAttribute('data-note');
+        rows.push('- **' + task + '**' + NL + '  - ' + ta.value.trim().split(NL).join(NL + '  - '));
+      }
+      if (rows.length) {
+        out.push('## Day ' + dt.getAttribute('data-day') + ' - ' + (titleEl ? titleEl.textContent.trim() : ''));
+        out.push('');
+        out.push(rows.join(NL));
+        out.push('');
+      }
+    }
+    return out.join(NL);
+  }
+
+  window.copyNotes = function () {
+    var md = exportMd();
+    if (!md.trim()) { alert('No notes written yet.'); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(md).then(function () {
+        alert('Copied ' + count() + ' notes to your clipboard. Paste them to Claude.');
+      }, function () { window.prompt('Copy this:', md); });
+    } else {
+      window.prompt('Copy this:', md);
+    }
+  };
+
+  function inject() {
+    var host = document.getElementById('tab-sprint');
+    if (!host) return;
+
+    if (!host.querySelector('#note-bar')) {
+      var b = document.createElement('div');
+      b.id = 'note-bar';
+      b.className = 'mt-3 flex items-center gap-2 rounded-2xl border border-indigo-100 dark:border-indigo-900/60 bg-indigo-50 dark:bg-indigo-950/40 px-3 py-2';
+      b.innerHTML = '<span class="text-[11px] font-bold text-indigo-700 dark:text-indigo-300"><span id="note-count">0</span> decisions logged</span>' +
+        '<span class="flex-1"></span>' +
+        '<button onclick="copyNotes()" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-extrabold transition">Copy all</button>';
+      host.insertBefore(b, host.firstChild);
+    }
+
+    var boxes = host.querySelectorAll('input[data-sprint]');
+    for (var i = 0; i < boxes.length; i++) {
+      (function (cb) {
+        var key = cb.getAttribute('data-sprint');
+        var label = cb.closest('label');
+        if (!label) return;
+        var nx = label.nextElementSibling;
+        if (nx && nx.className && nx.className.indexOf('note-wrap') !== -1) return;
+
+        var v = notes[key] || '';
+        var wrap = document.createElement('div');
+        wrap.className = 'note-wrap pl-8 pb-1.5';
+        var ta = document.createElement('textarea');
+        ta.rows = 1;
+        ta.setAttribute('data-note', key);
+        ta.value = v;
+        ta.placeholder = 'What did you decide, and why? Saved as you type.';
+        ta.className = styleFor(v);
+        ta.addEventListener('input', function () {
+          if (ta.value.trim()) { notes[key] = ta.value; } else { delete notes[key]; }
+          saveNotes();
+          ta.className = styleFor(ta.value.trim());
+          grow(ta);
+          var c = document.getElementById('note-count');
+          if (c) c.textContent = count();
+        });
+        wrap.appendChild(ta);
+        label.parentNode.insertBefore(wrap, label.nextSibling);
+        grow(ta);
+      })(boxes[i]);
+    }
+
+    var c = document.getElementById('note-count');
+    if (c) c.textContent = count();
+  }
+
+  document.addEventListener('toggle', function (e) {
+    if (e.target && e.target.tagName === 'DETAILS' && e.target.open) {
+      var tas = e.target.querySelectorAll('textarea[data-note]');
+      for (var i = 0; i < tas.length; i++) grow(tas[i]);
+    }
+  }, true);
+
+  var mo = new MutationObserver(function () { inject(); });
+
+  function boot() {
+    var host = document.getElementById('tab-sprint');
+    if (!host) { setTimeout(boot, 200); return; }
+    inject();
+    mo.observe(host, { childList: true });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+</script>
 </body>
 </html>
