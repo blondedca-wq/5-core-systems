@@ -2219,8 +2219,10 @@ renderToday();
   var BADGE={A:["You","bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"],C:["Claude","bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300"],AC:["Both","bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300"],G:["Gate","bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"]};
   function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d;}catch(e){return d;}}
   function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-  var done=load(SK,null);
-  if(done===null){done={};MT.forEach(function(p,i){p[2].forEach(function(it,j){if(it[1].indexOf("DONE")===0)done["p"+i+"-"+j]=true;});});save(SK,done);}
+  var done=load(SK,{});
+  var _ch=false;
+  MT.forEach(function(p,i){p[2].forEach(function(it,j){var k="p"+i+"-"+j;if(it[1].indexOf("DONE")===0&&!done[k]){done[k]=true;_ch=true;}});});
+  if(_ch)save(SK,done);
   var open=load(OK,{"0":true});
   function pct(a,b){return b?Math.round(a/b*100):0;}
   function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
