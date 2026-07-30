@@ -499,6 +499,21 @@
 
 
 <!-- ============================================================== -->
+<!-- MASTER TO-DO -->
+<!-- ============================================================== -->
+<section id="tab-todo" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28">
+  <div class="flex items-start justify-between mb-3 gap-3">
+    <div class="min-w-0">
+      <h2 class="text-xl font-bold">Master To-Do</h2>
+      <p class="text-xs text-slate-500 dark:text-slate-400">NightSeal + Groomo, then the gate to the next pair</p>
+    </div>
+    <button id="mtReset" class="shrink-0 text-xs px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 font-semibold text-slate-600 dark:text-slate-300">Reset</button>
+  </div>
+  <div id="mtTop"></div>
+  <div id="mtBody" class="space-y-3 mt-3"></div>
+</section>
+
+<!-- ============================================================== -->
 <!-- DAY DETAIL MODAL -->
 <!-- ============================================================== -->
 <div id="dayModal" class="hidden fixed inset-0 z-50 bg-ink-950/60 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -518,7 +533,7 @@
 <!-- BOTTOM TAB BAR -->
 <!-- ============================================================== -->
 <nav class="fixed bottom-0 inset-x-0 z-30 bg-white/90 dark:bg-ink-900/90 backdrop-blur-xl border-t border-ink-200/70 dark:border-ink-800 shadow-nav pb-[env(safe-area-inset-bottom)]">
-  <div class="grid grid-cols-6 max-w-2xl mx-auto">
+  <div class="grid grid-cols-7 max-w-2xl mx-auto">
     <button data-tab="today" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-indigo-600 dark:text-indigo-400">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
       <span>Today</span>
@@ -542,6 +557,10 @@
     <button data-tab="workouts" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="M18 22l4-4"/><path d="M2 6l4-4"/><path d="M3 10l7-7"/><path d="M14 21l7-7"/></svg>
       <span>Workouts</span>
+    </button>
+    <button data-tab="todo" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+      <span>To-Do</span>
     </button>
   </div>
 </nav>
@@ -1826,7 +1845,7 @@ function renderSummary() {
 ===================================================================== */
 function setTab(name) {
   activeTab = name;
-  ['today','calendar','bills','summary','groceries','workouts'].forEach(t => {
+  ['today','calendar','bills','summary','groceries','workouts','todo'].forEach(t => {
     document.getElementById('tab-' + t).classList.toggle('hidden', name !== t);
   });
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -2191,4 +2210,49 @@ renderToday();
 </script>
 
 
+
+<script>
+/* MASTER TO-DO (added 2026-07-29) — NightSeal + Groomo -> next pair */
+(function(){
+  var MT = [["Phase 0 — Q&A","This gates everything. One live round with Claude, then the answers rewrite the workflow.",[["AC","Q&A — 60 questions. Do one round with Claude."]]],["Phase 1 — Turn answers into workflow changes","",[["C","Write each answer into the canonical workflow files (ad v2, funnel v1, research v3, warm-phase, store rule-pack) — not a new doc"],["C","Log every rule that gets superseded to DECISION-LOG with date + reason"],["C","Update MEMORY so the changes survive the session"],["C","Produce a one-page diff: these rules changed, before and after"],["A","Read the diff and confirm. A rule you did not actually agree to is worse than no rule"],["C","Rewrite the 14-day program against the new rules before Day 1"]]],["Phase 2 — The sale-event gate","41 checkouts, 0 sale events ever. Until this fires we cannot tell \"nobody bought\" from \"the event was never wired\". Nothing else ships first.",[["A","Log into softwater.space WP admin and stay logged in"],["C","Re-pull both ladder endpoints for a true live baseline"],["C","Read the ladder snippet, document the exact expected sale-event payload"],["C","Create a 100%-off single-use coupon"],["A","TEST ORDER — complete a full checkout on your phone with the coupon. Every field, no shortcuts. Nothing is charged, nothing ships"],["C","Re-pull the endpoint. Confirm sale moves 0 to 1"],["C","If it does not fire: find it, fix it, re-test until it does"],["C","Add a redundant second sale signal so one broken hook cannot blind us again"],["C","Ship bot filtering, exposing filtered and raw counts side by side"],["C","Backfill-audit the 41 historic checkouts for orders that landed and were never counted"],["AC","Repeat the whole test on nervecalm.cc so both live stores are proven"]]],["Phase 3 — Watch everything, fix the b-roll","",[["C","DONE — 3s-rate teardown of all 40+ posts"],["C","DONE — Higgsfield audit: 23 NightSeal gens catalogued and mapped to reels"],["A","Watch the top 4 and bottom 4 posts back to back on your phone. Tell me what the numbers missed"],["C","Build the reusable object-hook shot library: glass, pillow, drawer, clock, LED, coffee, sunbeam-fur"],["C","Source the 7 missing stock shots (glass at sunrise, glass drained, empty bed-half, breathing shoulder, dark-room LED, 4pm coffee, clock at 3:07)"],["C","DONE — all 14 warm reels re-cut to open on an object"],["C","Enforce the face rule: Batch A or Batch B per reel, never mixed"],["C","Pre-export QA gate: unique clip per page, trimmed to duration, thumbnail checked, audio track confirmed"],["C","Post-publish gate: next morning confirm it published AND drew views"],["A","Approve the first reel look before 13 more get scheduled against it"]]],["Phase 4 — Websites for both products","",[["C","NightSeal store: clone NerveCalm template, reskin, REST deploy"],["C","Apply storefront rules: section order, 360 scroll-scrub, depth bar, 2-3 sentence descriptions + box contents, bold guarantee, separated upsell, no dead UI"],["C","Wire all 4 ladder events including sale, bot filtering from line one"],["A","Point the NightSeal domain"],["A","NightSeal test checkout — NO LIVE until the sale event fires"],["A","Read the Groomo Alibaba product page past the captcha. Report the product-page MOQ, not the search badge"],["C","Log the true MOQ. If it is not 1, kill or replace per the gate"],["C","Build the Groomo store — only after the MOQ check passes"],["A","Groomo domain + test checkout"],["C","Full go-live checklist both stores: card + Apple Pay, mobile above-fold, LCP under 3s, no cart page, min-field guest checkout, 60-night terms, refund-and-keep, US+CA, 48h SLA"],["A","Walk both checkouts on your own phone. You are the only real mobile tester"],["A","Authorise the Klaviyo sending domain"],["C","Verify the domain, unblock the post-purchase flow for all four stores at once"],["C","Set the NerveCalm Learn-more button to nervecalm.cc — blocked since Jul 20"]]],["Phase 5 — Warm phase, 14 days","One reel a day at 6:30pm. A 5-day gap previously cost ~98% of distribution and had not recovered 6 days later.",[["A","Create the NightSeal FB Page under your existing account — no new accounts"],["C","Build W1-W4 first, the four strongest concepts, into the cold-start window"],["A","Attach each video in reels_composer (native picker is yours only). Never Create-post"],["C","Verify every scheduled slot in Planner"],["C","Schedule 3 days ahead as standing policy so one bad day cannot break the streak"],["A","DAILY — seed the first comment within 5 minutes of publish"],["A","DAILY — share to the 3 sleep groups"],["A","DAILY — answer every real comment, same day"],["A","Join 3 sleep / insomnia / couples-sleep groups as the NightSeal page"],["A","Clear the comment backlog: 2 NerveCalm (Jul 20) + 1 Softwater (Jul 15). Drafts are written"],["A","Day-of rituals on the 45 SW/NC ads landing Aug 2-11"],["C","Day 7 mid-point audit: rank the first 5 reels by 3s-rate, rewrite the back half"],["C","Day 14 retro: protected cadence vs the broken one, stated as rules"]]],["Phase 6 — Groomo: scripts and ideas only","NO VIDEO GENERATION. All 555 credits stay untouched until you lift it.",[["A","Send 1-2 reference images from the exact Alibaba listing (for script accuracy)"],["C","Draft Groomo VoC from real owner language: Neabot/oneisall reviews, shedding forums"],["C","Reconcile all 14 scripts against the finished VoC"],["C","Compliance pass: kill every allergy, dander, skin, coat-health and shedding-treatment word"],["C","Storyboard all 14 on paper: shot list, beat timings, must-have vs nice-to-have"],["C","Rank the 14 by expected 3s-rate, mark the first 4 (G3-a leads)"],["C","Write the realism-gate checklist for any future take"],["A","Decide the sample order — the low-noise claim is the whole pitch and is unverified"],["A","Say the word if and when generation gets unblocked"]]],["Phase 7 — The gate to the next product pair","Nothing here starts until every gate below is true.",[["G","A sale event observed firing end-to-end on a live store"],["G","Both new stores live, all 4 events proven, bot-filtered"],["G","14 consecutive days, zero missed slots. Never done once"],["G","Median 3s-rate above 25% on NightSeal reels (currently ~20%)"],["G","ONE REAL CUSTOMER SALE. Not a test order"],["G","Klaviyo unblocked, post-purchase flow live"],["G","Q55-60 answered: what the next pair must be chosen for"],["C","Run research v3 on Presso + one new candidate against the full product gate"],["C","Choose the pair on camera-demo-ability first, now that object-hooks are proven"],["A","Decide whether Softwater and NerveCalm retire when the new pair launches"],["C","Post-mortem both current launches into DECISION-LOG before starting anything new"]]]];
+  var SK="planner.masterTodo.v1", OK="planner.masterTodo.open.v1";
+  var BADGE={A:["You","bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"],C:["Claude","bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300"],AC:["Both","bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300"],G:["Gate","bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300"]};
+  function load(k,d){try{return JSON.parse(localStorage.getItem(k))||d;}catch(e){return d;}}
+  function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  var done=load(SK,null);
+  if(done===null){done={};MT.forEach(function(p,i){p[2].forEach(function(it,j){if(it[1].indexOf("DONE")===0)done["p"+i+"-"+j]=true;});});save(SK,done);}
+  var open=load(OK,{"0":true});
+  function pct(a,b){return b?Math.round(a/b*100):0;}
+  function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+  function render(){
+    var total=0,doneN=0;
+    MT.forEach(function(p,i){p[2].forEach(function(it,j){total++;if(done["p"+i+"-"+j])doneN++;});});
+    var ov=pct(doneN,total), top=document.getElementById("mtTop");
+    if(top)top.innerHTML='<div class="rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white p-5 shadow-card"><div class="flex items-end justify-between"><div><p class="text-[11px] uppercase tracking-wide text-indigo-200 font-semibold">Overall progress</p><p class="text-3xl font-bold mt-0.5">'+ov+'%</p></div><p class="text-sm text-indigo-100 font-semibold">'+doneN+' / '+total+' done</p></div><div class="mt-3 h-2 rounded-full bg-white/25 overflow-hidden"><div class="h-full bg-white rounded-full transition-all" style="width:'+ov+'%"></div></div><p class="text-xs text-indigo-100 mt-3 leading-relaxed">Phase 2 is the only thing that matters this week. Everything else is motion until a sale event is proven to fire.</p></div>';
+    var body=document.getElementById("mtBody"); if(!body)return; var h="";
+    MT.forEach(function(p,i){
+      var items=p[2],n=items.length,d=0; items.forEach(function(it,j){if(done["p"+i+"-"+j])d++;});
+      var pp=pct(d,n),isOpen=!!open[i];
+      h+='<div class="rounded-2xl bg-white dark:bg-slate-800 shadow-card overflow-hidden border border-slate-200/70 dark:border-slate-700"><button data-mtph="'+i+'" class="w-full text-left px-4 py-3.5 flex items-center gap-3"><div class="flex-1 min-w-0"><div class="flex items-center gap-2"><h3 class="font-bold text-sm truncate">'+esc(p[0])+'</h3>'+(pp===100?'<span class="text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 font-bold shrink-0">DONE</span>':"")+'</div><div class="mt-1.5 flex items-center gap-2"><div class="flex-1 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden"><div class="h-full rounded-full '+(pp===100?"bg-emerald-500":"bg-indigo-500")+'" style="width:'+pp+'%"></div></div><span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 shrink-0">'+d+'/'+n+'</span></div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="text-slate-400 shrink-0 transition-transform" style="transform:rotate('+(isOpen?180:0)+'deg)"><path d="m6 9 6 6 6-6"/></svg></button>';
+      if(isOpen){
+        h+='<div class="px-4 pb-3 border-t border-slate-100 dark:border-slate-700/70">';
+        if(p[1])h+='<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed pt-3">'+esc(p[1])+'</p>';
+        h+='<div class="mt-2 space-y-1">';
+        items.forEach(function(it,j){
+          var id="p"+i+"-"+j,on=!!done[id],b=BADGE[it[0]]||BADGE.C;
+          h+='<label data-mtit="'+id+'" class="flex items-start gap-2.5 py-2 cursor-pointer group"><span class="mt-0.5 w-5 h-5 rounded-md border-2 shrink-0 flex items-center justify-center transition '+(on?"bg-emerald-500 border-emerald-500":"border-slate-300 dark:border-slate-600 group-hover:border-indigo-400")+'">'+(on?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>':"")+'</span><span class="min-w-0 flex-1"><span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md mr-1.5 align-middle '+b[1]+'">'+b[0]+'</span><span class="text-xs leading-relaxed align-middle '+(on?"line-through text-slate-400 dark:text-slate-500":"text-slate-700 dark:text-slate-200")+'">'+esc(it[1])+'</span></span></label>';
+        });
+        h+='</div></div>';
+      }
+      h+='</div>';
+    });
+    body.innerHTML=h;
+    body.querySelectorAll("[data-mtph]").forEach(function(el){el.addEventListener("click",function(){var i=el.getAttribute("data-mtph");open[i]=!open[i];save(OK,open);render();});});
+    body.querySelectorAll("[data-mtit]").forEach(function(el){el.addEventListener("click",function(ev){ev.preventDefault();var id=el.getAttribute("data-mtit");if(done[id])delete done[id];else done[id]=true;save(SK,done);render();});});
+  }
+  var rb=document.getElementById("mtReset");
+  if(rb)rb.addEventListener("click",function(){if(confirm("Clear every tick on the master to-do?")){done={};save(SK,done);render();}});
+  render();
+})();
+</script>
 </body></html>
