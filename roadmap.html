@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#4f46e5">
+<title>Roadmap · AI Automation Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: { extend: {
+      fontFamily: { sans: ['Inter','-apple-system','BlinkMacSystemFont','Segoe UI','Roboto','sans-serif'] },
+      colors: { ink: { 50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',850:'#172033',900:'#0f172a',950:'#0a0f1e' } },
+      boxShadow: { card:'0 1px 2px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.05)', nav:'0 -4px 24px rgba(15,23,42,0.08)' }
+    } }
+  };
+</script>
+<style>
+html, body { -webkit-tap-highlight-color: transparent; }
+body { font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; font-feature-settings:"tnum" 1,"cv11" 1; }
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-thumb { background:rgba(100,116,139,0.35); border-radius:3px; }
+.dark ::-webkit-scrollbar-thumb { background:rgba(148,163,184,0.3); }
+.fade-up { animation: fadeUp .32s cubic-bezier(.21,.8,.35,1) both; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
+details > summary { list-style:none; cursor:pointer; }
+details > summary::-webkit-details-marker { display:none; }
+details[open] .chev { transform: rotate(90deg); }
+.chev { transition: transform .18s ease; }
+input[type="checkbox"] { cursor:pointer; }
+</style>
+</head>
+<body class="bg-ink-100 dark:bg-ink-950 text-ink-800 dark:text-ink-100 min-h-screen pb-28 antialiased selection:bg-indigo-200 dark:selection:bg-indigo-800">
+
+<!-- Header -->
+<header class="sticky top-0 z-40 backdrop-blur-xl bg-ink-100/85 dark:bg-ink-950/85 border-b border-ink-200/70 dark:border-ink-800/70">
+  <div class="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
+    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-sm font-black shadow-lg">🗺</div>
+    <div class="flex-1 min-w-0">
+      <h1 class="text-lg font-black tracking-tight leading-none">Roadmap</h1>
+      <p class="text-[10px] font-semibold text-ink-400 dark:text-ink-500 mt-1">SecondRing · rebuilt Aug 4, 2026</p>
+    </div>
+    <a href="ship.html" class="text-[11px] font-bold px-3 py-2 rounded-xl bg-ink-200/70 dark:bg-ink-800/70 hover:bg-ink-200 dark:hover:bg-ink-800 transition">⚡ Ship</a>
+  </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-4 pt-5 space-y-8">
+
+  <!-- Progress ring -->
+  <section class="fade-up">
+    <div class="rounded-2xl bg-white dark:bg-ink-900 shadow-card border border-ink-200/60 dark:border-ink-800/60 p-5">
+      <div class="flex items-center gap-4">
+        <div class="relative w-20 h-20 shrink-0">
+          <svg viewBox="0 0 100 100" class="w-20 h-20 -rotate-90">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" class="text-ink-200 dark:text-ink-800" stroke-width="10"/>
+            <circle id="ring" cx="50" cy="50" r="42" fill="none" stroke="url(#g)" stroke-width="10" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264"/>
+            <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs>
+          </svg>
+          <div class="absolute inset-0 flex items-center justify-center"><span id="pct" class="text-lg font-black">0%</span></div>
+        </div>
+        <div class="flex-1">
+          <div class="text-sm font-black tracking-tight">Roadmap progress</div>
+          <div id="ctr" class="text-[11px] font-semibold text-ink-400 dark:text-ink-500 mt-0.5">—</div>
+          <div class="text-[11px] font-medium text-ink-500 dark:text-ink-400 mt-2 leading-snug">Curriculum days <span class="font-bold text-emerald-600 dark:text-emerald-400">1–6 and 8 are closed.</span> What's left is below.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DONE -->
+  <section class="fade-up">
+    <h2 class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 mb-2 px-1">✅ Banked — built, tested, live</h2>
+    <div class="rounded-2xl bg-white dark:bg-ink-900 shadow-card border border-ink-200/60 dark:border-ink-800/60 divide-y divide-ink-100 dark:divide-ink-800">
+      <div class="p-4">
+        <div class="flex items-center gap-2"><span class="text-xs font-black text-emerald-600 dark:text-emerald-400">BUILD 1</span><span class="text-sm font-bold">Missed-Call Rescue</span></div>
+        <p class="text-[12px] text-ink-500 dark:text-ink-400 mt-1 leading-snug">Live on your own server. Real call tested: missed call → rescue SMS → customer reply → STOP check → AI triage → owner alert. Covers "call rescue" + "text rescue".</p>
+      </div>
+      <div class="p-4">
+        <div class="flex items-center gap-2"><span class="text-xs font-black text-emerald-600 dark:text-emerald-400">BUILD 2</span><span class="text-sm font-bold">Speed-to-Lead Responder</span></div>
+        <p class="text-[12px] text-ink-500 dark:text-ink-400 mt-1 leading-snug">Tested end-to-end. <span class="font-bold text-ink-700 dark:text-ink-200">3-second response time.</span> AI grades hot/warm/junk — junk gets silently logged, no wasted texts. Your "lead identifier".</p>
+      </div>
+      <div class="p-4">
+        <div class="flex items-center gap-2"><span class="text-xs font-black text-emerald-600 dark:text-emerald-400">BUILD 3</span><span class="text-sm font-bold">Review Engine</span></div>
+        <p class="text-[12px] text-ink-500 dark:text-ink-400 mt-1 leading-snug">Both branches tested: 4–5 → Google review link; 1–3 → intercepted privately to owner + softening reply. 48h reminder chain + live dashboard.</p>
+      </div>
+      <div class="p-4 bg-ink-50/60 dark:bg-ink-850/40">
+        <div class="text-xs font-black text-ink-500 dark:text-ink-400 uppercase tracking-wide">Infrastructure</div>
+        <p class="text-[12px] text-ink-500 dark:text-ink-400 mt-1 leading-snug">$6/mo Toronto server · auto.secondring.ca with HTTPS · Twilio repointed · nightly 3am backups (verified) · encryption key vaulted · error watchdog <span class="italic">failure-injection tested</span> · 3-retry on 26 nodes · all keys rotated · plug-and-play config pattern · onboarding playbook · client-facing "what happens if it breaks" doc.</p>
+      </div>
+    </div>
+    <p class="text-[11px] text-ink-400 dark:text-ink-500 mt-2 px-1 leading-snug">Day 8 (self-host) was done <span class="font-bold">four days early</span>. Two IOUs left: CASL/PIPEDA reading, and your own API/webhook cheat sheet.</p>
+  </section>
+
+  <!-- BLOCKS -->
+  <section class="fade-up">
+    <h2 class="text-[10px] font-black uppercase tracking-widest text-indigo-500 dark:text-indigo-400 mb-1 px-1">🗓 The new calendar</h2>
+    <p class="text-[11px] text-ink-400 dark:text-ink-500 mb-3 px-1 leading-snug">Blocks, not dates — a 12-hour shift day can't hold a 6-hour build. Heavy building on OFF days; reading, writing and outreach on WORK days.</p>
+    <div id="blocks" class="space-y-3"></div>
+  </section>
+
+  <!-- WORK DAY -->
+  <section class="fade-up">
+    <h2 class="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400 mb-2 px-1">🔧 Work-day tasks (1–2 hrs, evening)</h2>
+    <div id="workday" class="rounded-2xl bg-white dark:bg-ink-900 shadow-card border border-ink-200/60 dark:border-ink-800/60 p-4 space-y-1"></div>
+  </section>
+
+  <!-- CONSTRUCTION -->
+  <section class="fade-up">
+    <h2 class="text-[10px] font-black uppercase tracking-widest text-orange-600 dark:text-orange-400 mb-1 px-1">🏗 Construction build library</h2>
+    <p class="text-[11px] text-ink-400 dark:text-ink-500 mb-3 px-1 leading-snug">Your unfair advantage — you speak this trade. These sell because they're money leaks, not conveniences. Tap any card.</p>
+    <div id="construction" class="space-y-3"></div>
+  </section>
+
+  <!-- FULL LIST -->
+  <section class="fade-up">
+    <h2 class="text-[10px] font-black uppercase tracking-widest text-violet-500 dark:text-violet-400 mb-2 px-1">📋 Every system, scored</h2>
+    <div class="rounded-2xl bg-white dark:bg-ink-900 shadow-card border border-ink-200/60 dark:border-ink-800/60 overflow-hidden">
+      <table class="w-full text-[12px]">
+        <thead class="bg-ink-50 dark:bg-ink-850/60 text-ink-400 dark:text-ink-500">
+          <tr><th class="text-left font-bold px-3 py-2">System</th><th class="text-left font-bold px-3 py-2">Where</th><th class="text-left font-bold px-3 py-2">Status</th></tr>
+        </thead>
+        <tbody id="scored" class="divide-y divide-ink-100 dark:divide-ink-800"></tbody>
+      </table>
+    </div>
+    <div class="mt-3 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 px-4 py-3">
+      <div class="text-[10px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400">Reality check</div>
+      <p class="text-[12px] font-medium text-amber-900 dark:text-amber-200 mt-1 leading-snug">11 systems is a product line, not a sprint. Three tested builds already close deals. Build the next two, then <span class="font-bold">start selling</span> — let real customers pull the rest. The guy with 3 builds and 2 paying clients beats the guy with 11 builds and none.</p>
+    </div>
+  </section>
+
+  <p class="text-center text-[10px] text-ink-400 dark:text-ink-600 pt-2 pb-6">Progress saves in this browser · <button onclick="resetAll()" class="underline font-semibold">reset</button></p>
+</main>
+
+<script>
+const K = 'lab.roadmap.done.v1';
+let done = (() => { try { return JSON.parse(localStorage.getItem(K)) ?? {}; } catch(e) { return {}; } })();
+const save = () => { try { localStorage.setItem(K, JSON.stringify(done)); } catch(e) {} };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const BLOCKS = [
+  { id:'A', title:'Proof — case studies + portfolio', hrs:5, tag:'was Day 7', color:'indigo',
+    why:'The one thing standing between you and selling. This morning you had nothing to show; now you have three tested systems and a failure test you passed on purpose.',
+    tasks:['Case study ×3: problem → what you built → the number → screenshot','Use the real numbers: 3-second lead response, AI junk-filtering, live missed-call rescue','Reframe old work as case studies too (content SOP, product-audit engine, payments rollout) = 6 assets','One-page site: name, what you do, 6 proofs, Cal.com link'],
+    out:'You send a link instead of explaining yourself.' },
+  { id:'B', title:'Two easy builds', hrs:5, tag:'your ideas + construction', color:'emerald',
+    why:'Both reuse patterns you already know cold. Fast wins that sell.',
+    tasks:['Missed-Appointment Reminder — no-show → "everything okay? rebook here" → owner alert','Estimate Follow-Up Ladder — quote unsigned → nudge at 2, 5, 10 days → stop on reply','Test both with fake bookings before they touch a client'],
+    out:'Five systems built. Two of them nobody else in your curriculum has.' },
+  { id:'C', title:'BUILD 4 — Inbox Triage Agent', hrs:6, tag:'was Day 10', color:'sky',
+    why:'Your "email identifier and reply". Gmail credential is already live on the server.',
+    tasks:['AI classifies every inbound: quote request / supplier / invoice / junk','Auto-label and auto-archive by category','Draft replies for the two most common types — drafts only, never auto-send','Urgency + complaint detection escalates immediately','Daily digest of what it handled'],
+    out:'The owner stops being the bottleneck in their own inbox.' },
+  { id:'D', title:'BUILD 5 — AI Voice Receptionist', hrs:6, tag:'was Day 11', color:'violet',
+    why:'The demo that makes owners go quiet. You already have a head start — the voice skeleton sits inside Build 1.',
+    tasks:['Answers on first ring, 24/7','Handles the 8 most common questions','Checks real availability and books','Escalates emergencies and "let me speak to a person" to a human','Full transcript logged'],
+    out:'Hand a prospect your demo number and let them try to break it.' },
+  { id:'E', title:'BUILDS 6 + 8 — Reactivation & Owner’s Brief', hrs:6, tag:'was Days 12–13', color:'amber',
+    why:'Reactivation pays your fee out of money they already own. CASL care: existing-relationship contacts only.',
+    tasks:['Import + clean the old customer list, dedupe, validate','AI writes a personalised opener per contact','Staggered send with strict consent + STOP handling','Monday 7am brief: money in, jobs booked, leads unanswered, reviews landed, the one thing to fix'],
+    out:'"You have 1,400 old customers. 2% at your $400 average is $11,200 — from a list you already own."' },
+  { id:'F', title:'BUILD 7 — Quote-from-Photo', hrs:6, tag:'was Day 13', color:'rose',
+    why:'A monster in construction. Quoting eats evenings; this kills that.',
+    tasks:['Customer texts photos of the job','Vision model estimates scope, materials, labour hours','Branded PDF quote from their own pricing table','E-signature + deposit link, auto follow-up at 2 and 5 days','Owner approves before send — never autonomous on pricing'],
+    out:'Photograph something in their shop and produce a quote before you leave.' },
+  { id:'G', title:'Demo machine', hrs:5, tag:'was Day 14', color:'teal',
+    why:'Your unfair advantage: showing up with their automation already running.',
+    tasks:['Pipeline: business name + website → branded working demo in under 45 min','Pre-write the demo landing page template with their logo','Update portfolio with all case studies + demo request form'],
+    out:'Walk into any business with their own automation already built.' },
+  { id:'H', title:'Weeks 3 & 4 — outreach and conversion', hrs:'6/day', tag:'was Days 15–30', color:'slate',
+    why:'Unchanged from the curriculum. Volume is the whole game — don’t redesign this part, just run it.',
+    tasks:['300-business list → top 100 scored and loaded','15 walk-ins + 30 emails + 20 calls, every single day','3 free builds delivered, then the 30-day results conversation','Close #1 and #2. Raise your price. Ask every client for two introductions.'],
+    out:'Two paying clients who refer you. That’s the whole sprint.' }
+];
+
+const WORKDAY = [
+  'Read the CASL + PIPEDA section on the Pitch tab (10 min — fines are real)',
+  'Write your own API / webhook / JSON cheat sheet (you know this cold now)',
+  'Build the 300-business prospect list — splits across several evenings',
+  'Memorise the 30-second opener + 12 objections — practise out loud in the truck',
+  'Submit the Meta developer app for DM Rescue — approval takes weeks, start the clock NOW',
+  'Write 3 email templates + 2 DM templates (personalise first line only)'
+];
+
+const CONSTRUCTION = [
+  { t:1, name:'Change Order Capture', star:true, diff:'Medium', money:'Biggest unbilled-revenue leak in construction',
+    what:'Verbal change on site → PM texts or photographs it → AI drafts a formal change order with pricing → owner approves → e-sign to client → logged.',
+    pitch:'Contractors eat thousands in unbilled changes every job because nobody wants to stop and do paperwork mid-pour.' },
+  { t:1, name:'Estimate Follow-Up Ladder', star:true, diff:'Easy', money:'Quotes die in silence, not rejection',
+    what:'Quote sent → automated nudges at 2, 5, 10 days → stops instantly on reply → owner alerted the moment they engage.',
+    pitch:'Ask any contractor how many quotes they sent last month and never heard back on. Then ask if they followed up three times.' },
+  { t:1, name:'Progress Draw / Milestone Invoicing', star:false, diff:'Medium', money:'Getting paid faster',
+    what:'Milestone hit → auto-generate the draw request with site photos attached → send → track payment status.',
+    pitch:'The single most valuable thing you can sell a builder is a shorter gap between work done and money in.' },
+  { t:1, name:'Ontario Lien & Prompt-Payment Tracker', star:true, diff:'Medium', money:'Sell it as insurance, not software',
+    what:'Tracks the statutory clocks in Ontario’s Construction Act — proper invoice → 28-day payment window, 14 days to dispute, and lien preservation deadlines. Counts down, reminds, and preps the paperwork.',
+    pitch:'Miss a lien deadline and you can lose the right to get paid at all. This is fear-based, and fear closes. Say plainly: it tracks and reminds, it is not legal advice.' },
+  { t:2, name:'Subcontractor Confirmation Chain', star:false, diff:'Easy', money:'Kills the "sub didn’t show" morning',
+    what:'Auto-text subs 48h before their slot → confirm/decline → no response by 24h, alert the PM and offer the backup sub.',
+    pitch:'Every GC has been burned by a no-show sub with a crew standing around at $60/hr.' },
+  { t:2, name:'COI Expiry Tracker', star:false, diff:'Easy', money:'Pure liability protection',
+    what:'Monitors every sub’s certificate of insurance → auto-requests renewal 30 days out → flags anyone lapsed before they’re scheduled.',
+    pitch:'One uninsured sub on site is a company-ending event. GCs feel this one immediately.' },
+  { t:2, name:'Daily Job-Site Log', star:false, diff:'Medium', money:'Doubles as dispute evidence',
+    what:'Crew texts photos + notes at end of day → AI compiles a clean client-facing progress update AND a dated internal record.',
+    pitch:'Clients stop calling for updates, and you have a timestamped record when someone claims work wasn’t done.' },
+  { t:2, name:'Punch List from Walkthrough', star:false, diff:'Medium', money:'Closes jobs faster',
+    what:'Walkthrough photos → AI generates the punch list → assigns items to the right subs → tracks completion → notifies when clear.',
+    pitch:'The last 5% of a job takes 30% of the time. This is where final payment gets stuck.' },
+  { t:2, name:'Material Delivery Coordination', star:false, diff:'Easy', money:'Stops crews standing around',
+    what:'Supplier confirmations, delivery-day reminders to site, and an alert the moment a delivery slips.',
+    pitch:'A crew waiting on a late lumber drop costs more per hour than your monthly fee.' },
+  { t:2, name:'Weather-Triggered Schedule Alerts', star:false, diff:'Easy', money:'Small build, looks like magic',
+    what:'Rain or snow in the forecast on a pour, roof or paint day → auto-notify crew and client with the reschedule.',
+    pitch:'Cheap to build, instantly impressive in a demo, and every trade has been burned by weather.' },
+  { t:3, name:'Timesheet / Crew Check-In', star:false, diff:'Easy', money:'Friday morning back',
+    what:'Text or geofence clock-in/out → tidy payroll sheet ready Friday.',
+    pitch:'Owners doing payroll from crumpled notes will pay to never do that again.' },
+  { t:3, name:'Safety / Toolbox Talk Compliance', star:false, diff:'Easy', money:'Required, universally hated',
+    what:'Weekly safety form to the crew → logs completion → flags who’s missing.',
+    pitch:'Mandatory paperwork nobody wants to chase. Automating it is an easy yes.' },
+  { t:3, name:'Warranty & Callback Management', star:false, diff:'Medium', money:'Protects the referral',
+    what:'Completion date starts the warranty clock → callback intake → routed to the right sub with the original job file attached.',
+    pitch:'How a callback is handled decides whether that customer refers you or warns people about you.' },
+  { t:3, name:'RFQ Blast to Suppliers', star:false, diff:'Medium', money:'Margin on every order',
+    what:'One material list → quote request to 5 suppliers → responses collected into a single comparison table.',
+    pitch:'Most shops call one supplier out of habit. This makes shopping the order effortless.' }
+];
+
+const SCORED = [
+  ['Call rescue + text rescue','Build 1','done'],
+  ['Lead identifier','Build 2','done'],
+  ['Review text','Build 3','done'],
+  ['Missed-appointment reminder','Block B','next'],
+  ['Estimate follow-up ladder','Block B','next'],
+  ['Email identifier + reply','Block C','todo'],
+  ['Voice receptionist','Block D','todo'],
+  ['Old-customer reactivation','Block E','todo'],
+  ['Owner’s brief','Block E','todo'],
+  ['Quote from photo','Block F','todo'],
+  ['Booking abandonment rescue','after booking flow exists','todo'],
+  ['DM rescue (IG/FB)','Meta app approval gate','blocked'],
+  ['Change order capture','construction library','todo'],
+  ['Lien / prompt-payment tracker','construction library','todo'],
+  ['Sub confirm, COI, job log, punch list…','pull on client demand','todo']
+];
+
+const RING = { indigo:'text-indigo-500', emerald:'text-emerald-500', sky:'text-sky-500', violet:'text-violet-500', amber:'text-amber-500', rose:'text-rose-500', teal:'text-teal-500', slate:'text-slate-500' };
+
+function renderBlocks() {
+  document.getElementById('blocks').innerHTML = BLOCKS.map(b => {
+    const cnt = b.tasks.filter((_,i) => done['b'+b.id+'-'+i]).length;
+    const complete = cnt === b.tasks.length;
+    return `<details class="rounded-2xl bg-white dark:bg-ink-900 shadow-card border border-ink-200/60 dark:border-ink-800/60 overflow-hidden">
+      <summary class="px-4 py-3 flex items-center gap-3 ${complete ? 'bg-emerald-50/60 dark:bg-emerald-900/15' : ''}">
+        <span class="chev text-ink-300 dark:text-ink-600 text-xs">▶</span>
+        <span class="shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black ${complete ? 'bg-emerald-600 text-white' : 'bg-ink-100 dark:bg-ink-800 ' + (RING[b.color]||'')}">${complete ? '✓' : b.id}</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold tracking-tight truncate">${esc(b.title)}</div>
+          <div class="text-[10px] font-semibold text-ink-400 dark:text-ink-500 mt-0.5">${b.hrs} hrs · ${b.tag} · ${cnt}/${b.tasks.length} done</div>
+        </div>
+      </summary>
+      <div class="px-4 pb-4 border-t border-ink-100 dark:border-ink-800 pt-3">
+        <p class="text-[12px] font-medium text-ink-500 dark:text-ink-400 leading-snug mb-2">${esc(b.why)}</p>
+        ${b.tasks.map((t,i) => {
+          const k = 'b'+b.id+'-'+i, on = !!done[k];
+          return `<label class="flex items-start gap-3 py-2 cursor-pointer">
+            <input type="checkbox" data-k="${k}" ${on?'checked':''} class="mt-0.5 w-5 h-5 rounded accent-emerald-600 shrink-0">
+            <span class="text-[13px] font-medium leading-snug ${on ? 'line-through text-ink-400 dark:text-ink-600' : ''}">${esc(t)}</span>
+          </label>`; }).join('')}
+        <div class="mt-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 px-3 py-2.5">
+          <div class="text-[9px] font-bold uppercase tracking-widest text-indigo-500 dark:text-indigo-400">End of block you have</div>
+          <div class="text-[12px] font-semibold text-indigo-900 dark:text-indigo-200 mt-0.5 leading-snug">${esc(b.out)}</div>
+        </div>
+      </div>
+    </details>`; }).join('');
+}
+
+function renderWorkday() {
+  document.getElementById('workday').innerHTML = WORKDAY.map((t,i) => {
+    const k = 'w-'+i, on = !!done[k];
+    return `<label class="flex items-start gap-3 py-2 cursor-pointer">
+      <input type="checkbox" data-k="${k}" ${on?'checked':''} class="mt-0.5 w-5 h-5 rounded accent-emerald-600 shrink-0">
+      <span class="text-[13px] font-medium leading-snug ${on ? 'line-through text-ink-400 dark:text-ink-600' : ''}">${esc(t)}</span>
+    </label>`; }).join('');
+}
+
+function renderConstruction() {
+  const tiers = [
+    {n:1, label:'Tier 1 — money-leak fixers', sub:'Build these first. They close deals.', cls:'text-rose-600 dark:text-rose-400'},
+    {n:2, label:'Tier 2 — operations', sub:'Sticky. They become dependent.', cls:'text-orange-600 dark:text-orange-400'},
+    {n:3, label:'Tier 3 — admin', sub:'Less sexy, easy money.', cls:'text-amber-600 dark:text-amber-400'}
+  ];
+  document.getElementById('construction').innerHTML = tiers.map(tier => `
+    <div class="pt-1">
+      <div class="px-1 mb-2"><span class="text-[10px] font-black uppercase tracking-widest ${tier.cls}">${tier.label}</span>
+      <span class="text-[10px] font-semibold text-ink-400 dark:text-ink-500 ml-1">${esc(tier.sub)}</span></div>
+      <div class="space-y-2">
+      ${CONSTRUCTION.filter(c => c.t === tier.n).map(c => `
+        <details class="rounded-2xl bg-white dark:bg-ink-900 shadow-card border border-ink-200/60 dark:border-ink-800/60 overflow-hidden">
+          <summary class="px-4 py-3 flex items-center gap-3">
+            <span class="chev text-ink-300 dark:text-ink-600 text-xs">▶</span>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-bold tracking-tight">${c.star ? '⭐ ' : ''}${esc(c.name)}</div>
+              <div class="text-[10px] font-semibold text-ink-400 dark:text-ink-500 mt-0.5">${c.diff} · ${esc(c.money)}</div>
+            </div>
+          </summary>
+          <div class="px-4 pb-4 border-t border-ink-100 dark:border-ink-800 pt-3 space-y-2">
+            <div><div class="text-[9px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500">What it does</div>
+            <p class="text-[12.5px] font-medium leading-snug mt-0.5">${esc(c.what)}</p></div>
+            <div class="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50 px-3 py-2.5">
+              <div class="text-[9px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">How you sell it</div>
+              <p class="text-[12px] font-semibold text-emerald-900 dark:text-emerald-200 mt-0.5 leading-snug">${esc(c.pitch)}</p>
+            </div>
+          </div>
+        </details>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function renderScored() {
+  const badge = s => ({
+    done:'<span class="px-2 py-0.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-[10px] font-black">DONE</span>',
+    next:'<span class="px-2 py-0.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[10px] font-black">NEXT</span>',
+    todo:'<span class="px-2 py-0.5 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400 text-[10px] font-black">TO BUILD</span>',
+    blocked:'<span class="px-2 py-0.5 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-[10px] font-black">WAITING</span>'
+  }[s]);
+  document.getElementById('scored').innerHTML = SCORED.map(([n,w,s]) =>
+    `<tr><td class="px-3 py-2 font-semibold">${esc(n)}</td><td class="px-3 py-2 text-ink-400 dark:text-ink-500">${esc(w)}</td><td class="px-3 py-2">${badge(s)}</td></tr>`).join('');
+}
+
+function totals() {
+  const all = BLOCKS.reduce((a,b) => a + b.tasks.length, 0) + WORKDAY.length;
+  const d = Object.keys(done).length;
+  return { done: Math.min(d, all), total: all };
+}
+function renderRing() {
+  const { done: d, total } = totals();
+  const pct = total ? Math.round(d/total*100) : 0;
+  document.getElementById('pct').textContent = pct + '%';
+  document.getElementById('ctr').textContent = d + ' of ' + total + ' remaining tasks done';
+  document.getElementById('ring').style.strokeDashoffset = String(264 - (264 * pct / 100));
+}
+function bind() {
+  document.querySelectorAll('[data-k]').forEach(cb => cb.addEventListener('change', e => {
+    const open = [...document.querySelectorAll('details[open]')].map(el => el.querySelector('summary')?.textContent);
+    if (e.target.checked) done[e.target.dataset.k] = 1; else delete done[e.target.dataset.k];
+    save(); renderAll();
+    document.querySelectorAll('details').forEach(el => { if (open.includes(el.querySelector('summary')?.textContent)) el.open = true; });
+  }));
+}
+function resetAll() { if (confirm('Clear all roadmap checkmarks?')) { done = {}; save(); renderAll(); } }
+function renderAll() { renderBlocks(); renderWorkday(); renderConstruction(); renderScored(); renderRing(); bind(); }
+renderAll();
+</script>
+</body>
+</html>
