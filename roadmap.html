@@ -50,8 +50,15 @@ input[type="checkbox"] { cursor:pointer; }
     <a href="index.html" class="text-[11px] font-bold px-3 py-2 rounded-xl bg-ink-200/70 dark:bg-ink-800/70 hover:bg-ink-200 dark:hover:bg-ink-800 transition">5 Core</a>
   </div>
 </header>
+<div class="sticky top-[57px] z-30 backdrop-blur-xl bg-ink-100/85 dark:bg-ink-950/85 border-b border-ink-200/70 dark:border-ink-800/70">
+  <div class="max-w-3xl mx-auto px-4 py-2 flex gap-1.5">
+    <button data-tab="roadmap" class="tabbtn flex-1 py-2 rounded-xl text-[12px] font-bold transition">🗺 Roadmap</button>
+    <button data-tab="learn" class="tabbtn flex-1 py-2 rounded-xl text-[12px] font-bold transition">📚 Learn</button>
+    <button data-tab="pitch" class="tabbtn flex-1 py-2 rounded-xl text-[12px] font-bold transition">🎯 Pitch</button>
+  </div>
+</div>
 
-<main class="max-w-3xl mx-auto px-4 pt-5 space-y-8">
+<main class="max-w-3xl mx-auto px-4 pt-5"><div id="tab-roadmap" class="space-y-8">
 
   <!-- Progress ring -->
   <section class="fade-up">
@@ -136,6 +143,9 @@ input[type="checkbox"] { cursor:pointer; }
   </section>
 
   <p class="text-center text-[10px] text-ink-400 dark:text-ink-600 pt-2 pb-6">Progress saves in this browser · <button onclick="resetAll()" class="underline font-semibold">reset</button> · <a href="ship.html" class="underline font-semibold">full Ship curriculum</a></p>
+</div>
+  <div id="tab-learn" class="hidden pb-6 space-y-1"></div>
+  <div id="tab-pitch" class="hidden pb-6"></div>
 </main>
 
 <script>
@@ -358,6 +368,438 @@ function bind() {
 function resetAll() { if (confirm('Clear all roadmap checkmarks?')) { done = {}; save(); renderAll(); } }
 function renderAll() { renderBlocks(); renderWorkday(); renderConstruction(); renderScored(); renderRing(); bind(); }
 renderAll();
+
+/* ===== Learn + Pitch — data and renderers copied verbatim from ship.html ===== */
+const CARD = 'bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800';
+const KL = { learn:'lab.learn.done.v1', wow:'lab.wow.done.v1' };
+let doneLearn = (()=>{ try { return JSON.parse(localStorage.getItem(KL.learn)) ?? {}; } catch(e){ return {}; } })();
+let doneWow   = (()=>{ try { return JSON.parse(localStorage.getItem(KL.wow)) ?? {}; } catch(e){ return {}; } })();
+function saveL(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
+function ringSVG(pct, colorClass) {
+  const r = 26, c = 2 * Math.PI * r;
+  const off = c - (Math.min(pct, 100) / 100) * c;
+  return `<div class="relative w-[72px] h-[72px] shrink-0">
+    <svg width="72" height="72" viewBox="0 0 72 72" class="-rotate-90">
+      <circle cx="36" cy="36" r="${r}" fill="none" stroke="currentColor" stroke-width="7" class="text-ink-100 dark:text-ink-800"/>
+      <circle cx="36" cy="36" r="${r}" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round" class="${colorClass} ring-anim" stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center text-sm font-extrabold">${Math.round(pct)}%</div>
+  </div>`;
+}
+const LEARN = [
+  { id:'t0', tier:'Tier 0', name:'Business literacy — learn this or nothing else matters',
+    why:'Automation is not the product. Recovered revenue is. If you cannot find the leak in a business, the best n8n skills on earth are worth nothing. This tier is the one most people skip and it is the reason most automation freelancers stay broke.',
+    color:'from-amber-600 to-orange-600',
+    items:[
+      { t:'How a local service business actually makes money', d:'Leads → booked jobs → completed jobs → repeat + referral. Learn where each stage leaks. Every automation you sell plugs one specific leak.', r:[] },
+      { t:'The five universal leaks', d:'1) Missed calls — around 62% of calls to small businesses go unanswered and most callers never call back. 2) Slow lead response. 3) No follow-up after a quote. 4) No review generation. 5) A dead customer database nobody ever contacts again.', r:[{n:'Missed-call text-back setup guide',u:'https://www.getaira.io/blog/missed-call-text-back'}] },
+      { t:'Speaking money, not features', d:'Never say "I will automate your intake". Say "you are missing about 9 calls a week, at your average job value that is roughly $2,700 a month walking away". Learn to estimate this from public info before a call.', r:[] },
+      { t:'Reading a business from the outside', d:'Google Business Profile, review count and recency, whether they answer the phone, whether there is a booking link, whether ads are running, response time to a form fill. You can diagnose a business in 10 minutes without talking to them.', r:[] },
+      { t:'What SMBs actually buy in 2026', d:'The highest-demand categories: lead follow-up, lead qualification, appointment booking, invoice processing, customer support, review requests, reporting. Lead follow-up, appointment reminders and invoicing alone typically save a 5-10 person team 8-15 hours a week.', r:[{n:'Top SMB automations 2026',u:'https://hathawk.com/top-ai-automations-smb-2026-boost-sales-ops/'}] }
+    ]},
+  { id:'t1', tier:'Tier 1', name:'No-code automation — fast demos, fast cash',
+    why:'This is where you get to a working demo in an afternoon. It is also where margin goes to die if you stay, because per-task pricing scales against you and clients can eventually rebuild it. Use it to win, then migrate to Tier 2.',
+    color:'from-teal-600 to-emerald-600',
+    items:[
+      { t:'Make.com', d:'Best value in the no-code tier. Visual scenario builder, from about $9/mo for 10,000 operations. Every module execution counts as one operation. Best for mid-complexity logic and for client-facing demos because the canvas looks impressive.', r:[{n:'Make Academy',u:'https://academy.make.com/'},{n:'Pricing comparison 2026',u:'https://www.cipherprojects.com/blog/posts/n8n-vs-zapier-vs-make-automation-comparison/'}] },
+      { t:'Zapier', d:'From about $19.99/mo, billed per task, where every action is a task. Widest app support (8,000+) and the easiest for a non-technical client to understand. Zapier Agents added autonomous execution in 2026. Expensive at volume — know this before you quote.', r:[{n:'Zapier Learn',u:'https://zapier.com/learn/'}] },
+      { t:'GoHighLevel', d:'The all-in-one CRM most local-business agencies run on. Agency Unlimited is about $297/mo with unlimited sub-accounts; SaaS Pro at about $497/mo unlocks white-label and client rebilling. Agencies typically resell it at $197-997/mo per client. Two clients at $497 covers your cost entirely.', r:[{n:'GHL agency pricing 2026',u:'https://netpartners.marketing/gohighlevel-agency-pricing-guide/'}] },
+      { t:'Airtable + Softr', d:'Your database and client-facing dashboard layer. Owners want to SEE the automation working. A simple Airtable interface showing leads landing in real time closes more deals than the workflow itself.', r:[{n:'Airtable Academy',u:'https://www.airtable.com/guides'}] },
+      { t:'Cal.com / Calendly', d:'Booking infrastructure. Cal.com is open source and self-hostable, which matters when you want the booking layer inside your own stack rather than another subscription on the client bill.', r:[{n:'Cal.com docs',u:'https://cal.com/docs'}] }
+    ]},
+  { id:'t2', tier:'Tier 2', name:'n8n — where the margin lives',
+    why:'n8n bills per workflow execution rather than per action, and self-hosted it costs roughly a VPS bill regardless of volume. For a 10-step workflow running 10,000 times a month it can cut costs 80-90% versus Zapier. This is the difference between a $500/mo client being profitable and being a chore.',
+    color:'from-indigo-600 to-violet-600',
+    items:[
+      { t:'Self-hosting n8n', d:'Docker + docker-compose on a $6-20/mo VPS, Postgres backing store, Caddy or Traefik for HTTPS, automated backups, queue mode for concurrency. This one skill is your entire cost advantage — do not skip it because Cloud is easier.', r:[{n:'n8n self-hosting docs',u:'https://docs.n8n.io/hosting/'}] },
+      { t:'Core nodes and data flow', d:'HTTP Request, Code, Switch, IF, Merge, Split In Batches, Wait, Error Trigger, Execute Workflow. Learn the data-mapping panel and expressions properly — most n8n frustration is actually data-shape confusion.', r:[{n:'n8n docs',u:'https://docs.n8n.io/'},{n:'Free n8n course',u:'https://www.mygreatlearning.com/academy/learn-for-free/courses/n8n-workflow-automation'}] },
+      { t:'AI nodes and LangChain', d:'n8n 2.0 shipped LangChain integration and 70+ AI nodes. Agent node, memory, vector stores, tool calling. This is how you build things that look like magic on a demo call.', r:[{n:'n8n AI docs',u:'https://docs.n8n.io/advanced-ai/'},{n:'17-hour n8n course',u:'https://www.youtube.com/watch?v=TZ43SRdTMs0'}] },
+      { t:'Error handling in production', d:'Error Trigger workflows, retries with backoff, dead-letter logging, alerting to your phone. A client whose automation silently failed for two weeks is a client you have lost. Build this before you need it.', r:[] },
+      { t:'Multi-tenancy', d:'Projects, separate credentials per client, environment variables, and a template library you deploy from. The goal: a new client goes live in under an hour because you are deploying, not building.', r:[] },
+      { t:'Community templates', d:'Thousands of pre-built workflows. Read them to learn patterns, then rebuild from memory. Never hand a client something you cannot debug.', r:[{n:'n8n template library',u:'https://n8n.io/workflows/'}] }
+    ]},
+  { id:'t3', tier:'Tier 3', name:'AI agents and voice — the demos that stun',
+    why:'This tier is what makes an owner stop scrolling on their phone during your call. It is also the thinnest moat, so sell it as part of a system rather than as a chatbot on its own. A chatbot is a $200 sale. A chatbot inside a lead-recovery system is a $4,000 sale.',
+    color:'from-fuchsia-600 to-pink-600',
+    items:[
+      { t:'LLM API fundamentals', d:'Claude and OpenAI APIs: system prompts, temperature, tokens and cost per call, structured JSON output, function/tool calling. Learn to force structured output — free text from an LLM breaks automations.', r:[{n:'Anthropic docs',u:'https://docs.claude.com/'},{n:'Prompt engineering guide',u:'https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview'}] },
+      { t:'Prompt engineering that survives production', d:'Few-shot examples, XML tags for structure, explicit refusal paths, and evaluation. A prompt that works 9 times out of 10 in testing fails 10% of the time in front of a paying customer.', r:[] },
+      { t:'RAG and knowledge bases', d:'Chunking, embeddings, vector stores, retrieval. This is how you build a support agent that actually knows a specific business rather than hallucinating its hours and prices.', r:[] },
+      { t:'Voice agents', d:'Retell is fastest for calendar and booking with about 600ms latency and roughly $0.07-0.15/min all-in. Vapi gives the most control over the LLM/TTS/STT stack. Bland is best for high-volume outbound with predictable per-minute pricing. Synthflow is the most no-code and offers white-label. Pick ONE and go deep.', r:[{n:'Voice platform comparison',u:'https://techsy.io/en/blog/retell-ai-vs-vapi-vs-bland'},{n:'Retell docs',u:'https://docs.retellai.com/'}] },
+      { t:'MCP and tool-using agents', d:'Model Context Protocol lets an agent use real tools and data sources. This is where agent work is heading — being early here is a genuine differentiator in 2027.', r:[{n:'MCP docs',u:'https://modelcontextprotocol.io/'}] },
+      { t:'Cost control', d:'Token budgets, caching, routing cheap models for classification and expensive ones only for generation. Know your cost per conversation before you quote a monthly price, or you will sell a loss.', r:[] }
+    ]},
+  { id:'t4', tier:'Tier 4', name:'The business of the business',
+    why:'Skills do not pay. Delivered outcomes with a signature and an invoice pay. You have run product businesses but never sold a service — this tier is your actual gap, and it is bigger than the technical one.',
+    color:'from-rose-600 to-red-600',
+    items:[
+      { t:'CASL and PIPEDA — Canada is stricter than the US', d:'CASL generally requires consent BEFORE a commercial electronic message, unlike US CAN-SPAM opt-out. Implied consent can come from a conspicuously published business email where your message is relevant to their role, or from an existing business relationship. Every message needs accurate sender ID and a working unsubscribe honoured within 10 business days. Penalties reach $1M for individuals and $10M for organisations. Walk-ins and phone calls are not CEMs — which is another reason in-person wins in the GTA.', r:[{n:'CASL cold email rules 2026',u:'https://litemail.ai/blog/casl-cold-email-compliance-canada-2026'}] },
+      { t:'Pricing without flinching', d:'See the Money tab. Setup fees for SMBs commonly run $1,500-15,000 with monthly management $300-5,000; the median small-to-mid retainer sits around $2,800-7,000. Canadian small local businesses sit at the low end. Charge for the outcome, not the hours.', r:[{n:'AAA pricing 2026',u:'https://monetizebot.ai/blogs/ai-automation-agency-pricing-2026'}] },
+      { t:'Discovery calls', d:'Talk 30%, listen 70%. Find the leak, quantify it in their dollars, get them to say the number out loud. The person who says the number is the person who buys.', r:[] },
+      { t:'Scoping and contracts', d:'One-page agreement: scope, exclusions, price, term, cancellation, who owns the accounts, what happens when it breaks. Scope creep kills solo operators faster than bad pricing.', r:[] },
+      { t:'Delivery and retention', d:'Onboarding checklist, monitoring, monthly reporting that shows the number they care about. Retainers churn when the client stops seeing value, not when the tech fails.', r:[] },
+      { t:'Referrals and partnerships', d:'Web designers and marketing agencies have local clients and no automation capability. Become their automation guy for a 20% referral fee or under white-label. This scales without cold outreach.', r:[] }
+    ]}
+];
+const WOW = [
+  { t:'Show up with the demo already built', d:'Before the meeting, build a working automation for THEIR business with THEIR name and logo on it. Not a slide. A live thing they can touch. Almost nobody does this, and it reframes the entire conversation from "should I hire you" to "how do I keep this".', tier:'Highest impact' },
+  { t:'Call their business from your phone, live', d:'Let it ring out. Watch the recovery text land on their screen. The moment they feel the lost call get saved, the sale is mostly done.', tier:'Highest impact' },
+  { t:'Count their missed money out loud', d:'"You are missing roughly 9 calls a week. At your $450 average job and a 30% close rate, that is about $4,800 a month." Then stop talking. Let the number sit there.', tier:'Highest impact' },
+  { t:'Give them the audit for free, in writing', d:'A one-page teardown of their lead flow with the leaks circled. Deliver it whether or not they buy. Half of them come back within 60 days.', tier:'High' },
+  { t:'Hand them your voice agent\'s number mid-meeting', d:'"Try to break it." When it books an appointment into a real calendar while they are trying to trip it up, you have their full attention.', tier:'High' },
+  { t:'Quote a job from a photo before you leave', d:'Take a picture of something in their shop. Produce a branded PDF quote in three minutes. For a quoting business this is visceral.', tier:'High' },
+  { t:'Show their own reviews interception branch', d:'Demonstrate a 2-star response being caught privately instead of hitting Google. Every owner has been burned by a public bad review.', tier:'High' },
+  { t:'Put a number on their dead list', d:'"You have 1,400 past customers. 2% at your average ticket is $11,200 in found money." Reactivation revenue feels free to them, which makes your fee feel small.', tier:'High' },
+  { t:'Send the Monday brief before you have a contract', d:'Build it on whatever data they will share and send it free for two weeks. It is the cheapest retainer hook there is.', tier:'Medium' },
+  { t:'Let them own everything', d:'Build in their accounts, their logins, their data. Say plainly: "if you fire me tomorrow it all keeps running and you owe me nothing." This removes the single biggest objection before they raise it.', tier:'Medium' },
+  { t:'Fix something small for free, unasked', d:'Their contact form is broken, their GBP hours are wrong, their booking link 404s. Fix it and mention it casually. Competence beats a pitch.', tier:'Medium' },
+  { t:'Bring a written 14-day plan', d:'Day-by-day, what you do, what you need from them, what they get. Owners have been burned by vague agency promises. Specificity reads as safety.', tier:'Medium' },
+  { t:'Show your monitoring', d:'"Here is the alert I get if your automation fails at 2am, and here is my response time." Nobody else shows them this. It makes you look like infrastructure, not a freelancer.', tier:'Medium' },
+  { t:'Speak their vertical\'s language', d:'Say "column" to a contractor, "chair time" to a dentist, "RO" to a shop, "turn" to a restaurant. Ten minutes of vocabulary research reads as ten years of experience.', tier:'Medium' },
+  { t:'Give a hard timeline and beat it', d:'Promise seven days, deliver in four. The first impression of your reliability is worth more than any discount you could offer.', tier:'Medium' }
+];
+const VERTICALS = [
+  { n:'HVAC · Plumbing · Electrical', job:'$300-2,500', why:'Emergency-driven, so a missed call is an immediately lost job. Owner-operated and reachable. They feel the pain daily.', lead:'Missed-Call Rescue', heat:'Hottest' },
+  { n:'Dental · Medical clinics', job:'$200-3,000', why:'High lifetime value, front desk permanently overloaded, no-shows are expensive. Budget exists. Longer sales cycle and more compliance care needed.', lead:'AI Voice Receptionist', heat:'Hottest' },
+  { n:'Auto repair · Detailing', job:'$150-1,500', why:'Reviews drive everything in this vertical, phones ring constantly, and the owner is usually under a car and unreachable.', lead:'Review Engine', heat:'Hot' },
+  { n:'Med spas · Salons · Barbers', job:'$80-800', why:'Booking-dependent, big dormant client lists, very responsive to reactivation campaigns.', lead:'Database Reactivation', heat:'Hot' },
+  { n:'Renovation · Landscaping · Roofing', job:'$2,000-50,000', why:'Huge job values mean one recovered lead pays your entire fee many times over. Quoting is their biggest time sink.', lead:'Quote-from-Photo', heat:'Hot' },
+  { n:'Real estate · Mortgage brokers', job:'Commission', why:'Speed-to-lead obsessed and already understand tooling, so an easier technical conversation. But a crowded market — everyone pitches them.', lead:'Speed-to-Lead', heat:'Warm' },
+  { n:'Law · Accounting · Consultants', job:'$500-10,000', why:'Drowning in email and intake admin, and they pay well. But slow decisions and more risk aversion.', lead:'Inbox Triage', heat:'Warm' },
+  { n:'Gyms · Studios · Trades schools', job:'$50-200/mo', why:'Membership churn and dead lists make reactivation a natural fit. Thinner margins though, so price accordingly.', lead:'Database Reactivation', heat:'Warm' }
+];
+const OBJECTIONS = [
+  { o:'"I\'m not interested."', a:'"Totally fair — I\'m not selling anything today. Can I ask one question and then I\'ll leave you alone? When someone calls and nobody picks up, what happens to that call right now?" Most owners will answer that. The honest answer is the whole pitch.' },
+  { o:'"We\'re too busy for this."', a:'"That\'s exactly why I\'m here. Busy means calls are going unanswered right now. I\'m not asking you to do anything — I do the building, you do nothing, and you keep it whether or not you ever pay me."' },
+  { o:'"How much?"', a:'"Nothing for the first one. I build one automation for you free, in your accounts, and you keep it. If in 30 days it hasn\'t made or saved you money, we shake hands and I\'m gone. If it has, we talk about the next one." Never quote a number before they have felt the value.' },
+  { o:'"What\'s the catch?"', a:'"I\'m building a portfolio in the GTA and I need results I can point to more than I need your money right now. That\'s the whole catch. You get a free system, I get a case study and hopefully a referral."' },
+  { o:'"I already have someone doing my marketing."', a:'"Good — I\'m not marketing. They bring you leads; I make sure none of them get dropped after they arrive. I work with marketing people, not against them. Happy to loop them in."' },
+  { o:'"We tried something like this and it didn\'t work."', a:'"What broke?" Then actually listen. Usually it was set-and-forget with no monitoring, or it was generic. "The difference here is it runs in your accounts, I monitor it, and you can see the numbers every Monday."' },
+  { o:'"Is this AI going to sound like a robot to my customers?"', a:'Do not argue. Hand them the phone. "Call this number and try to break it." Demonstration beats reassurance every single time.' },
+  { o:'"I don\'t want to lose the personal touch."', a:'"Neither do I — that\'s your whole advantage. The automation handles the 3am voicemail and the follow-up nobody has time for. It hands the actual human conversation to you, faster and warmer than a missed call ever could."' },
+  { o:'"I need to think about it."', a:'"Of course. Just so I know what to send you — is it the cost, the tech, or the timing?" Whichever they pick is the real objection. The generic version is never the real one.' },
+  { o:'"Send me some information."', a:'"I\'ll do one better. Give me 48 hours and I\'ll build a working version for your business and send you a two-minute video of it running. If you hate it, delete the email." A brochure gets ignored; their own name in a working demo does not.' },
+  { o:'"What happens if you disappear?"', a:'"Everything is in your accounts under your logins. If I vanish tomorrow it all keeps running. I\'ll also give you written documentation of exactly how it works." This is the single strongest thing you can say, so say it before they ask.' },
+  { o:'"My nephew/cousin does computer stuff."', a:'"Great, have them look at it — I\'ll even walk them through the build. I do this every day for local businesses; they do it on weekends. But if they can maintain it, that saves you a retainer and I\'m fine with that." Never insult the nephew.' }
+];
+const SCRIPTS = [
+  { id:'walkin', name:'Walk-in opener (30 seconds)', ctx:'The best channel in the GTA. Not a commercial electronic message, so CASL does not restrict it. Target: 15 a day.',
+    body:`"Hi — I'm Ahmed, I'm local. I build automated systems for businesses around here.
+
+Quick question and then I'll get out of your way: when someone calls and you're busy with a customer, what happens to that call?
+
+[Listen. The answer is almost always "voicemail" or "we miss it".]
+
+Right. That's the thing I fix. And I'm not selling anything today — I'm building a portfolio, so I'll build one for you free. Takes me about a week, costs you nothing, and it runs in your own accounts so you keep it either way.
+
+Is the owner around, or is that you?"` },
+  { id:'phone', name:'Cold call opener', ctx:'69% of buyers have accepted cold calls from new providers. Target: 20 a day. Call between 10-11am or 2-4pm.',
+    body:`"Hi, is this the owner? — Great, my name's Ahmed, I'm calling from [city]. I'll be quick, 30 seconds and you can hang up on me.
+
+I build automated follow-up systems for [trade] businesses. The thing I fix is missed calls and leads that go cold — most shops your size lose 8-10 jobs a month that way without ever knowing.
+
+I'm not selling you anything on this call. I'm building a portfolio, so I do the first build free and you keep it regardless.
+
+Worth a 15-minute look at your setup, or should I not bother you again?"` },
+  { id:'email', name:'Cold email (CASL-compliant)', ctx:'Only send to a conspicuously published business address where your message is relevant to their role and there is no "no soliciting" notice. Must include your full identity and a working unsubscribe. Target: 30 a day.',
+    body:`Subject: your after-hours calls, [Business Name]
+
+Hi [First name],
+
+I called [Business Name] at 7:40pm on Tuesday to test something — it went to voicemail, which is normal for a [trade] shop at that hour.
+
+I build systems that text those callers back within seconds so the job doesn't go to whoever picks up next. I put together a working version for [Business Name] — 90-second video here: [link]
+
+I'm building a portfolio of local case studies, so the first build is free. It runs in your accounts, you keep it whether or not we ever work together.
+
+Worth 15 minutes?
+
+Ahmed [Last name]
+[Business name], [full street address, city, ON, postal code]
+[phone] · [email]
+
+Don't want to hear from me again? Reply "unsubscribe" and I'll remove you within 10 business days.` },
+  { id:'dm', name:'Instagram / Facebook DM', ctx:'Best for salons, med spas, restaurants and gyms where the owner runs the account personally.',
+    body:`"Hey — noticed you're taking bookings through DMs. How many of these do you end up missing when you're with a client?
+
+I build systems that auto-reply, qualify and book straight into your calendar. I'm doing the first build free for a few local businesses to build my portfolio.
+
+Want me to put one together for [Business Name] so you can see it? No cost, you keep it either way."` },
+  { id:'discovery', name:'The 20-minute audit call framework', ctx:'You talk 30%, they talk 70%. Your job is to make them say the number out loud.',
+    body:`1. FRAME (1 min)
+"Thanks for the time. Twenty minutes: I'll ask about how leads come in and what happens to them, and at the end I'll tell you the one thing I'd fix first. Whether we work together or not, you keep that."
+
+2. DIAGNOSE (10 min) — ask, do not pitch
+· "Walk me through what happens from the moment someone finds you to the moment they pay."
+· "How do people usually reach you — call, form, DM, walk-in?"
+· "When a call comes in and everyone's busy, what happens?"
+· "Roughly how many calls a week do you think you miss?"
+· "When someone fills out your form, how fast do they hear back? Honestly."
+· "How do you follow up on a quote that hasn't been accepted?"
+· "How do you ask for reviews right now?"
+· "How many past customers are sitting in your system that you've never contacted again?"
+· "What's your average job worth?"
+· "What percentage of quotes turn into work?"
+
+3. QUANTIFY (3 min) — do the maths out loud, on paper
+"So 9 missed calls a week, 30% of those would have booked, at $450 a job — that's about $4,800 a month. Does that sound roughly right to you?"
+Then STOP. Let them respond. Do not fill the silence.
+
+4. OFFER (3 min)
+"Here's what I'd do. [One specific build.] I'll build it free, in your accounts, in seven days. You do nothing except give me access and 20 minutes.
+We'll agree right now on the one number we're both watching. In 30 days we look at it together.
+If it hasn't moved, we shake hands, you keep the system, and you owe me nothing.
+If it has, we talk about what's next."
+
+5. CLOSE (3 min)
+"Any reason not to try that?"
+[Silence. Let them answer.]
+"Great — I need access to X, Y and Z. I'll send a one-page summary tonight and we'll book the 30-day review right now while we're both looking at a calendar."
+Book the review meeting on the spot. Never leave without the next date.` },
+  { id:'conversion', name:'The 30-day conversion call', ctx:'This is where the free build turns into revenue. Do not wing it.',
+    body:`1. "Let's look at the number." Pull it up together. Do not present it — let them read it.
+
+2. Silence. Whoever speaks first after the number loses. Let it be them.
+
+3. "What do you want to do with it?" Open question, not a pitch.
+
+4. Present the ladder, cheapest first:
+   · "Keep this running and monitored: $X/month."
+   · "Add the next automation: $Y one-time."
+   · "Both, as a system: $Z/month, and I handle everything."
+
+5. If yes → paperwork and payment set up on the same call. Never "I'll send it over later."
+
+6. If no → "No problem, it's yours, it keeps running. What would have to be true for this to be worth paying for?" Log the answer. Then: "Who else do you know who has this same problem?" Ask for exactly two names.
+
+7. NEVER discount. Reduce scope instead. Discounting teaches them your price was invented.` }
+];
+const PRICING = [
+  { tier:'The Wedge (free build)', price:'$0', what:'One automation, built in their accounts, delivered in 7 days. Your cost: ~8 hours and under $20 in tooling.', note:'Cap it at ONE build. Require a booked 30-day review before you start. This is marketing spend, not charity — treat it that way and stop at three concurrent.' },
+  { tier:'Single automation', price:'$750 – $2,500', what:'One production workflow, deployed, documented, monitored for 30 days.', note:'Your default paid entry point. Canadian local SMBs sit at the low end of the global range.' },
+  { tier:'System build (3-6 workflows)', price:'$4,000 – $12,000', what:'A connected system: intake, follow-up, booking, reviews, reporting. Includes dashboards and QA.', note:'The industry range for growth-tier systems. Do not sell this until you have delivered at least three single builds.' },
+  { tier:'Care retainer', price:'$500 – $2,000 /mo', what:'Hosting, monitoring, fixes, monthly reporting, small iterations. Your actual business model.', note:'Median SMB retainers globally run higher ($2,800-7,000) but that is US mid-market. Start where you can win and raise it every third client.' },
+  { tier:'Voice agent', price:'$500-1,500 setup + $300-800 /mo', what:'Setup, scripting, integration, tuning. Usage billed at cost plus margin.', note:'Know your per-minute cost cold (roughly $0.07-0.15/min all-in) before quoting. Cap monthly minutes in the agreement.' },
+  { tier:'White-label / partner', price:'20% referral or wholesale', what:'Web designers and agencies resell your builds to their client base.', note:'Zero acquisition cost. This is how you eventually stop cold-calling.' }
+];
+const COSTS = [
+  { n:'VPS for self-hosted n8n', c:'$6 – $20 /mo', note:'One server serves all your clients. This is your margin engine.' },
+  { n:'Domain + business email', c:'~$20 /mo', note:'Never pitch from a gmail address.' },
+  { n:'Twilio number', c:'~$1-2 /mo + ~$0.008 /SMS', note:'Bill through to the client at cost or a small markup.' },
+  { n:'Claude / LLM API', c:'$5 – $50 /mo', note:'Route cheap models for classification, expensive ones only for generation.' },
+  { n:'Voice platform', c:'$0.07 – $0.15 /min', note:'Usage-based. Always cap client minutes in the contract.' },
+  { n:'Cal.com / booking', c:'$0 – $15 /mo', note:'Self-host to keep it free.' },
+  { n:'GoHighLevel (optional)', c:'$297 – $497 /mo', note:'Only once you have 3+ clients. Two clients at $497 covers it entirely.' }
+];
+function renderLearn() {
+  let total = 0, done = 0;
+  LEARN.forEach(t => t.items.forEach((_, i) => { total++; if (doneLearn[`${t.id}-${i}`]) done++; }));
+
+  let h = `<div class="${CARD} p-4 fade-up flex items-center gap-4">
+    ${ringSVG(total ? done/total*100 : 0, 'text-indigo-500')}
+    <div class="flex-1 min-w-0">
+      <h2 class="text-lg font-extrabold tracking-tight">The library</h2>
+      <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mt-0.5 leading-snug">${done} of ${total} topics covered. Work top-down. Tier 0 is not optional — it is the tier that decides whether you get paid.</p>
+    </div>
+  </div>`;
+
+  LEARN.forEach(t => {
+    const cnt = t.items.filter((_, i) => doneLearn[`${t.id}-${i}`]).length;
+    h += `<div class="mt-4 fade-up">
+      <div class="rounded-2xl bg-gradient-to-br ${t.color} text-white p-4 shadow-card">
+        <div class="flex items-start justify-between gap-3">
+          <div class="min-w-0">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-white/70">${esc(t.tier)}</div>
+            <div class="text-base font-extrabold tracking-tight mt-0.5">${esc(t.name)}</div>
+          </div>
+          <span class="shrink-0 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-white/20 tabular-nums">${cnt}/${t.items.length}</span>
+        </div>
+        <p class="text-[11px] font-medium text-white/85 mt-2 leading-snug">${esc(t.why)}</p>
+      </div>
+      <div class="mt-2 ${CARD} overflow-hidden">
+        <ul class="divide-y divide-ink-100 dark:divide-ink-800">`;
+    t.items.forEach((it, i) => {
+      const key = `${t.id}-${i}`;
+      const on = !!doneLearn[key];
+      h += `<li><div class="px-4 py-3">
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" data-learn="${key}" ${on?'checked':''} class="mt-0.5 w-5 h-5 rounded accent-emerald-600 shrink-0">
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-bold tracking-tight ${on ? 'text-ink-400 dark:text-ink-600' : ''}">${esc(it.t)}</div>
+            <div class="text-[12px] font-medium text-ink-500 dark:text-ink-400 mt-1 leading-snug">${esc(it.d)}</div>
+          </div>
+        </label>
+        ${it.r.length ? `<div class="mt-2 ml-8 flex flex-wrap gap-1.5">${it.r.map(r => `<a href="${esc(r.u)}" target="_blank" rel="noopener" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 transition">↗ ${esc(r.n)}</a>`).join('')}</div>` : ''}
+      </div></li>`;
+    });
+    h += `</ul></div></div>`;
+  });
+
+  document.getElementById('tab-learn').innerHTML = h;
+  document.querySelectorAll('[data-learn]').forEach(cb => cb.addEventListener('change', e => {
+    const k = e.target.dataset.learn;
+    if (e.target.checked) doneLearn[k] = 1; else delete doneLearn[k];
+    saveL(KL.learn, doneLearn); renderLearn();
+  }));
+}
+function renderPitch() {
+  const wowDone = Object.keys(doneWow).length;
+  const heat = { 'Hottest':'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300', 'Hot':'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300', 'Warm':'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' };
+
+  let h = `
+  <div class="rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 text-white p-5 shadow-glow fade-up relative overflow-hidden">
+    <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-white/10 blur-2xl"></div>
+    <div class="relative">
+      <div class="text-[11px] font-semibold uppercase tracking-widest text-emerald-100">The offer</div>
+      <div class="text-2xl font-extrabold tracking-tight mt-1">The Free Build</div>
+      <p class="text-[13px] font-semibold text-emerald-50 mt-3 leading-snug">"I'll build one automation for your business. Free. In your accounts, under your logins, in seven days.</p>
+      <p class="text-[13px] font-semibold text-emerald-50 mt-2 leading-snug">We agree on one number before I start. In 30 days we look at it together. If it hasn't moved, you keep the system anyway and you owe me nothing — I just ask what went wrong so I can learn.</p>
+      <p class="text-[13px] font-semibold text-emerald-50 mt-2 leading-snug">If it has moved, we talk about the next one."</p>
+    </div>
+  </div>
+
+  <div class="mt-3 ${CARD} p-4 fade-up">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-ink-400 dark:text-ink-500">Why it is hard to say no to</div>
+    <ul class="mt-2 space-y-2">
+      ${[
+        ['No money leaves their account.','Not a discount, not a trial, not a deposit. Zero. Price objections cannot happen before value exists.'],
+        ['No lock-in and no contract.','Nothing to sign to start. The single biggest fear with agencies is being trapped, and you remove it up front.'],
+        ['They keep the asset either way.','Built in their accounts under their logins. Even if they never pay you a cent, they are strictly better off than before you walked in.'],
+        ['They do almost nothing.','Twenty minutes of access and one 20-minute review call. The real currency you are asking for is attention, not effort.'],
+        ['The success metric is theirs, agreed in advance.','You are not grading your own homework. That one detail is what makes it credible instead of sounding like a gimmick.'],
+        ['You state the downside out loud.','"Worst case you waste 40 minutes and get a free system." Naming the risk yourself makes it feel smaller than leaving them to imagine it.']
+      ].map(([a,b]) => `<li class="flex gap-2.5"><span class="text-emerald-500 font-bold shrink-0">✓</span><span class="text-[12px] font-medium leading-snug"><span class="font-bold">${esc(a)}</span> ${esc(b)}</span></li>`).join('')}
+    </ul>
+  </div>
+
+  <div class="mt-3 ${CARD} p-4 fade-up border-l-4 border-l-amber-500">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">Protect yourself — this is not charity</div>
+    <ul class="mt-2 space-y-1.5">
+      ${[
+        'Maximum three free builds running at once. Ever.',
+        'One automation only. The moment they say "and could it also…", that is the paid conversation.',
+        'The 30-day review must be booked in a calendar before you write a single node.',
+        'Only for a business that meets your criteria: the owner is in the room, they have real volume, and they have the problem you fix.',
+        'Cap your build time at 10 hours. If it runs over, the scope was wrong, and that is your mistake to learn from.',
+        'If they will not commit to a metric, they are not serious. Walk away politely and spend the hours on someone who will.'
+      ].map(t => `<li class="flex gap-2.5"><span class="text-amber-500 font-bold shrink-0">!</span><span class="text-[12px] font-medium leading-snug">${esc(t)}</span></li>`).join('')}
+    </ul>
+  </div>
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-2">Scripts</h2>
+  <div class="space-y-2">`;
+
+  SCRIPTS.forEach(s => {
+    h += `<details class="${CARD} overflow-hidden">
+      <summary class="px-4 py-3 flex items-center gap-3">
+        <span class="chev text-ink-300 dark:text-ink-600 text-xs">▶</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-bold tracking-tight">${esc(s.name)}</div>
+          <div class="text-[10px] font-medium text-ink-400 dark:text-ink-500 mt-0.5 leading-snug">${esc(s.ctx)}</div>
+        </div>
+      </summary>
+      <div class="px-4 pb-4 border-t border-ink-100 dark:border-ink-800 pt-3">
+        <pre class="whitespace-pre-wrap text-[12px] font-medium leading-relaxed text-ink-700 dark:text-ink-200 font-sans">${esc(s.body)}</pre>
+        <button onclick="copyScript(this,'${s.id}')" class="mt-3 w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold transition active:scale-[0.98]">Copy script</button>
+      </div>
+    </details>`;
+  });
+
+  h += `</div>
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-1">GTA vertical shortlist</h2>
+  <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mb-2">Pick three. Own them. A specialist who says "I work with HVAC companies" outsells a generalist every time.</p>
+  <div class="${CARD} overflow-hidden">
+    <ul class="divide-y divide-ink-100 dark:divide-ink-800">
+      ${VERTICALS.map(v => `<li class="px-4 py-3">
+        <div class="flex items-center gap-2">
+          <div class="text-sm font-bold tracking-tight flex-1 min-w-0">${esc(v.n)}</div>
+          <span class="shrink-0 text-[9px] font-bold px-2 py-0.5 rounded-md ${heat[v.heat]}">${esc(v.heat.toUpperCase())}</span>
+        </div>
+        <div class="text-[11px] font-medium text-ink-500 dark:text-ink-400 mt-1 leading-snug">${esc(v.why)}</div>
+        <div class="flex flex-wrap gap-1.5 mt-2">
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400">Avg job ${esc(v.job)}</span>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300">Lead with: ${esc(v.lead)}</span>
+        </div>
+      </li>`).join('')}
+    </ul>
+  </div>
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-1">The wow list</h2>
+  <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mb-2"><span id="wowCount">${wowDone}</span>/${WOW.length} rehearsed. These are the specific moves that change an owner's face mid-conversation.</p>
+  <div class="${CARD} overflow-hidden">
+    <ul class="divide-y divide-ink-100 dark:divide-ink-800">
+      ${WOW.map((w, i) => {
+        const on = !!doneWow[i];
+        return `<li class="px-4 py-3"><label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" data-wow="${i}" ${on?'checked':''} class="mt-0.5 w-5 h-5 rounded accent-emerald-600 shrink-0">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <div class="text-sm font-bold tracking-tight ${on ? 'text-ink-400 dark:text-ink-600' : ''}">${esc(w.t)}</div>
+            </div>
+            <div class="text-[12px] font-medium text-ink-500 dark:text-ink-400 mt-1 leading-snug">${esc(w.d)}</div>
+            <span class="inline-block mt-1.5 text-[9px] font-bold px-2 py-0.5 rounded-md ${w.tier==='Highest impact'?'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300':w.tier==='High'?'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300':'bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-400'}">${esc(w.tier.toUpperCase())}</span>
+          </div>
+        </label></li>`;
+      }).join('')}
+    </ul>
+  </div>
+
+  <h2 class="text-xl font-bold tracking-tight mt-5 mb-1">Objection handling</h2>
+  <p class="text-[11px] font-medium text-ink-400 dark:text-ink-500 mb-2">Say these out loud until they are boring. Reading them is not the same as owning them.</p>
+  <div class="space-y-2">
+    ${OBJECTIONS.map(o => `<details class="${CARD} overflow-hidden">
+      <summary class="px-4 py-3 flex items-center gap-3">
+        <span class="chev text-ink-300 dark:text-ink-600 text-xs">▶</span>
+        <div class="text-sm font-bold tracking-tight flex-1">${esc(o.o)}</div>
+      </summary>
+      <div class="px-4 pb-4 border-t border-ink-100 dark:border-ink-800 pt-3">
+        <p class="text-[12px] font-medium leading-relaxed">${esc(o.a)}</p>
+      </div>
+    </details>`).join('')}
+  </div>
+
+  <div class="mt-5 ${CARD} p-4 fade-up border-l-4 border-l-red-500">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-red-600 dark:text-red-400">Canada: read before you send anything</div>
+    <p class="text-[12px] font-medium leading-snug mt-2">CASL generally requires consent <span class="font-bold">before</span> a commercial electronic message — unlike US CAN-SPAM, opting out afterwards is not enough. Implied consent can come from a conspicuously published business address where your message is relevant to that person's role and there is no "no soliciting" notice, or from an existing business relationship.</p>
+    <p class="text-[12px] font-medium leading-snug mt-2">Every message needs accurate sender identification (real name, real mailing address, real contact) and a working unsubscribe honoured within 10 business days. Penalties reach $1M for individuals and $10M for organisations.</p>
+    <p class="text-[12px] font-semibold leading-snug mt-2">Walk-ins and phone calls are not commercial electronic messages, which is a second reason in-person outreach wins in the GTA. PIPEDA separately governs how you collect and store any personal data — including the lists you build.</p>
+    <a href="https://litemail.ai/blog/casl-cold-email-compliance-canada-2026" target="_blank" rel="noopener" class="inline-block mt-2 text-[10px] font-bold px-2 py-1 rounded-lg bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-300">↗ CASL cold email rules</a>
+  </div>`;
+
+  document.getElementById('tab-pitch').innerHTML = h;
+  // update in place rather than re-rendering, so open scripts/objections stay open
+  document.querySelectorAll('[data-wow]').forEach(cb => cb.addEventListener('change', e => {
+    const k = e.target.dataset.wow;
+    if (e.target.checked) doneWow[k] = 1; else delete doneWow[k];
+    saveL(KL.wow, doneWow);
+    const title = e.target.parentElement.querySelector('.text-sm.font-bold');
+    if (title) {
+      title.classList.toggle('text-ink-400', e.target.checked);
+      title.classList.toggle('dark:text-ink-600', e.target.checked);
+    }
+    const c = document.getElementById('wowCount');
+    if (c) c.textContent = Object.keys(doneWow).length;
+  }));
+}
+
+/* ===== tab switching ===== */
+const TABON = 'bg-indigo-600 text-white shadow';
+const TABOFF = 'bg-ink-200/60 dark:bg-ink-800/60 text-ink-500 dark:text-ink-400';
+const renderedTabs = { learn:false, pitch:false };
+function showTab(name) {
+  ['roadmap','learn','pitch'].forEach(t => document.getElementById('tab-'+t).classList.toggle('hidden', t !== name));
+  document.querySelectorAll('.tabbtn').forEach(b => {
+    b.className = 'tabbtn flex-1 py-2 rounded-xl text-[12px] font-bold transition ' + (b.dataset.tab === name ? TABON : TABOFF);
+  });
+  if (name === 'learn' && !renderedTabs.learn) { renderLearn(); renderedTabs.learn = true; }
+  if (name === 'pitch' && !renderedTabs.pitch) { renderPitch(); renderedTabs.pitch = true; }
+  try { localStorage.setItem('lab.roadmap.tab', name); } catch(e) {}
+  window.scrollTo({top:0});
+}
+document.querySelectorAll('.tabbtn').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+showTab(localStorage.getItem('lab.roadmap.tab') || 'roadmap');
+
 </script>
 </body>
 </html>
