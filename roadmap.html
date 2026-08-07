@@ -75,7 +75,7 @@ input[type="checkbox"] { cursor:pointer; }
         <div class="flex-1">
           <div class="text-sm font-black tracking-tight">Roadmap progress</div>
           <div id="ctr" class="text-[11px] font-semibold text-ink-400 dark:text-ink-500 mt-0.5">—</div>
-          <div class="text-[11px] font-medium text-ink-500 dark:text-ink-400 mt-2 leading-snug">Curriculum days <span class="font-bold text-emerald-600 dark:text-emerald-400">1–6 and 8 are closed.</span> What's left is below.</div>
+          <div class="text-[11px] font-medium text-ink-500 dark:text-ink-400 mt-2 leading-snug">Builds 1–5 are <b class="text-emerald-400">banked and tested</b>. Everything below is the portfolio build-out.</div>
         </div>
       </div>
     </div>
@@ -102,13 +102,13 @@ input[type="checkbox"] { cursor:pointer; }
         <p class="text-[12px] text-ink-500 dark:text-ink-400 mt-1 leading-snug">$6/mo Toronto server · auto.secondring.ca with HTTPS · Twilio repointed · nightly 3am backups (verified) · encryption key vaulted · error watchdog <span class="italic">failure-injection tested</span> · 3-retry on 26 nodes · all keys rotated · plug-and-play config pattern · onboarding playbook · client-facing "what happens if it breaks" doc.</p>
       </div>
     </div>
-    <p class="text-[11px] text-ink-400 dark:text-ink-500 mt-2 px-1 leading-snug">Day 8 (self-host) was done <span class="font-bold">four days early</span>. Two IOUs left: CASL/PIPEDA reading, and your own API/webhook cheat sheet.</p>
+    <p class="text-[11px] text-ink-400 dark:text-ink-500 mt-2 px-1 leading-snug">Five machines banked. Next: the platform they all plug into — Supabase, the control layer, and the Lovable showroom.</p>
   </section>
 
   <!-- BLOCKS -->
   <section class="fade-up">
     <h2 class="text-[10px] font-black uppercase tracking-widest text-indigo-500 dark:text-indigo-400 mb-1 px-1">🗓 The new calendar</h2>
-    <p class="text-[11px] text-ink-400 dark:text-ink-500 mb-3 px-1 leading-snug">Blocks, not dates — a 12-hour shift day can't hold a 6-hour build. Heavy building on OFF days; reading, writing and outreach on WORK days.</p>
+    <p class="text-[11px] text-ink-400 dark:text-ink-500 mb-3 px-1 leading-snug">Platform first, then all 37 machines, then you pitch. Roughly 590 hours — about 16 weeks at 40 hrs. Nothing gets retrofitted because the control layer exists before machine #1.</p>
     <div id="blocks" class="space-y-3"></div>
   </section>
 
@@ -155,46 +155,74 @@ const save = () => { try { localStorage.setItem(K, JSON.stringify(done)); } catc
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const BLOCKS = [
-  { id:'A', title:'Proof — case studies + portfolio', hrs:5, tag:'was Day 7', color:'indigo',
-    why:'The one thing standing between you and selling. This morning you had nothing to show; now you have three tested systems and a failure test you passed on purpose.',
-    tasks:['Case study ×3: problem → what you built → the number → screenshot','Use the real numbers: 3-second lead response, AI junk-filtering, live missed-call rescue','Reframe old work as case studies too (content SOP, product-audit engine, payments rollout) = 6 assets','One-page site: name, what you do, 6 proofs, Cal.com link'],
-    out:'You send a link instead of explaining yourself.' },
-  { id:'B', title:'Two easy builds', hrs:5, tag:'your ideas + construction', color:'emerald',
-    why:'Both reuse patterns you already know cold. Fast wins that sell.',
-    tasks:['Missed-Appointment Reminder — no-show → "everything okay? rebook here" → owner alert','Estimate Follow-Up Ladder — quote unsigned → nudge at 2, 5, 10 days → stop on reply','Test both with fake bookings before they touch a client'],
-    out:'Five systems built. Two of them nobody else in your curriculum has.' },
-  { id:'C', title:'BUILD 4 — Inbox Triage Agent', hrs:6, tag:'was Day 10', color:'sky',
-    why:'Your "email identifier and reply". Gmail credential is already live on the server.',
-    tasks:['AI classifies every inbound: quote request / supplier / invoice / junk','Auto-label and auto-archive by category','Draft replies for the two most common types — drafts only, never auto-send','Urgency + complaint detection escalates immediately','Daily digest of what it handled'],
-    out:'The owner stops being the bottleneck in their own inbox.' },
-  { id:'D', title:'BUILD 5 — AI Voice Receptionist', hrs:6, tag:'was Day 11', color:'violet',
-    why:'The demo that makes owners go quiet. You already have a head start — the voice skeleton sits inside Build 1.',
-    tasks:['Answers on first ring, 24/7','Handles the 8 most common questions','Checks real availability and books','Escalates emergencies and "let me speak to a person" to a human','Full transcript logged'],
-    out:'Hand a prospect your demo number and let them try to break it.' },
-  { id:'E', title:'BUILDS 6 + 8 — Reactivation & Owner’s Brief', hrs:6, tag:'was Days 12–13', color:'amber',
-    why:'Reactivation pays your fee out of money they already own. CASL care: existing-relationship contacts only.',
-    tasks:['Import + clean the old customer list, dedupe, validate','AI writes a personalised opener per contact','Staggered send with strict consent + STOP handling','Monday 7am brief: money in, jobs booked, leads unanswered, reviews landed, the one thing to fix'],
-    out:'"You have 1,400 old customers. 2% at your $400 average is $11,200 — from a list you already own."' },
-  { id:'F', title:'BUILD 7 — Quote-from-Photo', hrs:6, tag:'was Day 13', color:'rose',
-    why:'A monster in construction. Quoting eats evenings; this kills that.',
-    tasks:['Customer texts photos of the job','Vision model estimates scope, materials, labour hours','Branded PDF quote from their own pricing table','E-signature + deposit link, auto follow-up at 2 and 5 days','Owner approves before send — never autonomous on pricing'],
-    out:'Photograph something in their shop and produce a quote before you leave.' },
-  { id:'G', title:'Demo machine', hrs:5, tag:'was Day 14', color:'teal',
-    why:'Your unfair advantage: showing up with their automation already running.',
-    tasks:['Pipeline: business name + website → branded working demo in under 45 min','Pre-write the demo landing page template with their logo','Update portfolio with all case studies + demo request form'],
-    out:'Walk into any business with their own automation already built.' },
-  { id:'H', title:'Weeks 3 & 4 — outreach and conversion', hrs:'6/day', tag:'was Days 15–30', color:'slate',
-    why:'Unchanged from the curriculum. Volume is the whole game — don’t redesign this part, just run it.',
-    tasks:['300-business list → top 100 scored and loaded','15 walk-ins + 30 emails + 20 calls, every single day','3 free builds delivered, then the 30-day results conversation','Close #1 and #2. Raise your price. Ask every client for two introductions.'],
-    out:'Two paying clients who refer you. That’s the whole sprint.' }
+  { id:'P1', title:'Platform — Supabase foundation', hrs:12, tag:'week 1', color:'violet',
+    why:'Nothing else starts until this exists. One Postgres project serves every client and every machine. Every table carries tenant_id, row-level security is on everywhere, and storage handles photos and PDFs. Get this wrong and all 37 machines inherit the mistake.',
+    tasks:['Supabase project, region Toronto, connected to n8n','Core schema: tenants, machines, tenant_machines, contacts, jobs, events','RLS policies on every table — test that one tenant cannot read another','Supabase Storage buckets + signed URL pattern for photos and PDFs','Tenant Zero created — the demo company every machine is shown against'],
+    out:'A single data layer that makes install a config clone instead of a rebuild.' },
+
+  { id:'P2', title:'Platform — the Control Layer', hrs:20, tag:'week 1–2', color:'violet',
+    why:'This is the actual product. Guardrails, human takeover and the approval queue are what separate you from someone selling Zapier hacks. Built once, inherited by all 37 machines.',
+    tasks:['machine_configs table — typed, bounded, per-tenant guardrail values','Four modes wired: autonomous, approval required, observe only, paused','Human takeover — owner interrupts mid-conversation, machine goes silent instantly','approvals table + queue any machine can write to','events table, append-only, with ai_model / ai_confidence / ai_reasoning on every AI call','config_change_requests — the "just ask me to change it" flow','Central consent + STOP check every machine calls before sending anything','Emergency keyword escalation that bypasses quiet hours and rate limits'],
+    out:'Observe-only mode exists — which means risk-free trials that cost you nothing.' },
+
+  { id:'P3', title:'Platform — Lovable showroom shell', hrs:18, tag:'week 2', color:'violet',
+    why:'The contractor never sees n8n. They see this. Build the shell once and every machine plugs a page into it.',
+    tasks:['Lovable app on Supabase auth, tenant-scoped','Machine list with mode switches per machine','Approvals inbox — approve, reject, edit, with reasons captured','Guardrail settings screens generated from machine_configs','Config change request cards: request → interpretation → current → proposed → approve','Live activity feed reading from events','Mobile-first — contractors are on a phone in a truck, not a desk'],
+    out:'A prospect looks at a real app, not a workflow diagram.' },
+
+  { id:'P4', title:'Platform — migrate Builds 1–5 + seed the showroom', hrs:12, tag:'week 2–3', color:'violet',
+    why:'Your five tested builds move onto the platform and become the first five machines in the catalogue. Then Tenant Zero gets a believable history — because a dashboard with three rows in it does not sell.',
+    tasks:['Migrate Missed-Call Rescue, Speed-to-Lead, Review Engine, Missed-Appointment, Estimate Ladder onto Supabase','Retire the Google Sheets logs — keep an optional client-readable export view','Fix the three-config-node problem in Build 5 by moving config to machine_configs','Seed script: months of realistic jobs, quotes, calls and outcomes for Tenant Zero','Seeded data includes failures and edge cases — an all-success demo is not credible','Verify: no real person data anywhere in the showroom'],
+    out:'Five machines live on the platform and a showroom that looks like a real business.' },
+
+  { id:'A', title:'Category A — Revenue machines (10)', hrs:125, tag:'weeks 3–6', color:'emerald',
+    why:'These directly make the contractor money, so they are the easiest thing you will ever sell. Voice Receptionist is the demo that makes owners go quiet — and the hardest build in the whole catalogue. Spec each machine immediately before building it.',
+    tasks:['AI Voice Receptionist — spec written, needs the sr-voice-bridge Node service (~35 hrs)','SMS Rescue + Lead Identifier + Lead Saver — already built, port and standardise','Email Lead Identifier + Saver — Gmail credential already live','DM Rescue (IG/FB) — SUBMIT THE META APP NOW, approval takes weeks','Booking Abandonment Rescue','Old Customer Reactivation — CASL: existing relationship only','AI Upsell Engine','Organic Review Collector — already built as Review Engine, port and standardise'],
+    out:'Ten machines that a contractor can connect directly to money in the bank.' },
+
+  { id:'B', title:'Category B — Sales & estimating machines (6)', hrs:119, tag:'weeks 6–9', color:'amber',
+    why:'Your unfair advantage. You speak this trade, and these are construction-specific in a way generic automation people cannot copy. Also the highest-liability category — an estimate in Ontario generally binds a contractor to within about 10% above it.',
+    tasks:['Photo → Quote AI — spec written (~35 hrs). Needs the client rate card; this is the ONE machine that is not a clone install','Blueprint → Material / Quote AI (~30 hrs)','Change Order Capture — biggest unbilled-revenue leak in construction','AI Inspection Report','Material & Pricing Finder','Supplier Negotiation AI','BLOCKER: solicitor reviews quote wording + services agreement before any paid install'],
+    out:'You photograph something in a prospect\'s shop and hand them a quote before you leave.' },
+
+  { id:'C', title:'Category C — Operations machines (6)', hrs:72, tag:'weeks 9–11', color:'sky',
+    why:'Sticky. Once a contractor runs their scheduling and purchasing through you, they do not leave. Lower drama than Category B and much faster to build now the platform exists.',
+    tasks:['AI Scheduling & Reminders','Dynamic Dispatch AI','Material Tracking','Material Countdown / Reorder AI — guardrail: max autonomous purchase','Purchase Order Generator','Invoice Creation'],
+    out:'Six machines that make you impossible to remove.' },
+
+  { id:'D', title:'Category D — Employee machines (5)', hrs:70, tag:'weeks 11–13', color:'teal',
+    why:'These sell to the owner but are used by the crew, which means the interface bar is higher — a labourer on a phone in the rain will not tolerate a bad UI.',
+    tasks:['Employee Job Assistant','AI Job Checklist','Employee Hours / Reports','Payroll Preparation','AI Camera / Site Activity Intelligence (~30 hrs, heaviest in the category)','Privacy: site camera intelligence needs a written employee-notice policy'],
+    out:'The crew uses it without being told to, which is the only real adoption test.' },
+
+  { id:'E', title:'Category E — Quality control machines (4)', hrs:55, tag:'weeks 13–14', color:'rose',
+    why:'Potentially the killer product for trades. Employee finishes job → photographs it → AI checks it → flags missing work → employee fixes it → AI approves → invoice releases. It ties quality directly to getting paid, which is the thing owners actually lose sleep over.',
+    tasks:['Photo / Video Job QC (~25 hrs)','Completion Verification','AI Inspection — before / after comparison','Invoice Release After QC — the machine that makes the whole category worth money','Guardrail: QC never releases an invoice autonomously above the approval threshold'],
+    out:'The last 5% of a job stops taking 30% of the time.' },
+
+  { id:'F', title:'Category F — Management & intelligence (6)', hrs:60, tag:'weeks 14–15', color:'indigo',
+    why:'These read from everything the other 31 machines have already logged, so they are cheap to build and they are the reason a contractor keeps paying you in month nine.',
+    tasks:['Profit Analysis','Company Overview Dashboard','AI Business Advisor','Employee Performance','Job Profitability','Material Cost Intelligence','All six read from events — no new data collection needed'],
+    out:'A monthly report showing exactly what you caught. That is what justifies the recurring fee.' },
+
+  { id:'G', title:'Showroom launch — package the catalogue', hrs:25, tag:'week 15–16', color:'violet',
+    why:'37 machines nobody can navigate is not a product line. This turns the catalogue into something sellable in a 20-minute conversation.',
+    tasks:['Sector packs: plumbing, HVAC, electrical, general contracting, roofing','60-second live-fire demo rehearsed out loud for every machine','Demo number protected — hard call cap, spend alert, rate limit','Publish proof.html with the real numbers and the Cal.com link','Pricing per machine and per pack','Install runbook — prove a new tenant onboards in under an afternoon','RULE: seeded showroom figures are always described as modelled, never as a client result'],
+    out:'You walk in, they pick a pack, and it is running that week.' },
+
+  { id:'H', title:'Outreach and conversion', hrs:'40/wk', tag:'week 16+', color:'slate',
+    why:'Unchanged. Volume is the whole game — do not redesign this part, just run it.',
+    tasks:['300-business list → top 100 scored and loaded','15 walk-ins + 30 emails + 20 calls, every single day','3 free builds delivered in observe-only, then the 30-day results conversation','Close #1 and #2. Raise your price. Ask every client for two introductions.'],
+    out:'Two paying clients who refer you.' }
 ];
 
 const WORKDAY = [
+  'Submit the Meta developer app for DM Rescue — approval takes weeks, start the clock NOW',
+  'Book a solicitor to review quote wording + services agreement (blocks Category B going paid)',
   'Read the CASL + PIPEDA section on the Pitch tab (10 min — fines are real)',
-  'Write your own API / webhook / JSON cheat sheet (you know this cold now)',
+  'Write the employee-notice privacy policy for site camera intelligence (Category D)',
   'Build the 300-business prospect list — splits across several evenings',
   'Memorise the 30-second opener + 12 objections — practise out loud in the truck',
-  'Submit the Meta developer app for DM Rescue — approval takes weeks, start the clock NOW',
   'Write 3 email templates + 2 DM templates (personalise first line only)'
 ];
 
