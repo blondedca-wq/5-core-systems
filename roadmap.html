@@ -60,6 +60,11 @@ input[type="checkbox"] { cursor:pointer; }
 
 <main class="max-w-3xl mx-auto px-4 pt-5"><div id="tab-roadmap" class="space-y-8">
 
+  <!-- AI Trade Business OS — positioning + architecture -->
+  <section id="os-intro" class="fade-up"></section>
+  <section id="os-arch" class="fade-up"></section>
+
+
   <!-- Progress ring -->
   <section class="fade-up">
     <div class="rounded-2xl bg-white dark:bg-ink-900 shadow-card border border-ink-200/60 dark:border-ink-800/60 p-5">
@@ -141,6 +146,11 @@ input[type="checkbox"] { cursor:pointer; }
       <p class="text-[12px] font-medium text-amber-900 dark:text-amber-200 mt-1 leading-snug">11 systems is a product line, not a sprint. Three tested builds already close deals. Build the next two, then <span class="font-bold">start selling</span> — let real customers pull the rest. The guy with 3 builds and 2 paying clients beats the guy with 11 builds and none.</p>
     </div>
   </section>
+
+  <!-- AI Trade Business OS — employees, suites, guardrails -->
+  <section id="os-emp" class="fade-up"></section>
+  <section id="os-suites" class="fade-up"></section>
+  <section id="os-guards" class="fade-up"></section>
 
   <p class="text-center text-[10px] text-ink-400 dark:text-ink-600 pt-2 pb-6">Progress saves in this browser · <button onclick="resetAll()" class="underline font-semibold">reset</button> · <a href="ship.html" class="underline font-semibold">full Ship curriculum</a></p>
 </div>
@@ -827,6 +837,73 @@ function showTab(name) {
 }
 document.querySelectorAll('.tabbtn').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
 showTab(localStorage.getItem('lab.roadmap.tab') || 'roadmap');
+
+</script>
+
+<!-- AI Trade Business OS renderer -->
+<script>
+
+(function(){
+'use strict';
+function $(id){return document.getElementById(id);}
+var W='rounded-2xl border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-900 p-4 shadow-card';
+var H2='text-[13px] font-black uppercase tracking-wide text-ink-500 dark:text-ink-400 mb-3';
+var ROLES=[['Owner / Admin','indigo','Full visibility · settings · guardrails · approvals · financials · automation controls'],['Manager','violet','Jobs · crews · dispatch · materials · reports · quotes · QC'],['Employee / Tech','sky','Jobs · hours · material usage · photos &amp; video · job reports · tasks'],['Customer','emerald','Booking · job status · quotes · communications · invoices · reviews']];
+var intro=$('os-intro');
+if(intro){intro.innerHTML='<h2 class="'+H2+'">🧠 What you are actually selling</h2>'+
+'<div class="rounded-2xl border border-indigo-300/60 dark:border-indigo-700/50 bg-gradient-to-br from-indigo-50 to-violet-50 dark:from-indigo-950/50 dark:to-violet-950/40 p-5 shadow-card">'+
+'<p class="text-[11px] font-black text-rose-600 dark:text-rose-400 uppercase tracking-wide">Not this</p>'+
+'<p class="text-[15px] font-bold text-ink-500 dark:text-ink-400 line-through decoration-rose-500/60 mt-0.5">&quot;We sell AI automations.&quot;</p>'+
+'<p class="text-[11px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wide mt-4">This</p>'+
+'<p class="text-[19px] font-black leading-snug mt-0.5">We build an <span class="bg-gradient-to-br from-indigo-500 to-violet-600 bg-clip-text text-transparent">AI operating system</span> for your trade business.</p>'+
+'<p class="text-[12px] text-ink-600 dark:text-ink-400 mt-3 leading-relaxed">The customer sees a simple website and app. The owner never needs to understand what is behind it — they just interact with their business through their private portal.</p></div>'+
+'<div class="grid gap-3 mt-3">'+
+'<div class="'+W+'"><p class="text-[11px] font-black uppercase tracking-wide text-ink-500 dark:text-ink-400 mb-2">What the business gets</p><p class="text-[12px] font-semibold leading-relaxed">Public website / customer portal <span class="opacity-40">→</span> private business app <span class="opacity-40">→</span> AI + automation layer <span class="opacity-40">→</span> business data &amp; integrations <span class="opacity-40">→</span> action / response</p></div>'+
+'<div class="'+W+'"><p class="text-[11px] font-black uppercase tracking-wide text-ink-500 dark:text-ink-400 mb-2">What is actually happening</p><p class="text-[12px] font-mono text-ink-600 dark:text-ink-300 leading-relaxed">Interface <span class="opacity-40">→</span> AI <span class="opacity-40">→</span> n8n <span class="opacity-40">→</span> Twilio <span class="opacity-40">→</span> business systems <span class="opacity-40">→</span> data <span class="opacity-40">→</span> decision <span class="opacity-40">→</span> action <span class="opacity-40">→</span> human escalation</p></div></div>'+
+'<div class="'+W+' mt-3"><p class="text-[11px] font-black uppercase tracking-wide text-ink-500 dark:text-ink-400 mb-3">Who sees what</p><div class="grid sm:grid-cols-2 gap-2.5">'+
+ROLES.map(function(r){return '<div class="rounded-xl bg-ink-100 dark:bg-ink-850 p-3"><p class="text-[12px] font-black text-'+r[1]+'-600 dark:text-'+r[1]+'-400">'+r[0]+'</p><p class="text-[11px] text-ink-600 dark:text-ink-400 mt-1 leading-relaxed">'+r[2]+'</p></div>';}).join('')+
+'</div><p class="text-[11px] text-ink-500 dark:text-ink-400 mt-3 italic">The owner can always step in manually. AI does the work autonomously; the business keeps control.</p></div>';}
+
+var PIL=[['Communication','indigo',['AI Receptionist','Call Rescue','SMS Rescue','Email AI','DM AI','Lead Rescue','Reactivation']],['Operations','amber',['Dispatch','Job Reports','QC Inspection','Hours','Materials','Scheduling']],['Finance','emerald',['Quotes','Change Orders','Invoices','Payroll Prep','Purchase Orders','Profit Analysis']]];
+var DATA=['Customers','Leads','Messages','Reviews','Jobs','Materials','Quotes','Invoices','Employees','Hours','Crews','Skills'];
+var arch=$('os-arch');
+if(arch){arch.innerHTML='<h2 class="'+H2+'">🏛 The architecture</h2><div class="'+W+'">'+
+'<div class="text-center mb-4"><span class="inline-block px-4 py-1.5 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[12px] font-black tracking-wide">AI TRADE BUSINESS OS</span></div>'+
+'<div class="grid sm:grid-cols-3 gap-2.5">'+PIL.map(function(p){return '<div class="rounded-xl border border-'+p[1]+'-200 dark:border-'+p[1]+'-800/60 bg-'+p[1]+'-50 dark:bg-'+p[1]+'-950/30 p-3"><p class="text-[11px] font-black uppercase tracking-wide text-'+p[1]+'-700 dark:text-'+p[1]+'-300">'+p[0]+'</p><ul class="text-[11px] text-ink-600 dark:text-ink-300 mt-1.5 space-y-0.5">'+p[2].map(function(m){return '<li>'+m+'</li>';}).join('')+'</ul></div>';}).join('')+'</div>'+
+'<div class="rounded-xl border border-sky-200 dark:border-sky-800/60 bg-sky-50 dark:bg-sky-950/30 p-3 mt-2.5"><p class="text-[11px] font-black uppercase tracking-wide text-sky-700 dark:text-sky-300">Customer</p><p class="text-[11px] text-ink-600 dark:text-ink-300 mt-1">Booking · Reminders · Updates · Quotes · Reviews · Follow-up</p></div>'+
+'<div class="text-center text-ink-400 dark:text-ink-600 my-2">↓</div>'+
+'<div class="rounded-xl border border-ink-300 dark:border-ink-700 bg-ink-100 dark:bg-ink-850 p-3"><p class="text-[11px] font-black uppercase tracking-wide text-ink-600 dark:text-ink-300 text-center">Central business data</p><div class="flex flex-wrap justify-center gap-1.5 mt-2">'+DATA.map(function(d){return '<span class="px-2 py-0.5 rounded-lg bg-white dark:bg-ink-900 text-[10px] font-bold">'+d+'</span>';}).join('')+'</div></div>'+
+'<div class="text-center text-ink-400 dark:text-ink-600 my-2">↓</div>'+
+'<div class="rounded-xl border border-ink-300 dark:border-ink-700 bg-ink-100 dark:bg-ink-850 p-3"><p class="text-[11px] font-black uppercase tracking-wide text-ink-600 dark:text-ink-300 text-center">Interface layer</p><p class="text-[11px] text-center text-ink-600 dark:text-ink-400 mt-1.5">Owner · Manager · Employee &nbsp;→&nbsp; Customer &nbsp;→&nbsp; Public website</p></div>'+
+'<p class="text-[11px] text-ink-500 dark:text-ink-400 mt-4 leading-relaxed border-t border-ink-200 dark:border-ink-800 pt-3"><strong class="text-ink-700 dark:text-ink-200">These are not separate products.</strong> They are modules on one central business intelligence layer. That is what lets you sell Call Rescue without AI Quoting, or AI Quoting + Material Tracking without rebuilding anything.</p></div>';}
+
+var EMP=[['Receptionist','Answers, qualifies, books, routes, escalates','COMMUNICATION'],['Sales assistant','Rescues leads, follows up, reactivates','COMMUNICATION'],['Estimator','Photo, blueprint and scope into a priced quote','SALES'],['Follow-up specialist','Chases quotes and abandoned bookings','SALES'],['Dispatcher','Matches crew, skills, travel and weather','OPERATIONS'],['Purchasing assistant','Compares suppliers, drafts POs','OPERATIONS'],['Bookkeeper','Turns job data into invoices and payroll prep','FINANCIAL'],['QC inspector','Reads job photos, flags defects, releases invoice','QUALITY'],['Operations assistant','Job reports, hours, materials, checklists','OPERATIONS']];
+var ST={'BANKED':'bg-emerald-600 text-white','NEXT':'bg-amber-500 text-white','WAITING':'bg-rose-500 text-white','TO BUILD':'bg-ink-300 dark:bg-ink-700 text-ink-700 dark:text-ink-200','R&amp;D':'bg-violet-500 text-white'};
+var SUITES=[
+['Communication Suite','indigo','The front door. Every channel resolves to one customer record.',[['AI Receptionist','TO BUILD'],['Call Rescue','BANKED'],['SMS Rescue','BANKED'],['Email AI','TO BUILD'],['DM AI','WAITING'],['Lead Rescue','BANKED'],['Customer Reactivation','TO BUILD']],'Phone, SMS, email, website forms, DMs and booking requests all flow through one AI filtering layer. Leads are classified HOT / WARM / COLD / SPAM, saved, graded, followed up and escalated until they book, decline or go inactive. Reactivation uses job history to justify each contact — never a database blast.','Human realism is the requirement. The receptionist must not sound like an obvious AI, and must know when to stop talking and transfer.'],
+['Sales Suite','violet','Turns a photo, a blueprint or a site visit into a priced quote.',[['AI Quote','TO BUILD'],['Photo Quote','TO BUILD'],['Blueprint Analysis','TO BUILD'],['Booking Rescue','TO BUILD'],['Estimate Follow-up','NEXT'],['Change Orders','TO BUILD']],'Scope, materials, labour, quantities, estimated hours, equipment, subcontracting, markups and taxes resolve into a final quote. Change orders compute original scope plus additional scope plus material and labour difference plus markup, then generate a formal change estimate for approval.','AI estimates never become final quotes automatically. Pricing rules, labour rates, markups, minimums, geographic pricing, emergency premiums, approved suppliers and a maximum variance are all owner-set. Outside the rules it goes to the approval queue.'],
+['Operations Suite','amber','Sticky. Once scheduling and purchasing run through you, they do not leave.',[['Dispatch','TO BUILD'],['Scheduling','TO BUILD'],['Job Reports','TO BUILD'],['Hours','TO BUILD'],['Materials','TO BUILD'],['Purchase Orders','TO BUILD'],['Employee workflows','TO BUILD']],'Materials track starting quantity, purchased, delivered, used and remaining — updated by text, voice, photo, form or job report. Alerts for running low, missing, delayed, wrong material, excessive usage and jobs about to run short. Purchasing compares suppliers on price, quality, availability, delivery, distance, quantity and existing agreements: best overall option, not cheapest.','Set a maximum autonomous purchase amount. Above it, the PO goes to the approval queue.'],
+['Financial Suite','emerald','The reason they still pay you in month nine.',[['Invoices','TO BUILD'],['Payroll Prep','TO BUILD'],['Profit Analysis','TO BUILD'],['Job Profitability','TO BUILD'],['Crew Profitability','TO BUILD']],'Employees submit work description, hours, materials, photos, voice notes or the existing quote; AI builds the invoice from job data, work completed, labour, materials, approved changes, pricing rules and taxes. Profitability rolls up Business, Crews, Employees, Jobs and Customers.','AI prepares payroll. A human approves payroll. Required invoice fields are defined by the business so AI cannot ship an incomplete invoice.'],
+['Quality Suite','fuchsia','Ties quality directly to getting paid.',[['AI Inspection','TO BUILD'],['Photo/Video QC','TO BUILD'],['Defect Detection','TO BUILD'],['Upsell Detection','TO BUILD'],['Automated Reports','TO BUILD'],['Review Collection','BANKED']],'AI checks completed-job media for visible mistakes, incomplete work, poor workmanship, potential defects, missing components, safety concerns, scope differences and likely complaints, then writes an inspection report with photo evidence. Review collection waits an appropriate period, asks about the experience, and routes dissatisfied customers to customer service instead of a public review link.','Collect authentic feedback and resolve problems. Never manufacture positive reviews or suppress legitimate criticism. QC never releases an invoice autonomously above the approval threshold.'],
+['Advanced Suite','slate','Future R and D — keep it separate from the normal stack.',[['Camera AI','R&amp;D'],['Computer Vision','R&amp;D'],['Site Monitoring','R&amp;D'],['Predictive Analytics','R&amp;D']],'Site cameras feed computer vision to detect activity, detect safety issues, monitor progress, compare expected versus actual and generate alerts. Substantially more infrastructure than the rest of the catalogue.','Needs a written employee-notice privacy policy before any install.']];
+var GUARDS=[['1','Autonomous by default','AI performs routine work without requiring the owner.'],['2','Human override always available','The owner or manager can intervene at any point, mid-conversation.'],['3','Configurable guardrails','What AI can approve and send, spending limits, pricing limits, discount limits, escalation rules, who gets alerted, which actions need approval.'],['4','Accuracy over automation','If AI is not confident enough, stop and escalate rather than guess.'],['5','Every action logged','What happened, why, what AI did, what data it used, who approved it.'],['6','Personalisation','Use customer, job, history, situation, timing and previous communication. Nothing should feel like mass automation.'],['7','Modular architecture','Independent modules that talk to each other — so Call Rescue sells without AI Quoting.'],['8','Four operating modes','Autonomous, approval required, observe only, paused. Observe-only is what makes free trials cost you nothing.']];
+
+var emp=$('os-emp');
+if(emp){emp.innerHTML='<h2 class="'+H2+' mb-2">👷 The AI employees</h2><p class="text-[12px] text-ink-500 dark:text-ink-400 mb-3 leading-relaxed">A customisable AI employee layer sitting on a business operating system. The app is the control center, n8n is the nervous system, the models are the reasoning layer — and the owner stays the final authority.</p><div class="grid sm:grid-cols-3 gap-2">'+
+EMP.map(function(e){return '<div class="rounded-xl border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-900 p-3 shadow-card"><p class="text-[12px] font-black">'+e[0]+'</p><p class="text-[11px] text-ink-600 dark:text-ink-400 mt-1 leading-relaxed">'+e[1]+'</p><p class="text-[9px] font-black uppercase tracking-wide text-ink-400 dark:text-ink-500 mt-2">'+e[2]+'</p></div>';}).join('')+'</div>';}
+var su=$('os-suites');
+if(su){su.innerHTML='<h2 class="'+H2+' mb-2">📦 The six suites — what you actually sell</h2><p class="text-[12px] text-ink-500 dark:text-ink-400 mb-3 leading-relaxed">The underlying system stays the same; the modules sold change per client. Tap any suite for the full module list and its guardrail.</p><div class="space-y-2.5">'+
+SUITES.map(function(s){
+var c=s[1]==='slate'?'ink':s[1];
+var mods=s[3].map(function(m){return '<div class="flex items-center justify-between gap-2 py-1.5 border-b border-ink-200/60 dark:border-ink-800/60 last:border-0"><span class="text-[12px] text-ink-700 dark:text-ink-200">'+m[0]+'</span><span class="px-2 py-0.5 rounded-md text-[9px] font-black shrink-0 '+(ST[m[1]]||ST['TO BUILD'])+'">'+m[1]+'</span></div>';}).join('');
+return '<details class="rounded-2xl border border-'+c+'-300/60 dark:border-'+c+'-800/60 bg-'+c+'-50 dark:bg-'+c+'-950/30 overflow-hidden"><summary class="p-4 flex items-start gap-3 cursor-pointer list-none"><span class="oschev text-ink-400 dark:text-ink-500 text-[11px] mt-1">▶</span><span class="flex-1 min-w-0"><span class="block text-[13px] font-black">'+s[0]+'</span><span class="block text-[11px] text-ink-500 dark:text-ink-400 mt-0.5 leading-relaxed">'+s[2]+'</span></span><span class="px-2 py-0.5 rounded-lg bg-'+c+'-100 dark:bg-'+c+'-900/60 text-'+c+'-700 dark:text-'+c+'-300 text-[10px] font-black shrink-0">'+s[3].length+'</span></summary><div class="px-4 pb-4 pl-9"><p class="text-[12px] text-ink-600 dark:text-ink-400 leading-relaxed">'+s[4]+'</p><div class="rounded-xl bg-white/70 dark:bg-ink-900/70 p-3 mt-3">'+mods+'</div><div class="rounded-xl border border-amber-300/60 dark:border-amber-800/60 bg-amber-50 dark:bg-amber-950/30 p-3 mt-2.5"><p class="text-[10px] font-black uppercase tracking-wide text-amber-700 dark:text-amber-300">🛡 Guardrail</p><p class="text-[11px] text-ink-600 dark:text-ink-400 mt-1 leading-relaxed">'+s[5]+'</p></div></div></details>';}).join('')+'</div>';}
+var gd=$('os-guards');
+if(gd){gd.innerHTML='<h2 class="'+H2+' mb-2">🛡 The eight guardrails</h2><p class="text-[12px] text-ink-500 dark:text-ink-400 mb-3 leading-relaxed">These apply across every module. They are also the whole sales argument — they are what separates you from someone selling Zapier hacks.</p><div class="grid sm:grid-cols-2 gap-2">'+
+GUARDS.map(function(g){return '<div class="rounded-xl border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-900 p-3 shadow-card flex gap-3"><span class="w-6 h-6 shrink-0 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[11px] font-black flex items-center justify-center">'+g[0]+'</span><span class="min-w-0"><span class="block text-[12px] font-black">'+g[1]+'</span><span class="block text-[11px] text-ink-600 dark:text-ink-400 mt-0.5 leading-relaxed">'+g[2]+'</span></span></div>';}).join('')+'</div>';}
+var st=document.createElement('style');
+st.textContent='#os-suites summary::-webkit-details-marker{display:none}#os-suites details[open] .oschev{transform:rotate(90deg)}#os-suites .oschev{transition:transform .18s ease;display:inline-block}';
+document.head.appendChild(st);
+})();
 
 </script>
 </body>
