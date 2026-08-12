@@ -190,10 +190,179 @@ const BLOCKS = [
     tasks:['Migrate Missed-Call Rescue, Speed-to-Lead, Review Engine, Missed-Appointment, Estimate Ladder onto Supabase','Retire the Google Sheets logs — keep an optional client-readable export view','Fix the three-config-node problem in Build 5 by moving config to machine_configs','Seed script: months of realistic jobs, quotes, calls and outcomes for Tenant Zero','Seeded data includes failures and edge cases — an all-success demo is not credible','Verify: no real person data anywhere in the showroom'],
     out:'Five machines live on the platform and a showroom that looks like a real business.' },
 
-  { id:'A', title:'Category A — Revenue machines (10)', hrs:125, tag:'weeks 3–6', color:'emerald',
-    why:'These directly make the contractor money, so they are the easiest thing you will ever sell. Voice Receptionist is the demo that makes owners go quiet — and the hardest build in the whole catalogue. Spec each machine immediately before building it.',
-    tasks:['AI Voice Receptionist — spec written, needs the sr-voice-bridge Node service (~35 hrs)','SMS Rescue + Lead Identifier + Lead Saver — already built, port and standardise','Email Lead Identifier + Saver — Gmail credential already live','DM Rescue (IG/FB) — SUBMIT THE META APP NOW, approval takes weeks','Booking Abandonment Rescue','Old Customer Reactivation — CASL: existing relationship only','AI Upsell Engine','Organic Review Collector — already built as Review Engine, port and standardise'],
-    out:'Ten machines that a contractor can connect directly to money in the bank.' },
+  {
+    "id": "A",
+    "title": "Category A — Revenue machines (10)",
+    "hrs": 128,
+    "tag": "Aug 12 → Sep 2 · 16 sprint days",
+    "color": "emerald",
+    "why": "These directly make the contractor money, so they are the easiest thing you will ever sell. Sixteen 8-hour sprint days, one target per day, no drifting. By Day 16 every Category A machine runs automated end-to-end AND the portfolio dashboard runs the whole catalogue against a fake company with seeded fake data — the thing you actually demo. Spec each machine the morning you build it.",
+    "days": [
+      {
+        "d": "Day 1 · Wed Aug 12",
+        "t": "Clean slate + machine catalogue",
+        "steps": [
+          "ONE big purge: every test row out of Supabase and Sheets — quote_log smoke tests, TEST LEAD / DEDUPE contacts, Aug 9 review rows carrying a real name and number",
+          "Fix the sr_tenant_by_number RPC empty-body bug — tenant lookup must work before machine #6, not after",
+          "Register the 5 banked builds as catalogue machines with machine_configs rows each",
+          "Flip one machine through all four modes — autonomous, approval, observe, paused — and verify each actually changes behaviour",
+          "Replace the demo tenant placeholder review_link with a real one"
+        ]
+      },
+      {
+        "d": "Day 2 · Thu Aug 13",
+        "t": "Client-onboarding customization system",
+        "steps": [
+          "Build the onboarding form: business info, services, pricing rules, review link, Twilio numbers, owner phone/email",
+          "SMS preferences captured: tone, wording, send windows, opt-in language, escalation rules, guardrail values",
+          "Form writes straight into sr_tenant_profile + machine_configs — zero manual SQL per client",
+          "Prove plug-and-play: re-onboard the demo tenant from scratch using only the form",
+          "Submit the Meta developer app for DM Rescue — the approval clock starts today"
+        ]
+      },
+      {
+        "d": "Day 3 · Fri Aug 14",
+        "t": "SMS Rescue + Lead Identifier + Lead Saver, ported",
+        "steps": [
+          "Port all three onto the platform: config from machine_configs, Control Gate on every send",
+          "Retire the Build 1 Google Sheets log — Supabase only, optional export view for clients",
+          "Every action logged to events with ai_confidence and reasoning",
+          "Full router regression: missed call, STOP, review reply, junk lead — all four paths clean"
+        ]
+      },
+      {
+        "d": "Day 4 · Mon Aug 17",
+        "t": "Email Lead Identifier + Saver",
+        "steps": [
+          "Gmail trigger → AI classifies HOT / WARM / COLD / SPAM",
+          "Lead + thread saved to contacts, resolved against existing customers — no duplicates",
+          "Replies drafted in approval mode; HOT leads text the owner instantly",
+          "Test battery: 10 seeded emails covering all four grades plus one emergency"
+        ]
+      },
+      {
+        "d": "Day 5 · Tue Aug 18",
+        "t": "Review Collector standardised + Booking Abandonment Rescue",
+        "steps": [
+          "Standardise the live Review Engine as a catalogue machine — config, naming, machine_configs",
+          "Booking Abandonment: detect stalled bookings → nudge ladder → stop instantly on reply",
+          "Abandonment leads flow into Lead Saver — nothing lives outside the CRM",
+          "Live-test both against the SMS router, including Chain C reminder SMS"
+        ]
+      },
+      {
+        "d": "Day 6 · Wed Aug 19",
+        "t": "Voice Receptionist I — the bridge",
+        "steps": [
+          "sr-voice-bridge Node service: Twilio Media Streams ↔ STT ↔ TTS loop running",
+          "Deployed on the Toronto server behind auto.secondring.ca with HTTPS",
+          "Hit the latency budget: reply audio under ~1.5s or it feels robotic",
+          "Watchdog + auto-restart wired so a bridge crash never eats a live call silently"
+        ]
+      },
+      {
+        "d": "Day 7 · Thu Aug 20",
+        "t": "Voice Receptionist II — the brain",
+        "steps": [
+          "Intents wired: book, quote request, emergency, existing customer, take a message",
+          "Answers pulled from sr_tenant_profile: hours, services, service area, pricing rules",
+          "Human-realism pass: handles interruptions, no AI tells, knows when to stop talking",
+          "Existing customer vs new lead identified from contacts before the second sentence"
+        ]
+      },
+      {
+        "d": "Day 8 · Fri Aug 21",
+        "t": "Voice Receptionist III — actions + guardrails",
+        "steps": [
+          "Booking and message-taking write to jobs and contacts; every caller graded into Lead Saver",
+          "Human takeover mid-call + escalation to the owner when confidence drops",
+          "Guardrails: quiet hours, emergency keyword bypass, never quotes outside pricing rules",
+          "Four modes verified on voice — observe-only records and grades but never speaks actions"
+        ]
+      },
+      {
+        "d": "Day 9 · Mon Aug 24",
+        "t": "Voice Receptionist IV — hardening",
+        "steps": [
+          "Barge-in, silence handling, voicemail detection, consent + STOP respected",
+          "Every call logged with transcript, ai_confidence and outcome in events",
+          "Live-fire battery from a real phone: 10 scripted calls covering every intent",
+          "Failure injection on the bridge — kill it mid-call and verify graceful recovery"
+        ]
+      },
+      {
+        "d": "Day 10 · Tue Aug 25",
+        "t": "DM Rescue (IG/FB)",
+        "steps": [
+          "Build against the Meta test app while approval is pending — do not wait on Meta",
+          "Webhook → classify → qualify → push into contacts as graded leads",
+          "Common-question answers from the tenant profile; qualified prospects alert the owner",
+          "Ships in observe-only until Meta approval lands — WAITING gate stays on the scoreboard"
+        ]
+      },
+      {
+        "d": "Day 11 · Wed Aug 26",
+        "t": "Old Customer Reactivation",
+        "steps": [
+          "Import historical customers, segment by job history — every message justified by a past job, never a blast",
+          "CASL filter hard-coded: existing business relationship only, opt-outs honoured platform-wide",
+          "Personalised outreach generated per segment with send windows respected",
+          "Default mode: approval required — the owner sees every message before it sends"
+        ]
+      },
+      {
+        "d": "Day 12 · Thu Aug 27",
+        "t": "AI Upsell Engine",
+        "steps": [
+          "Job media → AI detects legitimate additional opportunities, kept separate from defects",
+          "Manager review card in the approvals inbox — approve, edit or reject with reasons",
+          "Approved offers go out personalised to the customer and job history",
+          "Guardrail: never auto-sends, never upsells on a job with an open complaint"
+        ]
+      },
+      {
+        "d": "Day 13 · Fri Aug 28",
+        "t": "Integration day — one OS, not ten scripts",
+        "steps": [
+          "Unified inbox: phone, SMS, email, DM and booking all resolve to one contact record",
+          "Approvals queue end-to-end across all ten machines from the Lovable app",
+          "Full regression: router, Control Gate and consent check on every send path",
+          "Error watchdog covers every new machine — inject one failure per machine and verify the text"
+        ]
+      },
+      {
+        "d": "Day 14 · Mon Aug 31",
+        "t": "The fake company",
+        "steps": [
+          "Tenant Zero becomes a believable fake contractor: name, crew, services, service area, rate card",
+          "Seed script: six months of fake calls, leads, quotes, bookings, jobs, reviews and reactivations",
+          "Seeded data includes failures and edge cases — an all-success demo is not credible",
+          "Verify: zero real-person data anywhere in the showroom, and every figure marked modelled"
+        ]
+      },
+      {
+        "d": "Day 15 · Tue Sep 1",
+        "t": "The portfolio dashboard",
+        "steps": [
+          "Lovable dashboard on the fake company: per-machine KPI cards — calls rescued, leads graded, reviews collected, dollars recovered (modelled)",
+          "Live activity feed + mode switches + approvals inbox all working against seeded data",
+          "Mobile-first pass — the whole demo must land on a phone screen",
+          "Every seeded number labelled MODELLED in the UI — never presented as a client result"
+        ]
+      },
+      {
+        "d": "Day 16 · Wed Sep 2",
+        "t": "Demo hardening — ship Category A",
+        "steps": [
+          "Run all ten machines live against the fake company end-to-end; fix everything that breaks",
+          "60-second demo script per machine, rehearsed out loud",
+          "Screen-record the money moments for the portfolio site",
+          "Exit test: onboard a brand-new fake tenant via the Day 2 form in under an afternoon"
+        ]
+      }
+    ],
+    "out": "Ten revenue machines fully automated on the platform, plus a portfolio dashboard running a fake company on six months of seeded data — the complete Category A demo, shippable."
+  },
 
   { id:'B', title:'Category B — Sales & estimating machines (6)', hrs:119, tag:'weeks 6–9', color:'amber',
     why:'Your unfair advantage. You speak this trade, and these are construction-specific in a way generic automation people cannot copy. Also the highest-liability category — an estimate in Ontario generally binds a contractor to within about 10% above it.',
@@ -230,6 +399,9 @@ const BLOCKS = [
     tasks:['300-business list → top 100 scored and loaded','15 walk-ins + 30 emails + 20 calls, every single day','3 free builds delivered in observe-only, then the 30-day results conversation','Close #1 and #2. Raise your price. Ask every client for two introductions.'],
     out:'Two paying clients who refer you.' }
 ];
+
+// Day-based blocks: flatten sprint steps into tasks so progress counting works unchanged
+BLOCKS.forEach(b => { if (b.days) b.tasks = b.days.flatMap(d => d.steps); });
 
 const WORKDAY = [
   'Submit the Meta developer app for DM Rescue — approval takes weeks, start the clock NOW',
@@ -321,7 +493,20 @@ function renderBlocks() {
       </summary>
       <div class="px-4 pb-4 border-t border-ink-100 dark:border-ink-800 pt-3">
         <p class="text-[12px] font-medium text-ink-500 dark:text-ink-400 leading-snug mb-2">${esc(b.why)}</p>
-        ${b.tasks.map((t,i) => {
+        ${b.days ? (() => { let gi = 0; return b.days.map(day => {
+          const start = gi, dayDone = day.steps.filter((_,si) => done['b'+b.id+'-'+(start+si)]).length, allDone = dayDone === day.steps.length;
+          return `<div class="mt-2.5 first:mt-1 rounded-xl border ${allDone ? 'border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20' : 'border-ink-100 dark:border-ink-800 bg-ink-50/60 dark:bg-ink-850/40'} px-3 py-2">
+            <div class="flex items-baseline gap-2 flex-wrap">
+              <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">${allDone ? '✓ ' : ''}${esc(day.d)}</span>
+              <span class="text-[12px] font-bold ${allDone ? 'line-through text-ink-400 dark:text-ink-600' : ''}">${esc(day.t)}</span>
+              <span class="ml-auto text-[9px] font-black text-ink-400 dark:text-ink-500 tabular-nums">${dayDone}/${day.steps.length} · 8H</span>
+            </div>
+            ${day.steps.map(t => { const k = 'b'+b.id+'-'+(gi++), on = !!done[k];
+              return `<label class="flex items-start gap-3 py-1.5 cursor-pointer">
+                <input type="checkbox" data-k="${k}" ${on?'checked':''} class="mt-0.5 w-5 h-5 rounded accent-emerald-600 shrink-0">
+                <span class="text-[13px] font-medium leading-snug ${on ? 'line-through text-ink-400 dark:text-ink-600' : ''}">${esc(t)}</span>
+              </label>`; }).join('')}
+          </div>`; }).join(''); })() : b.tasks.map((t,i) => {
           const k = 'b'+b.id+'-'+i, on = !!done[k];
           return `<label class="flex items-start gap-3 py-2 cursor-pointer">
             <input type="checkbox" data-k="${k}" ${on?'checked':''} class="mt-0.5 w-5 h-5 rounded accent-emerald-600 shrink-0">
