@@ -552,8 +552,8 @@ let activeTab = 'today';
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-const CAT_COLORS = { job:'bg-blue-900', drop:'bg-green-600', workout:'bg-orange-500', meal:'bg-purple-600', grocery:'bg-amber-600', family:'bg-pink-500', winddown:'bg-gray-500', prayer:'bg-teal-500', custom:'bg-indigo-500' };
-const CAT_NAMES = { job:'Job', drop:'Dropshipping', workout:'Workout', meal:'Meal/Review', grocery:'Groceries', family:'Family', winddown:'Wind-down', prayer:'Prayer', custom:'Custom' };
+const CAT_COLORS = { job:'bg-blue-900', build:'bg-emerald-600', drop:'bg-green-600', workout:'bg-orange-500', meal:'bg-purple-600', grocery:'bg-amber-600', family:'bg-pink-500', winddown:'bg-gray-500', prayer:'bg-teal-500', custom:'bg-indigo-500' };
+const CAT_NAMES = { job:'Job', build:'AI Build', drop:'Dropshipping', workout:'Workout', meal:'Meal/Review', grocery:'Groceries', family:'Family', winddown:'Wind-down', prayer:'Prayer', custom:'Custom' };
 
 function dateKey(y, m, d) { return `${y}-${m + 1}-${d}`; }
 function sameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
@@ -631,6 +631,8 @@ function eventsForDay(date) {
 
   if (work) {
     events.push({ cat: 'job', label: 'Job shift', start: '7:00 AM', end: '7:00 PM', color: CAT_COLORS.job });
+  } else {
+    events.push({ cat: 'build', label: '🤖 AI Automation Lab — roadmap sprint (day off)', start: '5:00 AM', end: '5:00 PM', color: CAT_COLORS.build });
   } 
 
   // Evening workout (1h) after the 7–7 block, every day
@@ -1801,17 +1803,17 @@ document.getElementById('groceriesClear') && document.getElementById('groceriesC
 /* ============================================================
    WORKOUTS TAB (split planner + weight tracker)
    ============================================================ */
-const SPLIT_KEY = 'planner.workoutSplit.v6';
+const SPLIT_KEY = 'planner.workoutSplit.v7';
 const WLOG_KEY  = 'planner.workoutLog.v2';
 const WO_DOW_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const DEFAULT_SPLIT = {
   version: 6,
   days: [
-    { dow: 0, name: 'Rest / Cardio', exercises: [
+    { dow: 6, name: 'Rest / Cardio', exercises: [
       { name: 'Zone 2 cardio', sets: 1, reps: '30–45 min' },
       { name: 'Mobility / stretching', sets: 1, reps: '15–20 min' },
     ]},
-    { dow: 1, name: 'Chest + Back A (horizontal)', exercises: [
+    { dow: 0, name: 'Chest + Back A (horizontal)', exercises: [
       { name: 'Barbell Bench Press', sets: 3, reps: '6–10' },
       { name: 'Chest-supported Row', sets: 3, reps: '8–12' },
       { name: 'Incline Dumbbell Press', sets: 3, reps: '8–12' },
@@ -1820,7 +1822,7 @@ const DEFAULT_SPLIT = {
       { name: 'Cable Rear Delt Fly', sets: 3, reps: '12–15' },
       { name: 'Decline Crunch', sets: 3, reps: '12–15' },
     ]},
-    { dow: 2, name: 'Legs A (Quad-focus)', exercises: [
+    { dow: 1, name: 'Legs A (Quad-focus)', exercises: [
       { name: 'Seated Leg Curl', sets: 3, reps: '12–15' },
       { name: 'Back Squat', sets: 3, reps: '6–10' },
       { name: 'Leg Press', sets: 3, reps: '10–15' },
@@ -1829,7 +1831,7 @@ const DEFAULT_SPLIT = {
       { name: 'Standing Calf Raise', sets: 4, reps: '8–15' },
       { name: 'Hanging Leg Raise', sets: 3, reps: '10–15' },
     ]},
-    { dow: 3, name: 'Shoulders + Arms', exercises: [
+    { dow: 2, name: 'Shoulders + Arms', exercises: [
       { name: 'Standing Overhead Press', sets: 3, reps: '6–10' },
       { name: 'Cable Lateral Raise', sets: 4, reps: '12–20' },
       { name: 'Rear Delt Fly', sets: 3, reps: '12–15' },
@@ -1839,7 +1841,7 @@ const DEFAULT_SPLIT = {
       { name: 'Rope Pushdown', sets: 3, reps: '12–15' },
       { name: 'Decline Crunch', sets: 3, reps: '12–15' },
     ]},
-    { dow: 4, name: 'Chest + Back B (vertical)', exercises: [
+    { dow: 3, name: 'Chest + Back B (vertical)', exercises: [
       { name: 'Incline Barbell Press', sets: 3, reps: '6–10' },
       { name: 'Neutral-grip Lat Pulldown', sets: 3, reps: '8–12' },
       { name: 'Machine Chest Press', sets: 3, reps: '8–12' },
@@ -1848,7 +1850,7 @@ const DEFAULT_SPLIT = {
       { name: 'Reverse Pec Deck', sets: 3, reps: '12–15' },
       { name: 'Decline Crunch', sets: 3, reps: '12–15' },
     ]},
-    { dow: 5, name: 'Legs B (Ham/Glute-focus)', exercises: [
+    { dow: 4, name: 'Legs B (Ham/Glute-focus)', exercises: [
       { name: 'Seated Leg Curl', sets: 3, reps: '12–15' },
       { name: 'Hyperextension (45°)', sets: 3, reps: '10–15' },
       { name: 'Hip Thrust', sets: 3, reps: '8–12' },
@@ -1857,7 +1859,7 @@ const DEFAULT_SPLIT = {
       { name: 'Seated Calf Raise', sets: 4, reps: '10–20' },
       { name: 'Hanging Leg Raise', sets: 3, reps: '10–15' },
     ]},
-    { dow: 6, name: 'Rest / Cardio', exercises: [
+    { dow: 5, name: 'Rest / Cardio', exercises: [
       { name: 'Zone 2 cardio', sets: 1, reps: '30–45 min' },
       { name: 'Mobility / stretching', sets: 1, reps: '15–20 min' },
     ]},

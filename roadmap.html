@@ -194,9 +194,9 @@ const BLOCKS = [
     "id": "A",
     "title": "Category A — Revenue machines (10)",
     "hrs": 128,
-    "tag": "Aug 12 → Sep 2 · 16 sprint days",
+    "tag": "Aug 12 → Sep 10 · 16 day-off sprints · 5a–5p",
     "color": "emerald",
-    "why": "These directly make the contractor money, so they are the easiest thing you will ever sell. Sixteen 8-hour sprint days, one target per day, no drifting. By Day 16 every Category A machine runs automated end-to-end AND the portfolio dashboard runs the whole catalogue against a fake company with seeded fake data — the thing you actually demo. Spec each machine the morning you build it.",
+    "why": "These directly make the contractor money, so they are the easiest thing you will ever sell. Sixteen sprint days — your days off only (5am–5pm, around the job's 2-2-3 rotation), one target per day, no drifting. By Day 16 every Category A machine runs automated end-to-end AND the portfolio dashboard runs the whole catalogue against a fake company with seeded fake data — the thing you actually demo. Spec each machine the morning you build it.",
     "days": [
       {
         "d": "Day 1 · Wed Aug 12",
@@ -221,7 +221,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 3 · Fri Aug 14",
+        "d": "Day 3 · Mon Aug 17",
         "t": "SMS Rescue + Lead Identifier + Lead Saver, ported",
         "steps": [
           "Port all three onto the platform: config from machine_configs, Control Gate on every send",
@@ -231,7 +231,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 4 · Mon Aug 17",
+        "d": "Day 4 · Tue Aug 18",
         "t": "Email Lead Identifier + Saver",
         "steps": [
           "Gmail trigger → AI classifies HOT / WARM / COLD / SPAM",
@@ -241,7 +241,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 5 · Tue Aug 18",
+        "d": "Day 5 · Fri Aug 21",
         "t": "Review Collector standardised + Booking Abandonment Rescue",
         "steps": [
           "Standardise the live Review Engine as a catalogue machine — config, naming, machine_configs",
@@ -251,7 +251,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 6 · Wed Aug 19",
+        "d": "Day 6 · Sat Aug 22",
         "t": "Voice Receptionist I — the bridge",
         "steps": [
           "sr-voice-bridge Node service: Twilio Media Streams ↔ STT ↔ TTS loop running",
@@ -261,7 +261,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 7 · Thu Aug 20",
+        "d": "Day 7 · Sun Aug 23",
         "t": "Voice Receptionist II — the brain",
         "steps": [
           "Intents wired: book, quote request, emergency, existing customer, take a message",
@@ -271,7 +271,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 8 · Fri Aug 21",
+        "d": "Day 8 · Wed Aug 26",
         "t": "Voice Receptionist III — actions + guardrails",
         "steps": [
           "Booking and message-taking write to jobs and contacts; every caller graded into Lead Saver",
@@ -281,7 +281,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 9 · Mon Aug 24",
+        "d": "Day 9 · Thu Aug 27",
         "t": "Voice Receptionist IV — hardening",
         "steps": [
           "Barge-in, silence handling, voicemail detection, consent + STOP respected",
@@ -291,7 +291,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 10 · Tue Aug 25",
+        "d": "Day 10 · Mon Aug 31",
         "t": "DM Rescue (IG/FB)",
         "steps": [
           "Build against the Meta test app while approval is pending — do not wait on Meta",
@@ -301,7 +301,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 11 · Wed Aug 26",
+        "d": "Day 11 · Tue Sep 1",
         "t": "Old Customer Reactivation",
         "steps": [
           "Import historical customers, segment by job history — every message justified by a past job, never a blast",
@@ -311,7 +311,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 12 · Thu Aug 27",
+        "d": "Day 12 · Fri Sep 4",
         "t": "AI Upsell Engine",
         "steps": [
           "Job media → AI detects legitimate additional opportunities, kept separate from defects",
@@ -321,7 +321,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 13 · Fri Aug 28",
+        "d": "Day 13 · Sat Sep 5",
         "t": "Integration day — one OS, not ten scripts",
         "steps": [
           "Unified inbox: phone, SMS, email, DM and booking all resolve to one contact record",
@@ -331,7 +331,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 14 · Mon Aug 31",
+        "d": "Day 14 · Sun Sep 6",
         "t": "The fake company",
         "steps": [
           "Tenant Zero becomes a believable fake contractor: name, crew, services, service area, rate card",
@@ -341,7 +341,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 15 · Tue Sep 1",
+        "d": "Day 15 · Wed Sep 9",
         "t": "The portfolio dashboard",
         "steps": [
           "Lovable dashboard on the fake company: per-machine KPI cards — calls rescued, leads graded, reviews collected, dollars recovered (modelled)",
@@ -351,7 +351,7 @@ const BLOCKS = [
         ]
       },
       {
-        "d": "Day 16 · Wed Sep 2",
+        "d": "Day 16 · Thu Sep 10",
         "t": "Demo hardening — ship Category A",
         "steps": [
           "Run all ten machines live against the fake company end-to-end; fix everything that breaks",
@@ -499,7 +499,7 @@ function renderBlocks() {
             <div class="flex items-baseline gap-2 flex-wrap">
               <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">${allDone ? '✓ ' : ''}${esc(day.d)}</span>
               <span class="text-[12px] font-bold ${allDone ? 'line-through text-ink-400 dark:text-ink-600' : ''}">${esc(day.t)}</span>
-              <span class="ml-auto text-[9px] font-black text-ink-400 dark:text-ink-500 tabular-nums">${dayDone}/${day.steps.length} · 8H</span>
+              <span class="ml-auto text-[9px] font-black text-ink-400 dark:text-ink-500 tabular-nums">${dayDone}/${day.steps.length} · 5A–5P</span>
             </div>
             ${day.steps.map(t => { const k = 'b'+b.id+'-'+(gi++), on = !!done[k];
               return `<label class="flex items-start gap-3 py-1.5 cursor-pointer">
