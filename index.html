@@ -552,8 +552,8 @@ let activeTab = 'today';
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-const CAT_COLORS = { job:'bg-blue-900', build:'bg-emerald-600', drop:'bg-green-600', workout:'bg-orange-500', meal:'bg-purple-600', grocery:'bg-amber-600', family:'bg-pink-500', winddown:'bg-gray-500', prayer:'bg-teal-500', custom:'bg-indigo-500' };
-const CAT_NAMES = { job:'Job', build:'AI Build', drop:'Dropshipping', workout:'Workout', meal:'Meal/Review', grocery:'Groceries', family:'Family', winddown:'Wind-down', prayer:'Prayer', custom:'Custom' };
+const CAT_COLORS = { job:'bg-blue-900', build:'bg-emerald-600', drop:'bg-green-600', workout:'bg-orange-500', meal:'bg-purple-600', grocery:'bg-amber-600', family:'bg-pink-500', winddown:'bg-gray-500', prayer:'bg-teal-500', custom:'bg-indigo-500', quran:'bg-cyan-600' };
+const CAT_NAMES = { job:'Job', build:'AI Build', drop:'Dropshipping', workout:'Workout', meal:'Meal/Review', grocery:'Groceries', family:'Family', winddown:'Wind-down', prayer:'Prayer', custom:'Custom', quran:'Quran' };
 
 function dateKey(y, m, d) { return `${y}-${m + 1}-${d}`; }
 function sameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
@@ -564,6 +564,7 @@ function isPastOrToday(date) { const t = new Date(TODAY.getFullYear(), TODAY.get
 ===================================================================== */
 const BILLS = [
   { id: 'claude', name: 'Claude subscription', amount: 140, dueDay: 4, type: 'fixed', emoji: '🤖' },
+  { id: 'lovable',   name: 'Lovable',              amount: 40,   dueDay: 10, type: 'fixed', emoji: '💜' },
   { id: 'insurance', name: 'Car insurance', amount: 250, dueDay: 21, type: 'fixed', emoji: '🚗' },
   { id: 'savings', name: 'Savings transfer', amount: 1000, dueDay: 30, type: 'fixed', emoji: '🏦' },
   { id: 'gas', name: 'Gas (weekly fill)', amount: 100, weekly: true, dayOfWeek: 0, type: 'weekly', monthlyBudget: 400, emoji: '⛽' },
@@ -741,6 +742,10 @@ function buildDayTimeline(date, dayPrayers) {
     PRAYER_LABELS.forEach(p => {
       items.push({ cat: 'prayer', label: p, start: dayPrayers[p], end: null, color: CAT_COLORS.prayer, isPrayer: true });
     });
+  }
+  // Quran study — Maghrib to Isha, off-job (AI build) days only
+  if (!isWorkDay(date) && dayPrayers && dayPrayers.Maghrib && dayPrayers.Isha) {
+    items.push({ cat: 'quran', label: '📖 Quran study', start: dayPrayers.Maghrib, end: dayPrayers.Isha, color: CAT_COLORS.quran, isPrayer: false });
   }
   items.sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
   return items;
@@ -1719,28 +1724,17 @@ else if (savedDark === null && window.matchMedia('(prefers-color-scheme: dark)')
 ============================================================ */
 const GROCERIES_DATA = [
   { cat: 'Proteins', emoji: '🥩', items: [
-    { name: 'Lean ground beef (93%+)', qty: '1.5 kg', price: '$18–22' },
-    { name: 'Rotisserie chicken', qty: '1–2', price: '$13–26' },
-    { name: 'Eggs (large)', qty: '5–6 dozen', price: '$20–30' },
-    { name: 'Egg whites carton', qty: '~60–70 whites', price: '$10–15' },
-    { name: 'High-protein yogurt (Oikos Pro or similar)', qty: '14 tubs', price: '$15–20' },
-    { name: 'Protein powder', qty: '1 tub (~28 scoops, amortized)', price: '$8–12' },
-  ]},
-  { cat: 'Dairy', emoji: '🥛', items: [
-    { name: 'Fairlife 2% milk', qty: '10–12 L', price: '$30–40' },
-  ]},
-  { cat: 'Carbs', emoji: '🌾', items: [
-    { name: 'Rolled oats', qty: '1–2 large packages', price: '$5–8' },
-    { name: 'Canned beans (black or kidney)', qty: '7–8 cans', price: '$12–15' },
+    { name: 'Chicken', qty: '3 bags', price: '' },
+    { name: 'Beef', qty: '3 kg', price: '' },
   ]},
   { cat: 'Produce', emoji: '🥗', items: [
-    { name: 'Lettuce heads', qty: '7–8', price: 'share of $15–20' },
-    { name: 'Tomatoes', qty: '2–3 kg', price: 'share of $15–20' },
-    { name: 'Onions', qty: '2 kg', price: 'share of $15–20' },
-    { name: 'Frozen fruit', qty: '1–2 bags (~600g each)', price: '$6–12' },
+    { name: 'Salad', qty: '2 cases', price: '' },
   ]},
-  { cat: 'Other', emoji: '☕', items: [
-    { name: 'Espresso grounds', qty: '1 bag', price: '~$10' },
+  { cat: 'Dairy', emoji: '🥛', items: [
+    { name: 'Protein milk', qty: '1 jug', price: '' },
+  ]},
+  { cat: 'Other', emoji: '🫙', items: [
+    { name: 'Salsa', qty: '1 jug', price: '' },
   ]},
 ];
 const GROC_KEY = 'planner.groceries.checked.v1';
