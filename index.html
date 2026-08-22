@@ -628,29 +628,22 @@ function eventsForDay(date) {
   const dow = date.getDay();
 
   // Morning workout (1h) — on off days it lives inside the 5:00–6:30 Eat + pre-workout block
-  events.push({ cat: 'workout', label: 'Workout (AM) · ' + ((typeof splitLabelFor === 'function' ? splitLabelFor(dow) : '') || 'AM'), start: work ? '5:45 AM' : '5:30 AM', end: work ? '6:45 AM' : '6:30 AM', color: CAT_COLORS.workout });
+  if (work) events.push({ cat: 'workout', label: 'Workout (AM) · ' + ((typeof splitLabelFor === 'function' ? splitLabelFor(dow) : '') || 'AM'), start: work ? '5:45 AM' : '5:30 AM', end: work ? '6:45 AM' : '6:30 AM', color: CAT_COLORS.workout });
 
   if (work) {
     events.push({ cat: 'job', label: 'Job shift', start: '7:00 AM', end: '7:00 PM', color: CAT_COLORS.job });
   } else {
-    // 5 Core off-day schedule — build-day blocks (mirrors the roadmap Off-day schedule)
-    events.push({ cat: 'meal', label: '🍳 Eat + pre-workout — fuel first', start: '5:00 AM', end: '6:30 AM', color: CAT_COLORS.meal });
-    events.push({ cat: 'build', label: '🤖 Work on projects — roadmap day card', start: '6:30 AM', end: '9:30 AM', color: CAT_COLORS.build });
-    events.push({ cat: 'build', label: '📚 Study — daily outline, then Learn tab', start: '9:30 AM', end: '1:00 PM', color: CAT_COLORS.build });
-    events.push({ cat: 'meal', label: '☕ Eat · break · coffee — step away from the desk', start: '1:00 PM', end: '2:00 PM', color: CAT_COLORS.meal });
-    events.push({ cat: 'build', label: '🤖 Work — same day card · reflection (back of notebook)', start: '2:00 PM', end: '4:00 PM', color: CAT_COLORS.build });
-    events.push({ cat: 'build', label: '📚 Study — finish the outline + Learn tab', start: '4:00 PM', end: '7:00 PM', color: CAT_COLORS.build });
-    events.push({ cat: 'winddown', label: '🌙 Relax — done means done', start: '7:00 PM', end: '11:00 PM', color: CAT_COLORS.winddown });
+    // Off-day (AI build day) schedule is prayer-anchored — see buildDayTimeline()
   }
 
   // Evening workout (1h) after the 7–7 block, every day
-  events.push({ cat: 'workout', label: 'Workout (PM)', start: '7:15 PM', end: '8:15 PM', color: CAT_COLORS.workout });
+  if (work) events.push({ cat: 'workout', label: 'Workout (PM)', start: '7:15 PM', end: '8:15 PM', color: CAT_COLORS.workout });
 
   if (work && dow === 6) events.push({ cat: 'grocery', label: 'Buy groceries', start: '8:30 PM', end: '9:30 PM', color: CAT_COLORS.grocery });
-  if (dow === 0) {
+  if (work && dow === 0) {
     events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '8:30 PM', end: '10:30 PM', color: CAT_COLORS.meal });
     events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: CAT_COLORS.winddown });
-  } else {
+  } else if (work) {
     events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: CAT_COLORS.winddown });
   }
   return events;
@@ -743,9 +736,18 @@ function buildDayTimeline(date, dayPrayers) {
       items.push({ cat: 'prayer', label: p, start: dayPrayers[p], end: null, color: CAT_COLORS.prayer, isPrayer: true });
     });
   }
-  // Quran study — Maghrib to Isha, off-job (AI build) days only
-  if (!isWorkDay(date) && dayPrayers && dayPrayers.Maghrib && dayPrayers.Isha) {
-    items.push({ cat: 'quran', label: '📖 Quran study', start: dayPrayers.Maghrib, end: dayPrayers.Isha, color: CAT_COLORS.quran, isPrayer: false });
+  // Off-day (AI build day) schedule — anchored to the day's prayer times
+  if (!isWorkDay(date) && dayPrayers && dayPrayers.Fajr && dayPrayers.Dhuhr && dayPrayers.Asr && dayPrayers.Maghrib && dayPrayers.Isha) {
+    const m2t = (m) => { m = ((m % 1440) + 1440) % 1440; return to12h(String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0')); };
+    const put = (cat, label, start, end) => items.push({ cat: cat, label: label, start: start, end: end, color: CAT_COLORS[cat], isPrayer: false });
+    const breakStart = m2t(timeToMinutes(dayPrayers.Dhuhr) - 150);
+    put('build', '🤖 AI automation — build block', dayPrayers.Fajr, breakStart);
+    put('workout', '💪 Workout · eat · break', breakStart, dayPrayers.Dhuhr);
+    put('build', '🤖 AI automation — build block', dayPrayers.Dhuhr, dayPrayers.Asr);
+    put('build', '📚 Study', dayPrayers.Asr, dayPrayers.Maghrib);
+    put('quran', '📖 Quran study', dayPrayers.Maghrib, dayPrayers.Isha);
+    if (date.getDay() === 0) put('meal', '🍱 Meal prep + Weekly review', dayPrayers.Isha, m2t(timeToMinutes(dayPrayers.Isha) + 120));
+    else put('winddown', '🌙 Wind-down', dayPrayers.Isha, m2t(timeToMinutes(dayPrayers.Isha) + 90));
   }
   items.sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
   return items;
