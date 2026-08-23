@@ -2774,7 +2774,7 @@ grant  execute on function public.sr_tenant_config(uuid, text) to service_role;
 -- until someone happened to onboard at the new version — exactly when you most
 -- need the list. Bump this in the same commit as the form.
 create or replace function public.sr_current_schema_version()
-returns int language sql immutable as $$ select 4; $$;
+returns int language sql immutable as $$ select 5; $$;
 
 -- Which tenants were onboarded under an older form version?
 create or replace view public.v_tenant_drift as
@@ -3668,7 +3668,8 @@ const STAT_HOLIDAYS = [
    place to edit. Add a category here only when a new machine covers a job
    no existing category describes. */
 const STACK = [
-  {cat:"phone_answering", label:"Phone / answering",       eg:"Google Voice, RingCentral, answering service, personal cell"},
+  {cat:"live_reception", label:"Live call answering / receptionist", eg:"Answering service, virtual receptionist, front desk"},
+    {cat:"phone_answering", label:"Phone / answering",       eg:"Google Voice, RingCentral, answering service, personal cell"},
   {cat:"sms_texting",     label:"Business texting",        eg:"Jobber, OpenPhone, personal cell"},
   {cat:"crm",             label:"CRM / customer database", eg:"Jobber, ServiceTitan, Housecall Pro, spreadsheet"},
   {cat:"scheduling",      label:"Scheduling / dispatch",   eg:"Jobber, Google Calendar, whiteboard"},
@@ -3733,9 +3734,31 @@ function auditRegistry(){
 
    Bump SCHEMA_VERSION whenever you add a machine or a config field.
    ===================================================================== */
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 
 const MACHINES = [
+  {
+    key:"voice_receptionist", name:"Build 6 — Voice Receptionist I",
+    blurb:"Answers your phone in seconds, any hour, and holds a real conversation: books jobs, takes messages, knows your regulars by name, and flags true emergencies to you immediately. Never states a price you have not approved.",
+    suite:"Communication", status:"live", defaultOn:false, defaultMode:"observe",
+    competes:"live_reception",
+    requires:["twilio_number","owner_phone"],
+    config:[
+      {id:"greeting", label:"Greeting (spoken first)", type:"textarea", def:"Thanks for calling, what can I do for you?"},
+      {id:"hours_text", label:"Hours, as spoken", type:"text", def:"Monday to Friday, seven to five. We do emergencies any time."},
+      {id:"services", label:"Services (comma separated)", type:"textarea", def:"clogged drain, water heater, burst pipe, toilet repair", hint:"What the receptionist says you do."},
+      {id:"emergency_policy", label:"Emergency policy, as spoken", type:"textarea", def:"We run emergency service around the clock for burst pipes, major leaks, and anything unsafe."},
+      {id:"emergency_transfer_on", label:"Emergency keywords (comma separated)", type:"textarea", def:"flooding, flooded, burst pipe, sewage, smell gas"},
+      {id:"transfer_to_human_on", label:"Ask-for-a-person keywords (comma separated)", type:"text", def:"real person, human, manager, owner"},
+      {id:"escalation_number", label:"Escalation number (E.164)", type:"text", def:""},
+      {id:"can_quote_prices", label:"May state the call-out fee", type:"bool", def:false, hint:"Ontario: an estimate binds to ~10%. Leave off unless the client signs off in writing."},
+      {id:"call_out_fee_text", label:"Call-out fee, as spoken", type:"text", def:"", hint:"Only read out when the fee toggle above is on."},
+      {id:"max_call_seconds", label:"Max call length (sec)", type:"number", def:480},
+      {id:"max_turns", label:"Max conversation turns", type:"number", def:18},
+      {id:"daily_call_cost_cap_cents", label:"Daily AI cost cap (cents)", type:"number", def:5000},
+      {id:"tts_voice", label:"Voice", type:"text", def:"Polly.Joanna-Neural"}
+    ]
+  },
   {
     key:"build1_missed_call", name:"Build 1 — Missed-Call Rescue",
     blurb:"When a call to your business number goes unanswered, the caller gets a text back asking what they need, and you get an alert. Nobody who calls you gets ignored.",
