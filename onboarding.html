@@ -3735,7 +3735,7 @@ function auditRegistry(){
 
    Bump SCHEMA_VERSION whenever you add a machine or a config field.
    ===================================================================== */
-const SCHEMA_VERSION = 8;
+const SCHEMA_VERSION = 9;
 
 const MACHINES = [
   {
@@ -3879,6 +3879,27 @@ const MACHINES = [
     {id:"offer_text", label:"Current offer to mention (blank = none)", type:"text", def:""},
     {id:"exclude_services", label:"Never message about these services (comma separated)", type:"text", def:""},
     {id:"owner_alert_on_reply", label:"Text the owner when a customer replies", type:"bool", def:true}
+  ]
+},
+{
+  key:"upsell_engine",
+  name:"AI Upsell Engine",
+  blurb:"After a job, the photos your crew already took are checked for genuinely useful extra work — an aging shutoff valve, a softener candidate. Every offer is reviewed and approved by a person before any customer ever sees it; nothing is ever sent automatically.",
+  suite:"Quality",
+  status:"building",
+  defaultOn:false,
+  defaultMode:"approval_required",
+  competes:null,
+  requires:["owner_phone","twilio_number"],
+  config:[
+    {id:"detect_on_job_complete", label:"Scan job photos when a job completes", type:"bool", def:true},
+    {id:"min_confidence", label:"Minimum AI confidence to draft an offer", type:"number", def:0.7, hint:"Lower-confidence observations are logged for the manager but never drafted."},
+    {id:"max_offers_per_job", label:"Max offers per job", type:"number", def:1},
+    {id:"max_offers_per_customer_per_quarter", label:"Max offers per customer per quarter", type:"number", def:1, hint:"Helpful, never aggressive — guardrail, not a target."},
+    {id:"offer_valid_days", label:"Offer valid for (days)", type:"number", def:14},
+    {id:"complaint_cooldown_days", label:"No offers within (days) of a complaint", type:"number", def:30, hint:"Applies even after the complaint is resolved. An open complaint blocks offers outright."},
+    {id:"excluded_services", label:"Never offer these services (comma separated)", type:"text", def:""},
+    {id:"tone_notes", label:"Offer tone guidance", type:"textarea", def:"", hint:"Plain English, e.g. lead with safety and longevity, never discount-led."}
   ]
 }
 ];
