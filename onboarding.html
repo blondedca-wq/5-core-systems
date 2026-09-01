@@ -3680,7 +3680,8 @@ const STACK = [
   {cat:"email_marketing", label:"Email marketing",         eg:"Mailchimp, none"},
   {cat:"job_reporting",   label:"Job reports / photos",    eg:"Jobber, texts photos to owner, none"},
   {cat:"website_booking", label:"Website / online booking",eg:"Wix form, Calendly, phone only"},
-  {cat:"social_dm",       label:"Instagram / Facebook DMs",eg:"owner checks phone, none"}
+  {cat:"social_dm",       label:"Instagram / Facebook DMs",eg:"owner checks phone, none"},
+  {cat:"winback", label:"Customer win-back / reactivation", eg:"Mailchimp campaigns, manual call-backs, nothing"}
 ];
 
 // Single source of truth for the category -> machine mapping.
@@ -3734,7 +3735,7 @@ function auditRegistry(){
 
    Bump SCHEMA_VERSION whenever you add a machine or a config field.
    ===================================================================== */
-const SCHEMA_VERSION = 7;
+const SCHEMA_VERSION = 8;
 
 const MACHINES = [
   {
@@ -3758,7 +3759,8 @@ const MACHINES = [
       {id:"daily_call_cost_cap_cents", label:"Daily AI cost cap (cents)", type:"number", def:5000},
       {id:"tts_voice", label:"Voice", type:"text", def:"Polly.Joanna-Neural"},
       {id:"owner_alert_on", label:"Text the owner about (comma separated: hot, warm, cold, emergency)", type:"text", def:"hot,emergency"},
-      {id:"grading_notes", label:"Lead grading notes (business-specific hints for the AI)", type:"textarea", def:""}
+      {id:"grading_notes", label:"Lead grading notes (business-specific hints for the AI)", type:"textarea", def:""},
+    {id:"silence_reprompt_seconds", label:"Re-prompt after silence (seconds)", type:"number", def:6, hint:"How long the receptionist waits in silence before asking again."}
     ]
   },
   {
@@ -3837,19 +3839,48 @@ const MACHINES = [
     ]
   },
   {
-    key:"dm_rescue", name:"DM Rescue",
-    blurb:"Instagram and Facebook messages are answered and qualified the same way phone and text enquiries are, so social enquiries stop dying in an unread inbox.",
-    suite:"Communication", status:"blocked",
-    blockedReason:"Meta app review pending — cannot be enabled until approved.",
-    defaultOn:false, defaultMode:"paused",
-    competes:"social_dm",
-    requires:[],
-    config:[
-      {id:"auto_reply", label:"Auto-reply to new DMs", type:"bool", def:true},
-      {id:"handoff_keywords", label:"Hand off to a human on", type:"text",
-       def:"speak to someone,call me,real person,manager"}
-    ]
-  }
+  key:"dm_rescue",
+  name:"DM Rescue (IG/FB)",
+  blurb:"Instagram and Facebook messages are answered and qualified the same way phone and text enquiries are, so social enquiries stop dying in an unread inbox.",
+  suite:"Communication",
+  status:"blocked",
+  blockedReason:"Meta app review pending — runs observe-only against the test app until approved.",
+  defaultOn:false,
+  defaultMode:"observe",
+  competes:"social_dm",
+  requires:["owner_phone"],
+  config:[
+    {id:"auto_reply", label:"Auto-reply to new DMs", type:"bool", def:true},
+    {id:"answer_faqs", label:"Answer common questions (hours, services, emergency policy)", type:"bool", def:true, hint:"Answers come from this tenant\u2019s business profile — never invented."},
+    {id:"can_quote_prices", label:"May state prices in DMs", type:"bool", def:false, hint:"Off = never states a price. Same rule as the voice receptionist."},
+    {id:"handoff_keywords", label:"Hand off to a human on", type:"text", def:"speak to someone,call me,real person,manager"},
+    {id:"owner_alert_on", label:"Text the owner when a DM lead is qualified", type:"bool", def:true},
+    {id:"alert_grades", label:"Alert on grades", type:"select", def:"hot", opts:[["hot","HOT only"],["hot_warm","HOT + WARM"],["all","Every graded lead"]]},
+    {id:"grading_notes", label:"Extra grading guidance", type:"textarea", def:"", hint:"Plain English, e.g. \u2018landlords with multiple units are always HOT\u2019."},
+    {id:"max_replies_per_conversation", label:"Max AI replies per conversation", type:"number", def:6},
+    {id:"channels", label:"Channels", type:"select", def:"both", opts:[["both","Instagram + Facebook"],["instagram","Instagram only"],["facebook","Facebook only"]]}
+  ]
+},
+{
+  key:"reactivation",
+  name:"Old Customer Reactivation",
+  blurb:"Reaches back out to past customers using their own job history — a check-up two years after we installed their water heater. Never a blast.",
+  suite:"Communication",
+  status:"building",
+  defaultOn:false,
+  defaultMode:"approval_required",
+  competes:"winback",
+  requires:["twilio_number","owner_phone"],
+  config:[
+    {id:"min_months_since_job", label:"Wait at least (months since last job)", type:"number", def:6},
+    {id:"max_months_since_job", label:"Reach back no further than (months)", type:"number", def:24, hint:"CASL: implied consent from an existing business relationship lapses at 2 years from the last transaction. Do not raise past 24 without advice."},
+    {id:"daily_send_cap", label:"Max reactivation texts per day", type:"number", def:5, hint:"A trickle, not a blast. The tenant-hour cap still applies on top."},
+    {id:"weekly_send_cap", label:"Max reactivation texts per week", type:"number", def:20},
+    {id:"offer_text", label:"Current offer to mention (blank = none)", type:"text", def:""},
+    {id:"exclude_services", label:"Never message about these services (comma separated)", type:"text", def:""},
+    {id:"owner_alert_on_reply", label:"Text the owner when a customer replies", type:"bool", def:true}
+  ]
+}
 ];
 
 let step = 0;
