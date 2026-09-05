@@ -324,6 +324,28 @@
 </div>
 
 <!-- ============================================================== -->
+<!-- SURAH READER MODAL -->
+<!-- ============================================================== -->
+<div id="surahModal" class="hidden fixed inset-0 z-50 bg-ink-950/60 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
+  <div class="bg-white dark:bg-ink-900 w-full sm:max-w-2xl rounded-t-3xl sm:rounded-3xl h-[92vh] sm:h-[85vh] flex flex-col overflow-hidden sheet-in border-t sm:border border-ink-200/70 dark:border-ink-800">
+    <div class="sm:hidden pt-2.5 flex justify-center shrink-0"><div class="w-9 h-1 rounded-full bg-ink-200 dark:bg-ink-700"></div></div>
+    <div class="shrink-0 bg-white/90 dark:bg-ink-900/90 backdrop-blur-lg border-b border-ink-100 dark:border-ink-800 px-5 py-3.5 flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <h3 id="surahModalTitle" class="font-bold text-lg tracking-tight truncate"></h3>
+        <div id="surahModalSub" class="text-[11px] font-medium text-ink-400 dark:text-ink-500"></div>
+      </div>
+      <button id="surahModalClose" class="w-8 h-8 rounded-full bg-ink-100 dark:bg-ink-800 flex items-center justify-center text-ink-400 hover:text-ink-700 dark:hover:text-white transition shrink-0" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <div id="surahModalBody" class="flex-1 overflow-y-auto px-5 py-4"></div>
+    <div class="shrink-0 px-5 py-3 border-t border-ink-100 dark:border-ink-800 bg-white/90 dark:bg-ink-900/90">
+      <button id="surahMarkRead" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold transition active:scale-[0.98]">✓ Mark surah as read</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================== -->
 <!-- MASTER TO-DO -->
 <!-- ============================================================== -->
 
@@ -1666,15 +1688,18 @@ function renderQuran() {
   root.innerHTML = QURAN_SURAHS.map((s, i) => {
     const n = i + 1;
     const ch = quranIsRead(n);
-    return '<label class="flex items-center gap-3 px-4 py-3 cursor-pointer active:bg-ink-50 dark:active:bg-ink-800/60 min-h-[56px] transition">' +
-      '<input type="checkbox" data-surah="' + n + '" ' + (ch ? 'checked' : '') + ' class="w-5 h-5 rounded accent-emerald-600 shrink-0" />' +
-      '<span class="w-7 text-[11px] font-bold text-ink-400 dark:text-ink-500 tabular-nums shrink-0">' + n + '</span>' +
-      '<div class="flex-1 min-w-0">' +
-        '<div class="text-sm font-semibold' + (ch ? ' line-through text-ink-300 dark:text-ink-600' : '') + '">' + s[0] + '</div>' +
-        '<div class="text-xs text-ink-400 dark:text-ink-500 mt-0.5">' + s[2] + ' ayahs</div>' +
-      '</div>' +
-      '<span dir="rtl" class="text-base font-semibold ' + (ch ? 'text-ink-300 dark:text-ink-600' : 'text-teal-500') + '">' + s[1] + '</span>' +
-    '</label>';
+    return '<div class="flex items-center gap-3 px-4 py-3 min-h-[56px]">' +
+      '<input type="checkbox" data-surah="' + n + '" ' + (ch ? 'checked' : '') + ' class="w-5 h-5 rounded accent-emerald-600 shrink-0 cursor-pointer" />' +
+      '<button type="button" data-open-surah="' + n + '" class="flex-1 min-w-0 flex items-center gap-3 text-left active:opacity-60 transition">' +
+        '<span class="w-7 text-[11px] font-bold text-ink-400 dark:text-ink-500 tabular-nums shrink-0">' + n + '</span>' +
+        '<div class="flex-1 min-w-0">' +
+          '<div class="text-sm font-semibold' + (ch ? ' line-through text-ink-300 dark:text-ink-600' : '') + '">' + s[0] + '</div>' +
+          '<div class="text-xs text-ink-400 dark:text-ink-500 mt-0.5">' + s[2] + ' ayahs · tap to read</div>' +
+        '</div>' +
+        '<span dir="rtl" class="text-base font-semibold ' + (ch ? 'text-ink-300 dark:text-ink-600' : 'text-teal-500') + '">' + s[1] + '</span>' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-ink-300 dark:text-ink-600"><path d="m9 18 6-6-6-6"></path></svg>' +
+      '</button>' +
+    '</div>';
   }).join('');
 
   root.querySelectorAll('input[data-surah]').forEach(cb => {
@@ -1686,8 +1711,127 @@ function renderQuran() {
       if (rs === 114) confetti('📖🌙✨');
     });
   });
+  root.querySelectorAll('[data-open-surah]').forEach(btn => {
+    btn.addEventListener('click', () => openSurah(+btn.dataset.openSurah));
+  });
 }
 document.getElementById('quranNewBtn').addEventListener('click', quranStartNew);
+
+/* --- Surah reader: Uthmani Arabic + Saheeh International + Tafsir Ibn Kathir --- */
+let SURAH_TEXT_CACHE = {};
+let TAFSIR_MEM = {};
+let openSurahNum = null;
+const BASMALA_FORMS = ['بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ','بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ','بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ'];
+
+async function fetchSurahText(n) {
+  if (SURAH_TEXT_CACHE[n]) return SURAH_TEXT_CACHE[n];
+  const lsKey = 'quran-text-' + n + '-v1';
+  try { const c = localStorage.getItem(lsKey); if (c) { SURAH_TEXT_CACHE[n] = JSON.parse(c); return SURAH_TEXT_CACHE[n]; } } catch (e) {}
+  const res = await fetch('https://api.alquran.cloud/v1/surah/' + n + '/editions/quran-uthmani,en.sahih');
+  if (!res.ok) throw new Error('load failed');
+  const json = await res.json();
+  if (json.code !== 200 || !json.data || json.data.length < 2) throw new Error('bad payload');
+  const ar = json.data[0].ayahs, en = json.data[1].ayahs;
+  const out = ar.map((a, i) => ({ n: a.numberInSurah, ar: a.text, en: (en[i] && en[i].text) || '' }));
+  if (n !== 1 && n !== 9 && out.length) {
+    for (const b of BASMALA_FORMS) {
+      if (out[0].ar.indexOf(b) === 0) { out[0].ar = out[0].ar.slice(b.length).trim(); break; }
+    }
+  }
+  SURAH_TEXT_CACHE[n] = out;
+  try { localStorage.setItem(lsKey, JSON.stringify(out)); } catch (e) {}
+  return out;
+}
+
+async function fetchTafsir(n, a) {
+  const k = n + ':' + a;
+  if (TAFSIR_MEM[k]) return TAFSIR_MEM[k];
+  const res = await fetch('https://cdn.jsdelivr.net/gh/spa5k/tafsir_api@main/tafsir/en-tafisr-ibn-kathir/' + n + '/' + a + '.json');
+  if (!res.ok) throw new Error('no tafsir');
+  const json = await res.json();
+  const text = (json && json.text) || '';
+  if (!text) throw new Error('empty');
+  TAFSIR_MEM[k] = text;
+  return text;
+}
+
+async function openSurah(n) {
+  openSurahNum = n;
+  const s = QURAN_SURAHS[n - 1];
+  document.getElementById('surahModalTitle').textContent = n + '. ' + s[0];
+  document.getElementById('surahModalSub').innerHTML = '<span dir="rtl">' + s[1] + '</span> · ' + s[2] + ' ayahs · Saheeh International';
+  const body = document.getElementById('surahModalBody');
+  body.innerHTML = '<div class="text-center py-10 text-sm font-medium text-ink-400 dark:text-ink-500">Loading surah…</div>';
+  document.getElementById('surahMarkRead').textContent = quranIsRead(n) ? '✓ Marked as read — tap to unmark' : '✓ Mark surah as read';
+  document.getElementById('surahModal').classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  try {
+    const ayahs = await fetchSurahText(n);
+    if (openSurahNum !== n) return;
+    renderSurahReader(n, ayahs);
+  } catch (e) {
+    body.innerHTML = '<div class="text-center py-10 text-sm font-medium text-amber-600 dark:text-amber-300">Could not load — check your internet.<br><button data-retry-surah class="mt-3 px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">Retry</button></div>';
+    body.querySelector('[data-retry-surah]').addEventListener('click', () => openSurah(n));
+  }
+}
+
+function renderSurahReader(n, ayahs) {
+  const body = document.getElementById('surahModalBody');
+  let html = '';
+  if (n !== 1 && n !== 9) html += '<p dir="rtl" class="text-center text-lg font-semibold text-teal-600 dark:text-teal-400 mb-4 mt-1">' + BASMALA_FORMS[0] + '</p>';
+  html += ayahs.map(a => {
+    return '<div class="mb-1 pb-3 pt-2 border-b border-ink-100 dark:border-ink-800">' +
+      '<div class="flex items-start gap-3">' +
+        '<span class="shrink-0 w-7 h-7 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-[11px] font-bold flex items-center justify-center mt-1.5">' + a.n + '</span>' +
+        '<p dir="rtl" lang="ar" class="flex-1 text-right text-xl leading-loose font-medium">' + escapeHtml(a.ar) + '</p>' +
+      '</div>' +
+      '<p class="mt-1.5 text-sm leading-relaxed text-ink-600 dark:text-ink-300">' + escapeHtml(a.en) + '</p>' +
+      '<button data-tafsir-btn="' + a.n + '" class="mt-2 text-[11px] font-bold text-indigo-600 dark:text-indigo-400">📚 Tafsir & hadith — Ibn Kathir ▾</button>' +
+      '<div data-tafsir-box="' + a.n + '" class="hidden mt-2 p-3.5 rounded-xl bg-ink-50/80 dark:bg-ink-800/50 border border-ink-100 dark:border-ink-800 text-[13px] leading-relaxed text-ink-600 dark:text-ink-300"></div>' +
+    '</div>';
+  }).join('');
+  html += '<p class="text-center text-[10px] text-ink-300 dark:text-ink-600 mt-4 mb-2">Arabic: Uthmani · Translation: Saheeh International (alquran.cloud) · Tafsir: Ibn Kathir (abridged English) — hadith are cited inside with their narrators and sources</p>';
+  body.innerHTML = html;
+  body.querySelectorAll('[data-tafsir-btn]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const an = +btn.dataset.tafsirBtn;
+      const box = body.querySelector('[data-tafsir-box="' + an + '"]');
+      if (!box) return;
+      if (!box.classList.contains('hidden')) { box.classList.add('hidden'); return; }
+      box.classList.remove('hidden');
+      if (box.dataset.loaded) return;
+      box.innerHTML = '<span class="text-ink-400 dark:text-ink-500 font-medium">Loading tafsir…</span>';
+      try {
+        const txt = await fetchTafsir(n, an);
+        box.innerHTML = '<p>' + escapeHtml(txt).replace(/\n{2,}/g, '</p><p class="mt-2">').replace(/\n/g, '<br>') + '</p>' +
+          '<p class="mt-3 text-[10px] text-ink-400 dark:text-ink-500">— Tafsir Ibn Kathir (abridged), on verse ' + n + ':' + an + '</p>';
+        box.dataset.loaded = '1';
+      } catch (e) {
+        box.innerHTML = '<span class="text-amber-600 dark:text-amber-300 font-medium">No tafsir entry for this ayah (it may be covered under a nearby ayah), or you are offline.</span>';
+      }
+    });
+  });
+}
+
+function closeSurahModal() {
+  document.getElementById('surahModal').classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  openSurahNum = null;
+}
+document.getElementById('surahModalClose').addEventListener('click', closeSurahModal);
+document.getElementById('surahModal').addEventListener('click', (e) => { if (e.target.id === 'surahModal') closeSurahModal(); });
+document.getElementById('surahMarkRead').addEventListener('click', () => {
+  if (openSurahNum == null) return;
+  QURAN[String(openSurahNum)] = { done: !quranIsRead(openSurahNum), _m: Date.now() };
+  quranSave();
+  cloudPublish();
+  renderQuran();
+  closeSurahModal();
+  let rs = 0;
+  QURAN_SURAHS.forEach((s, i) => { if (quranIsRead(i + 1)) rs++; });
+  if (rs === 114) confetti('📖🌙✨');
+});
+
 
 /* =====================================================================
    TAB SWITCHING
