@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#121417">
+<title>Machines · AI Automation Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style data-standalone>
+  html,body{margin:0;background:#121417}
+</style>
+<style data-fg>
+  /* ===== SecondRing Field Guide — everything scoped under .fg so it can live inside roadmap.html ===== */
+  .fg{
+    --bg:#F1F1EC; --surface:#FFFFFF; --ink:#1A1D21; --muted:#5C6169;
+    --line:#DADBD4; --line-strong:#B5B7AE;
+    --accent:#B86E07; --accent-fill:#F0A631; --accent-soft:#FBEFD6;
+    --live:#1F7A47; --live-bg:#DDF2E5;
+    --built:#2C5FA8; --built-bg:#DCE7F7;
+    --wait:#6E4BB8; --wait-bg:#E9E1F8;
+    --todo:#5C6169; --todo-bg:#E7E8E3;
+    --display:'Barlow Condensed','Arial Narrow','Helvetica Neue',Arial,sans-serif;
+    --body:'IBM Plex Sans','Segoe UI',Helvetica,Arial,sans-serif;
+    --mono:'IBM Plex Mono','SFMono-Regular',Consolas,'Liberation Mono',monospace;
+    background:var(--bg); color:var(--ink);
+    font-family:var(--body); font-size:16px; line-height:1.55;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .fg{
+      --bg:#121417; --surface:#1B1F24; --ink:#ECEAE3; --muted:#A3A8AF;
+      --line:#2C3138; --line-strong:#454B53;
+      --accent:#F2A93B; --accent-fill:#F2A93B; --accent-soft:#33260E;
+      --live:#7BD3A0; --live-bg:#17352A;
+      --built:#8FB6F0; --built-bg:#1B2C48;
+      --wait:#C0A8F2; --wait-bg:#2C2246;
+      --todo:#A3A8AF; --todo-bg:#262B31;
+    }
+  }
+  :root[data-theme="dark"] .fg, html.dark .fg{
+    --bg:#121417; --surface:#1B1F24; --ink:#ECEAE3; --muted:#A3A8AF;
+    --line:#2C3138; --line-strong:#454B53;
+    --accent:#F2A93B; --accent-fill:#F2A93B; --accent-soft:#33260E;
+    --live:#7BD3A0; --live-bg:#17352A;
+    --built:#8FB6F0; --built-bg:#1B2C48;
+    --wait:#C0A8F2; --wait-bg:#2C2246;
+    --todo:#A3A8AF; --todo-bg:#262B31;
+  }
+
+  .fg *,.fg *::before,.fg *::after{box-sizing:border-box}
+  .fg a{color:var(--accent);text-decoration:underline}
+  .fg a:focus-visible,.fg button:focus-visible{outline:2px solid var(--accent-fill);outline-offset:2px}
+  .fg h1,.fg h2,.fg h3{margin:0;font-family:var(--display);line-height:1.05;text-wrap:balance}
+  .fg p{margin:0}
+
+  /* ---------- nav ---------- */
+  .fg .nav{
+    position:sticky;top:0;z-index:10;
+    background:var(--surface);border-bottom:1px solid var(--line);
+  }
+  .fg .nav-in{
+    max-width:820px;margin:0 auto;padding:10px 20px;
+    display:flex;align-items:center;gap:16px;overflow-x:auto;white-space:nowrap;
+  }
+  .fg .nav .brand{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.01em;color:var(--ink);text-decoration:none}
+  .fg .nav .brand em{font-style:normal;color:var(--accent)}
+  .fg .nav ul{list-style:none;margin:0 0 0 auto;padding:0;display:flex;gap:6px}
+  .fg .nav li a{
+    font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:4px;display:inline-block;min-height:32px
+  }
+  .fg .nav li a:hover{color:var(--ink);background:var(--bg)}
+
+  /* ---------- shell ---------- */
+  .fg .wrap{max-width:820px;margin:0 auto;padding:32px 20px 80px}
+  .fg .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)
+  }
+  .fg .eyebrow b{color:var(--accent);font-weight:500}
+
+  /* ---------- cover ---------- */
+  .fg .cover{padding:8px 0 28px;border-bottom:2px solid var(--ink);margin-bottom:28px}
+  .fg .cover h1{font-size:clamp(44px,8vw,72px);font-weight:700;letter-spacing:-.01em;margin:6px 0 10px}
+  .fg .cover h1 em{font-style:normal;color:var(--accent)}
+  .fg .cover .sub{font-size:18px;max-width:62ch;color:var(--ink)}
+  .fg .cover .meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+  .fg .cover .meta b{color:var(--ink);font-weight:500}
+  .fg .legend{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:13px;color:var(--muted)}
+  .fg .print-note{margin-top:14px;font-size:13px;color:var(--muted)}
+
+  /* ---------- chips ---------- */
+  .fg .chip{
+    display:inline-block;font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;
+    padding:3px 8px;border-radius:3px;line-height:1.4;white-space:nowrap;font-weight:500
+  }
+  .fg .chip.live{color:var(--live);background:var(--live-bg)}
+  .fg .chip.built{color:var(--built);background:var(--built-bg)}
+  .fg .chip.wait{color:var(--wait);background:var(--wait-bg)}
+  .fg .chip.todo{color:var(--todo);background:var(--todo-bg)}
+  .fg .chip.rd{color:var(--accent);background:var(--accent-soft)}
+
+  /* ---------- pages ---------- */
+  .fg .page{
+    background:var(--surface);border:1px solid var(--line);border-radius:6px;
+    padding:30px 34px 32px;margin:0 0 22px;
+  }
+  .fg .page .eyebrow{margin-bottom:10px}
+  .fg .page h2{font-size:40px;font-weight:700;letter-spacing:-.005em}
+  .fg .page .lede{font-size:18.5px;line-height:1.45;margin:14px 0 20px;max-width:60ch}
+  .fg .page section{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+  .fg .page section h3{
+    font-family:var(--mono);font-size:12px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--muted);font-weight:500;margin-bottom:6px
+  }
+  .fg .page section p{max-width:65ch}
+  .fg .page section p + p{margin-top:8px}
+  .fg .page ul{margin:0;padding-left:20px;list-style:disc}
+  .fg .page ul li{margin:4px 0;max-width:62ch}
+
+  /* steps — a real sequence, so it is numbered */
+  .fg ol.steps{list-style:none;margin:0;padding:0;counter-reset:step}
+  .fg ol.steps li{
+    counter-increment:step;position:relative;padding-left:38px;margin:7px 0;max-width:62ch
+  }
+  .fg ol.steps li::before{
+    content:counter(step,decimal-leading-zero);position:absolute;left:0;top:2px;
+    font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:500
+  }
+
+  .fg .rule p{border-left:3px solid var(--accent-fill);padding-left:12px}
+  .fg .why p{font-weight:500}
+
+  /* machine header */
+  .fg .m-head{display:flex;gap:22px;align-items:flex-start}
+  .fg .m-num{
+    font-family:var(--display);font-weight:700;line-height:.9;min-width:112px;
+    display:flex;flex-direction:column;align-items:flex-start
+  }
+  .fg .m-num .cat{font-size:16px;letter-spacing:.14em;color:var(--accent);font-family:var(--mono);font-weight:500}
+  .fg .m-num .n{font-size:66px;font-variant-numeric:tabular-nums}
+  .fg .m-num .of{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em}
+  .fg .spec{
+    list-style:none;margin:18px 0 0;padding:12px 0 0;border-top:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 18px
+  }
+  .fg .spec li span{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .fg .spec li strong{display:block;font-weight:500;margin-top:3px;font-size:14.5px}
+  .fg .spec li strong.chip{display:inline-block;margin-top:5px}
+
+  /* dividers */
+  .fg .divider{
+    display:flex;gap:26px;align-items:flex-start;padding:34px 8px 30px;margin:26px 0 22px;
+    border-top:2px solid var(--ink)
+  }
+  .fg .divider .letter{
+    font-family:var(--display);font-weight:700;font-size:120px;line-height:.8;color:var(--accent);min-width:96px
+  }
+  .fg .divider h2{font-size:38px;margin:4px 0 10px}
+  .fg .divider p{max-width:60ch}
+  .fg .divider p + p{margin-top:8px}
+  .fg .divider .note{font-size:14px;color:var(--muted)}
+
+  /* advanced suite grids */
+  .fg .mods{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+  .fg .mods div{padding:12px 14px;border:1px solid var(--line);border-radius:4px;background:var(--bg)}
+  .fg .mods h4{margin:0 0 4px;font-family:var(--display);font-size:22px;font-weight:600}
+  .fg .mods p{font-size:14.5px;color:var(--ink)}
+  .fg .mods .chip{margin-bottom:6px}
+  .fg .flow{list-style:none;margin:8px 0 0;padding:0;counter-reset:flow}
+  .fg .flow li{
+    counter-increment:flow;display:grid;grid-template-columns:44px 1fr;gap:12px;
+    padding:12px 0;border-bottom:1px dashed var(--line);position:relative
+  }
+  .fg .flow li:last-child{border-bottom:0}
+  .fg .flow li::before{
+    content:counter(flow);font-family:var(--display);font-weight:700;font-size:30px;line-height:1;
+    color:var(--accent);padding-top:2px
+  }
+  .fg .flow strong{display:block;font-family:var(--display);font-size:21px;font-weight:600;margin-bottom:2px}
+  .fg .flow p{font-size:15px;max-width:62ch}
+  .fg .reasons{display:grid;gap:10px;margin-top:8px}
+  .fg .reasons div{padding:12px 14px;background:var(--bg);border-radius:4px;border:1px solid var(--line)}
+  .fg .reasons strong{font-family:var(--display);font-size:21px;font-weight:600;display:block;margin-bottom:2px}
+  .fg .reasons p{font-size:15px}
+
+  /* contents table */
+  .fg .toc{margin:0 0 30px}
+  .fg .toc h2{font-size:30px;margin-bottom:10px}
+  .fg .toc-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+  .fg table{border-collapse:collapse;width:100%;min-width:560px;font-size:14.5px}
+  .fg th,.fg td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .fg th{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--bg)}
+  .fg td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--muted);width:56px}
+  .fg td a{color:var(--ink);text-decoration:none;font-weight:500}
+  .fg td a:hover{color:var(--accent)}
+  .fg tr.cat-row td{background:var(--bg);font-family:var(--display);font-size:19px;font-weight:600;padding-top:10px}
+  .fg tr.cat-row td span{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400;letter-spacing:.06em;margin-left:10px}
+  .fg .toc-foot{font-size:13px;color:var(--muted);margin-top:8px}
+
+  .fg .foot{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);max-width:70ch}
+
+  /* embedded inside roadmap.html's Machines tab */
+  .fg.fg--embedded{min-height:0;background:transparent}
+  .fg.fg--embedded .nav{position:static;border:1px solid var(--line);border-radius:10px;margin-top:4px}
+  .fg.fg--embedded .wrap{padding:18px 0 40px}
+
+  @media (max-width:560px){
+    .fg .page{padding:22px 18px 24px}
+    .fg .page h2{font-size:32px}
+    .fg .m-head{gap:14px}
+    .fg .m-num{min-width:78px}
+    .fg .m-num .n{font-size:50px}
+    .fg .divider{gap:14px;padding:24px 0}
+    .fg .divider .letter{font-size:84px;min-width:64px}
+    .fg .divider h2{font-size:30px}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    html{scroll-behavior:smooth}
+  }
+
+  /* ---------- print: one page per machine ---------- */
+  @media print{
+    .fg, html.dark .fg{
+      --bg:#FFFFFF; --surface:#FFFFFF; --ink:#111; --muted:#555; --line:#CCC; --line-strong:#999;
+      --accent:#8A5205; --accent-fill:#E39A22; --accent-soft:#F6E7C9;
+      --live:#1F7A47; --live-bg:#E4F3EA; --built:#2C5FA8; --built-bg:#E1EAF7;
+      --wait:#6E4BB8; --wait-bg:#ECE6F8; --todo:#555; --todo-bg:#EEE;
+      background:#fff; font-size:11.5pt; min-height:0;
+    }
+    @page{size:letter;margin:14mm}
+    html,body{background:#fff}
+    .fg .nav,.fg .print-note{display:none}
+    .fg .wrap{max-width:none;padding:0}
+    .fg .cover{break-after:page}
+    .fg .toc{break-after:page}
+    .fg .page{break-after:page;break-inside:avoid;border:0;padding:0 0 10mm;margin:0;border-radius:0}
+    .fg .divider{break-before:page;break-after:page;border-top:0;padding-top:30mm}
+    .fg .page h2{font-size:26pt}
+    .fg .page .lede{font-size:13pt}
+    .fg a{color:inherit;text-decoration:none}
+  }
+</style>
+</head>
+<body>
+<div class="fg">
+
+<nav class="nav" aria-label="Sections">
+  <div class="nav-in">
+    <a class="brand" href="#top">Second<em>Ring</em> Field Guide</a>
+    <ul>
+      <li><a href="#advanced">Cameras</a></li>
+      <li><a href="#contents">Index</a></li>
+      <li><a href="#cat-a">A</a></li>
+      <li><a href="#cat-b">B</a></li>
+      <li><a href="#cat-c">C</a></li>
+      <li><a href="#cat-d">D</a></li>
+      <li><a href="#cat-e">E</a></li>
+      <li><a href="#cat-f">F</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="wrap" id="top">
+
+  <!-- ================= COVER ================= -->
+  <header class="cover">
+    <p class="eyebrow">AI Trade Business OS · plain-English reference · Sat Sep 5, 2026</p>
+    <h1>The camera suite, then all <em>37</em> machines</h1>
+    <p class="sub">Three pages on how the Advanced Suite works. Then one page per machine, Categories A to F, in the order they get built. Written for a contractor reading it in a truck — no jargon that isn't needed.</p>
+    <div class="meta">
+      <span><b>5</b> live and verified on real calls</span>
+      <span><b>4</b> built per roadmap</span>
+      <span><b>1</b> waiting on Meta</span>
+      <span><b>27</b> to build, Sep 14 → Dec 13</span>
+    </div>
+    <div class="legend">
+      <span class="chip live">Live · verified</span><span>proven on real calls or executions</span>
+      <span class="chip built">Built · per roadmap</span><span>checked off, not yet live-verified</span>
+      <span class="chip wait">Waiting</span><span>blocked outside your control</span>
+      <span class="chip todo">To build</span><span>calendar slot shown</span>
+    </div>
+    <p class="print-note">Open <a href="machines.html">machines.html</a> on its own and Print → Save as PDF for one machine per page.</p>
+  </header>
+
+  <!-- ================= ADVANCED SUITE — 3 PAGES ================= -->
+  <article class="page" id="advanced">
+    <p class="eyebrow"><b>Advanced Suite</b> · page 1 of 3 · R&amp;D · kept separate from the normal stack</p>
+    <h2>Eyes on the site</h2>
+    <p class="lede">Every other machine in the catalogue runs on words — calls, texts, emails, photos the crew chose to send. The Advanced Suite runs on video the site produces on its own. Cameras feed a computer-vision system that tells the owner what is happening on the job, whether it is safe, and whether it is on plan, without anyone on site typing a thing.</p>
+
+    <section>
+      <h3>The four modules</h3>
+      <div class="mods">
+        <div><span class="chip rd">R&amp;D</span><h4>Camera AI</h4><p>Gets the video in. Connects the site cameras, stores clips under retention rules, and keeps only what the rules allow.</p></div>
+        <div><span class="chip rd">R&amp;D</span><h4>Computer Vision</h4><p>Understands the frames. Turns pixels into plain facts: three people on site, a delivery truck at the gate, no hard hat in zone two.</p></div>
+        <div><span class="chip rd">R&amp;D</span><h4>Site Monitoring</h4><p>Compares and alerts. Puts those facts beside the job record — who was scheduled, what was due — and decides what deserves a text.</p></div>
+        <div><span class="chip rd">R&amp;D</span><h4>Predictive Analytics</h4><p>Learns from history. Once months of detections sit beside job outcomes, it starts predicting which jobs slip, which mornings start late, where waste happens.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h3>What the owner actually gets</h3>
+      <ul>
+        <li>A daily site summary: who was there, what got done, what showed up, what didn't.</li>
+        <li>A safety text the moment it matters — someone in a danger zone, PPE missing, a hazard left out.</li>
+        <li>A progress line against the plan: expected versus actual, every day.</li>
+        <li>Timestamped evidence when a client says work wasn't done, or a sub says they were there.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3>Where it is today</h3>
+      <p>R&amp;D, on purpose. The first working slice is Category D's <a href="#m-27">Camera / Site Intelligence</a> (Nov 10–13): feed ingestion, activity detection, safety flags and the daily summary, on one tenant. Predictive Analytics comes last, because it needs history to learn from.</p>
+    </section>
+  </article>
+
+  <article class="page">
+    <p class="eyebrow"><b>Advanced Suite</b> · page 2 of 3 · how it works</p>
+    <h2>Camera to text message in six steps</h2>
+    <p class="lede">The whole suite is one pipeline. Video goes in one end; a short, useful message to the owner comes out the other. Everything in between is logged the same way as every other machine.</p>
+    <ol class="flow">
+      <li><div><strong>Cameras record</strong><p>The site's own IP cameras, or cheap ones installed for the job, stream to a server. Not the $6 droplet — video needs its own machine and its own budget.</p></div></li>
+      <li><div><strong>Frames get sampled</strong><p>It does not analyse every frame. One frame every few seconds is enough to know who is there and what changed, and it keeps the cost sane.</p></div></li>
+      <li><div><strong>The vision model reads each frame</strong><p>Output is plain facts with a confidence score: people present, PPE seen or missing, vehicles and deliveries, work happening or idle, who entered which zone.</p></div></li>
+      <li><div><strong>Site Monitoring compares facts to the plan</strong><p>The job record already says which crew was scheduled, when, and what milestone was due. Expected-versus-actual falls straight out of that.</p></div></li>
+      <li><div><strong>Rules decide what happens</strong><p>Routine: logged, nothing sent. Safety: text the PM now. Progress slipping: goes in the daily summary. Camera offline: an alert — it must never go quiet silently.</p></div></li>
+      <li><div><strong>Everything lands in the event log</strong><p>What was seen, what the AI decided, its confidence, what was sent, who approved. It shows up in the Owner Console like any other machine, with the same four modes. Off is the default.</p></div></li>
+    </ol>
+    <section>
+      <h3>Storage and retention</h3>
+      <p>Keep the clip behind every alert. Wipe the rest after the client's retention window. Retention is set per client, never one number for everyone.</p>
+    </section>
+    <section>
+      <h3>Later: prediction</h3>
+      <p>With months of detections beside job outcomes, the same log can answer "which jobs will run over, and why" — late deliveries lead to late starts lead to overtime. It predicts and warns. It never acts.</p>
+    </section>
+  </article>
+
+  <article class="page">
+    <p class="eyebrow"><b>Advanced Suite</b> · page 3 of 3 · why it's separate, and the rules</p>
+    <h2>Separate stack, hard rules</h2>
+    <p class="lede">Three reasons this lives outside the normal stack — and the guardrails that apply the day it comes in.</p>
+    <div class="reasons">
+      <div><strong>Weight</strong><p>Video is the heaviest thing in the catalogue: bandwidth, storage, GPU or vision-API cost. The other machines run on text and a handful of photos on a $6 server. A camera problem must never take down the receptionist.</p></div>
+      <div><strong>Privacy law</strong><p>Cameras on a site record employees, so PIPEDA applies. The suite's own guardrail: a written employee-notice privacy policy before any install, and the per-tenant switch stays OFF until it is signed. Outputs describe the site and the job — never a rating of a person. Same rule as Category F: coaching data, not surveillance.</p></div>
+      <div><strong>Maturity</strong><p>Computer vision sounds certain and is sometimes wrong. Until the catch rate is measured on real sites, it stays in R&amp;D, sold separately, priced on its own infrastructure.</p></div>
+    </div>
+    <section class="rule">
+      <h3>The rules</h3>
+      <p>Accuracy over automation — low confidence goes to a person, never a guess. Alerts only — it never acts on the site: no gates, no docked hours, no reports to anyone but the owner or PM. Loud failure — an offline camera is an alert, not silence. Every action logged with confidence and reasoning. Four modes, Off by default.</p>
+    </section>
+    <section>
+      <h3>How to sell it, when it's ready</h3>
+      <p>Sell outcomes, not cameras: safety incidents caught, theft and idle time seen, timestamped progress evidence for disputes. Separate line item, after Categories A–F prove out. Say "R&amp;D" out loud. Never show a seeded figure as a result.</p>
+    </section>
+    <section>
+      <h3>What it takes to build</h3>
+      <p>Cameras and a site network; a vision pipeline (frame sampling, model, confidence); storage with retention; the OS integration through the event log and a console tile. The heaviest build in its category — protect the full day for it.</p>
+    </section>
+  </article>
+
+  <!-- ================= CONTENTS ================= -->
+  <section class="toc" id="contents">
+    <h2>The 37 machines, in build order</h2>
+    <div class="toc-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Machine</th><th>Sells under</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="4">A · Revenue machines <span>10 · Aug 12 → Sep 10</span></td></tr>
+        <tr><td class="num">01</td><td><a href="#m-01">Missed-Call Rescue</a></td><td>Communication</td><td><span class="chip live">Live · verified</span></td></tr>
+        <tr><td class="num">02</td><td><a href="#m-02">Lead Identifier</a></td><td>Communication</td><td><span class="chip live">Live · verified</span></td></tr>
+        <tr><td class="num">03</td><td><a href="#m-03">Lead Saver</a></td><td>Communication</td><td><span class="chip live">Live · verified</span></td></tr>
+        <tr><td class="num">04</td><td><a href="#m-04">Email Lead Saver</a></td><td>Communication</td><td><span class="chip built">Built · no registry entry</span></td></tr>
+        <tr><td class="num">05</td><td><a href="#m-05">Review Collector</a></td><td>Quality</td><td><span class="chip live">Live · verified</span></td></tr>
+        <tr><td class="num">06</td><td><a href="#m-06">Booking Abandonment Rescue</a></td><td>Sales</td><td><span class="chip built">Built · per roadmap</span></td></tr>
+        <tr><td class="num">07</td><td><a href="#m-07">Voice Receptionist</a></td><td>Communication</td><td><span class="chip live">Live · verified</span></td></tr>
+        <tr><td class="num">08</td><td><a href="#m-08">DM Rescue (IG / FB)</a></td><td>Communication</td><td><span class="chip wait">Waiting · Meta</span></td></tr>
+        <tr><td class="num">09</td><td><a href="#m-09">Old Customer Reactivation</a></td><td>Communication</td><td><span class="chip built">Built · per roadmap</span></td></tr>
+        <tr><td class="num">10</td><td><a href="#m-10">AI Upsell Engine</a></td><td>Quality</td><td><span class="chip built">Built · per roadmap</span></td></tr>
+
+        <tr class="cat-row"><td colspan="4">B · Sales &amp; estimating <span>6 · Sep 14 → Oct 12</span></td></tr>
+        <tr><td class="num">11</td><td><a href="#m-11">Photo → Quote AI</a></td><td>Sales</td><td><span class="chip todo">To build · Sep 15</span></td></tr>
+        <tr><td class="num">12</td><td><a href="#m-12">Blueprint AI</a></td><td>Sales</td><td><span class="chip todo">To build · Sep 20</span></td></tr>
+        <tr><td class="num">13</td><td><a href="#m-13">Change Order Capture</a></td><td>Sales</td><td><span class="chip todo">To build · Sep 24</span></td></tr>
+        <tr><td class="num">14</td><td><a href="#m-14">AI Inspection Report</a></td><td>Quality</td><td><span class="chip todo">To build · Sep 29</span></td></tr>
+        <tr><td class="num">15</td><td><a href="#m-15">Material &amp; Pricing Finder</a></td><td>Operations</td><td><span class="chip todo">To build · Oct 2</span></td></tr>
+        <tr><td class="num">16</td><td><a href="#m-16">Supplier Negotiation AI</a></td><td>Operations</td><td><span class="chip todo">To build · Oct 3</span></td></tr>
+
+        <tr class="cat-row"><td colspan="4">C · Operations <span>6 · Oct 13 → Oct 30</span></td></tr>
+        <tr><td class="num">17</td><td><a href="#m-17">AI Scheduling &amp; Reminders</a></td><td>Operations</td><td><span class="chip todo">To build · Oct 13</span></td></tr>
+        <tr><td class="num">18</td><td><a href="#m-18">Dynamic Dispatch AI</a></td><td>Operations</td><td><span class="chip todo">To build · Oct 16</span></td></tr>
+        <tr><td class="num">19</td><td><a href="#m-19">Material Tracking</a></td><td>Operations</td><td><span class="chip todo">To build · Oct 17</span></td></tr>
+        <tr><td class="num">20</td><td><a href="#m-20">Material Countdown / Reorder AI</a></td><td>Operations</td><td><span class="chip todo">To build · Oct 18</span></td></tr>
+        <tr><td class="num">21</td><td><a href="#m-21">Purchase Order Generator</a></td><td>Operations</td><td><span class="chip todo">To build · Oct 21</span></td></tr>
+        <tr><td class="num">22</td><td><a href="#m-22">Invoice Creation</a></td><td>Financial</td><td><span class="chip todo">To build · Oct 22</span></td></tr>
+
+        <tr class="cat-row"><td colspan="4">D · Employee machines <span>5 · Oct 31 → Nov 15</span></td></tr>
+        <tr><td class="num">23</td><td><a href="#m-23">Employee Job Assistant</a></td><td>Operations</td><td><span class="chip todo">To build · Nov 1</span></td></tr>
+        <tr><td class="num">24</td><td><a href="#m-24">AI Job Checklist</a></td><td>Operations</td><td><span class="chip todo">To build · Nov 4</span></td></tr>
+        <tr><td class="num">25</td><td><a href="#m-25">Employee Hours / Reports</a></td><td>Operations</td><td><span class="chip todo">To build · Nov 5</span></td></tr>
+        <tr><td class="num">26</td><td><a href="#m-26">Payroll Preparation</a></td><td>Financial</td><td><span class="chip todo">To build · Nov 9</span></td></tr>
+        <tr><td class="num">27</td><td><a href="#m-27">Camera / Site Intelligence</a></td><td>Advanced</td><td><span class="chip todo">To build · Nov 10</span></td></tr>
+
+        <tr class="cat-row"><td colspan="4">E · Quality control <span>4 · Nov 18 → Nov 29</span></td></tr>
+        <tr><td class="num">28</td><td><a href="#m-28">Photo / Video Job QC</a></td><td>Quality</td><td><span class="chip todo">To build · Nov 18</span></td></tr>
+        <tr><td class="num">29</td><td><a href="#m-29">Completion Verification</a></td><td>Quality</td><td><span class="chip todo">To build · Nov 23</span></td></tr>
+        <tr><td class="num">30</td><td><a href="#m-30">AI Inspection — Before / After</a></td><td>Quality</td><td><span class="chip todo">To build · Nov 24</span></td></tr>
+        <tr><td class="num">31</td><td><a href="#m-31">Invoice Release After QC</a></td><td>Quality</td><td><span class="chip todo">To build · Nov 27</span></td></tr>
+
+        <tr class="cat-row"><td colspan="4">F · Management &amp; intelligence <span>6 · Dec 2 → Dec 13</span></td></tr>
+        <tr><td class="num">32</td><td><a href="#m-32">Profit Analysis</a></td><td>Financial</td><td><span class="chip todo">To build · Dec 2</span></td></tr>
+        <tr><td class="num">33</td><td><a href="#m-33">Company Overview Dashboard</a></td><td>Financial</td><td><span class="chip todo">To build · Dec 3</span></td></tr>
+        <tr><td class="num">34</td><td><a href="#m-34">AI Business Advisor</a></td><td>Financial</td><td><span class="chip todo">To build · Dec 7</span></td></tr>
+        <tr><td class="num">35</td><td><a href="#m-35">Employee Performance</a></td><td>Financial</td><td><span class="chip todo">To build · Dec 8</span></td></tr>
+        <tr><td class="num">36</td><td><a href="#m-36">Job Profitability</a></td><td>Financial</td><td><span class="chip todo">To build · Dec 8</span></td></tr>
+        <tr><td class="num">37</td><td><a href="#m-37">Material Cost Intelligence</a></td><td>Financial</td><td><span class="chip todo">To build · Dec 11</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="toc-foot">Not counted in the 37: the banked Estimate Follow-up Ladder (Build 5), which gets standardised into the catalogue during Category B (Oct 4). "Sells under" is the suite the machine is packaged in; the category is the build sprint.</p>
+  </section>
+
+  <!-- ================= CATEGORY A ================= -->
+  <section class="divider" id="cat-a">
+    <div class="letter">A</div>
+    <div>
+      <p class="eyebrow">Category A · 10 machines · Aug 12 → Sep 10 · 16 day-off sprints</p>
+      <h2>Revenue machines</h2>
+      <p>These make the contractor money directly, so they are the easiest thing you will ever sell. Every one of them ends in the same place: a lead saved, an owner texted, or a customer brought back.</p>
+      <p class="note">Days 1–12 are checked off on the roadmap. Days 13–16 (integration, the fake company, the portfolio dashboard, demo hardening) are still open.</p>
+    </div>
+  </section>
+
+  <article class="page" id="m-01">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">01</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine · Build 1</p><h2>Missed-Call Rescue</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Communication · Call Rescue + SMS Rescue</strong></li>
+      <li><span>Status</span><strong class="chip live">Live · verified</strong></li>
+      <li><span>Build slot</span><strong>Banked · ported to the platform Aug 17</strong></li>
+    </ul>
+    <p class="lede">When the phone rings out, a text goes back before the caller dials the next guy.</p>
+    <section><h3>What it does</h3><p>A contractor on a roof can't pick up. This machine notices the missed call, texts the caller within seconds, reads the reply, checks for STOP, has the AI work out what the job is and how urgent, and sends the owner one clean summary. The lead is saved.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Twilio reports a missed call on the business number.</li>
+        <li>The send gate checks consent, quiet hours and caps — then the rescue text goes out.</li>
+        <li>The caller replies. The SMS Router sorts it: STOP, review reply, or new lead.</li>
+        <li>AI triages the message: what, where, how urgent.</li>
+        <li>Owner gets one alert. Everything is logged with the AI's reasoning.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Every text passes the send gate: quiet hours, opt-outs, daily caps, kill switch. STOP is honoured instantly and permanently.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>A missed call is usually a lost job. This turns it into a conversation while the customer is still holding the phone.</p></section>
+  </article>
+
+  <article class="page" id="m-02">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">02</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine · Build 2 · "Speed-to-Lead"</p><h2>Lead Identifier</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Communication · Lead Rescue</strong></li>
+      <li><span>Status</span><strong class="chip live">Live · verified</strong></li>
+      <li><span>Build slot</span><strong>Banked · ported Aug 17 · 3-second response</strong></li>
+    </ul>
+    <p class="lede">Every inquiry gets graded HOT, WARM, COLD or SPAM in about three seconds — and only the real ones cost a text.</p>
+    <section><h3>What it does</h3><p>A web form, a text, a call — it's all "a lead". This machine reads it, decides whether it's a real customer and how hot, and answers the good ones fast. Spam and sales pitches are logged silently. No wasted texts, no wasted owner attention.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>A new inquiry reaches the router from any channel.</li>
+        <li>AI grades it: HOT (wants work now), WARM (thinking), COLD, SPAM.</li>
+        <li>HOT gets an instant reply and the owner is alerted.</li>
+        <li>Junk is logged; nothing is sent.</li>
+        <li>Grade and reasoning are saved on the lead for every other machine to use.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>It grades; it never quotes a price unless the owner has switched that on. Not confident enough? It stops and hands the lead to the owner.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>The first business to respond usually wins the job. Three seconds beats "I'll call back tonight."</p></section>
+  </article>
+
+  <article class="page" id="m-03">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">03</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine · the memory</p><h2>Lead Saver</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Communication · Lead Rescue</strong></li>
+      <li><span>Status</span><strong class="chip live">Live · verified</strong></li>
+      <li><span>Build slot</span><strong>Ported Aug 17 · the voice receptionist writes to it on real calls</strong></li>
+    </ul>
+    <p class="lede">Nothing lives outside the CRM. Every lead from every channel lands in one customer record.</p>
+    <section><h3>What it does</h3><p>Whatever machine touched the lead — call, text, email, DM, the voice receptionist, an abandoned booking — this one writes the person into the customer database, matches them against existing customers so there are no duplicates, and keeps the grade, the source and the history in one place.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>A machine hands over a lead: name, number, what they asked for, grade.</li>
+        <li>Lead Saver looks for an existing contact by phone or email.</li>
+        <li>Match: add to the history. New: create the record.</li>
+        <li>Grade, source and notes are stored on it.</li>
+        <li>Follow-up, reactivation and the Owner Console all read from here.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>One record per person. Opt-outs and do-not-contact live on the record, and every machine checks it before sending anything.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Leads stop living in a truck notebook and five apps. The console can finally show "leads this month" — and mean it.</p></section>
+  </article>
+
+  <article class="page" id="m-04">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">04</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine · Build 4</p><h2>Email Lead Saver</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Communication · Email AI</strong></li>
+      <li><span>Status</span><strong class="chip built">Built · no registry entry</strong></li>
+      <li><span>Build slot</span><strong>Day 4 · Aug 18</strong></li>
+    </ul>
+    <p class="lede">The inbox reads itself. Real leads get texted to the owner; spam disappears.</p>
+    <section><h3>What it does</h3><p>Watches the business Gmail. Each email is graded HOT, WARM, COLD or SPAM. The sender and the thread are saved as a lead and matched against existing customers. A reply is drafted for the owner to approve, and HOT leads text the owner right away.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>A new email triggers the workflow.</li>
+        <li>AI classifies it into one of the four grades.</li>
+        <li>Contact and thread saved — no duplicates.</li>
+        <li>A draft reply is written and parked in the approvals inbox.</li>
+        <li>HOT: the owner is texted now. Emergency keyword: escalation.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Replies go out only after approval. Flag: this machine shipped without a registry entry, so it can't be configured per client yet. Until that's fixed it is built, not deployable.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Quote requests sent by email sit unread for days. This puts the hot ones in the owner's pocket in seconds.</p></section>
+  </article>
+
+  <article class="page" id="m-05">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">05</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine · Build 3 · "Review Engine"</p><h2>Review Collector</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Quality · Review Collection</strong></li>
+      <li><span>Status</span><strong class="chip live">Live · verified</strong></li>
+      <li><span>Build slot</span><strong>Banked · standardised Aug 21 · both branches tested</strong></li>
+    </ul>
+    <p class="lede">Happy customers get the Google link. Unhappy ones get the owner. Nobody gets a public one-star by accident.</p>
+    <section><h3>What it does</h3><p>After a job, the customer gets a text asking how it went, 1 to 5. A 4 or 5 gets the review link and a 48-hour reminder if they forget. A 1 to 3 never sees a link: the owner is told privately and the customer gets a calm, softening reply so the problem gets fixed instead of posted.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Job marked done → wait a suitable period → ask.</li>
+        <li>The reply is a number.</li>
+        <li>4–5: review link, then a 48-hour nudge if needed.</li>
+        <li>1–3: owner intercept plus a softening reply. No link.</li>
+        <li>Every step logged; the dashboard counts reviews collected.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Authentic feedback only — never manufacture reviews, never bury real criticism. Every text passes the send gate.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Reviews are the trade's marketing. Steady five-stars, complaints caught early, zero effort from the owner.</p></section>
+  </article>
+
+  <article class="page" id="m-06">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">06</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine</p><h2>Booking Abandonment Rescue</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Sales · Booking Rescue</strong></li>
+      <li><span>Status</span><strong class="chip built">Built · per roadmap</strong></li>
+      <li><span>Build slot</span><strong>Day 5 · Aug 21</strong></li>
+    </ul>
+    <p class="lede">Someone started booking and stopped. A short, polite nudge ladder brings them back — and stops the second they reply.</p>
+    <section><h3>What it does</h3><p>Detects bookings that stalled: a form half filled, a slot picked but never confirmed. Sends a small series of nudges. Any reply ends the ladder and routes to a person. The lead goes into the Lead Saver like everyone else.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>A stalled booking is detected after a set window.</li>
+        <li>Nudge one → wait → nudge two → wait → last nudge.</li>
+        <li>Reply: ladder stops, owner alerted.</li>
+        <li>Booked: a job is created.</li>
+        <li>Silent: marked cold. No more texts.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Instant stop on reply or STOP. Send windows respected. A cap on texts per customer per day.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>A booking that dies halfway is a customer who already said yes once.</p></section>
+  </article>
+
+  <article class="page" id="m-07">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">07</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine · four sprint days</p><h2>Voice Receptionist</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Communication · AI Receptionist</strong></li>
+      <li><span>Status</span><strong class="chip live">Live · verified</strong></li>
+      <li><span>Build slot</span><strong>Days 6–9 · Aug 22–27 · I–III proven on real calls</strong></li>
+    </ul>
+    <p class="lede">Answers the phone like a good front-desk person: books, takes messages, spots emergencies, and hands off to the owner when it should.</p>
+    <section><h3>What it does</h3><p>A real voice on the business line. It knows the hours, services, service area and pricing rules from the business profile, and recognises an existing customer before the second sentence. It can book a job, take a message and grade the caller. On an emergency word like "flooding", or when it isn't confident, it says so and dials the owner in.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Twilio streams the call to the voice bridge — speech in, AI, speech out, under about 1.5 seconds a turn.</li>
+        <li>AI works out the intent: book, quote request, emergency, existing customer, or leave a message.</li>
+        <li>Bookings and messages write to jobs and contacts; the caller is graded into the Lead Saver.</li>
+        <li>Confidence drops or an emergency: live handoff, plus a "call handed to you" text to the owner.</li>
+        <li>Transcript, confidence and outcome logged on every call.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Never states a price unless the owner has allowed it. Every text goes through the send gate — emergencies bypass quiet hours, never an opt-out. Four modes work on voice: Off, Watch (grades, says nothing), Ask me (files an approval), Let it run.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Nights, weekends, on the roof: every call gets answered by something that sounds human and knows the business.</p></section>
+  </article>
+
+  <article class="page" id="m-08">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">08</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine</p><h2>DM Rescue (IG / FB)</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Communication · DM AI</strong></li>
+      <li><span>Status</span><strong class="chip wait">Waiting · Meta</strong></li>
+      <li><span>Build slot</span><strong>Day 10 · Aug 31 · technically live, approval blocked</strong></li>
+    </ul>
+    <p class="lede">Instagram and Facebook messages get answered and graded like any other lead — once Meta lets it through.</p>
+    <section><h3>What it does</h3><p>Connects the business's Instagram and Facebook inbox. Each DM is classified and qualified. Common questions get answered from the business profile; qualified prospects alert the owner and land in the CRM as graded leads.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Meta's webhook delivers the DM to the DM bridge.</li>
+        <li>AI classifies and qualifies it.</li>
+        <li>Answer from the profile, or hand it to the owner.</li>
+        <li>Lead saved and graded.</li>
+        <li>Runs in Watch mode until Meta approves the app.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Stays in Watch until approval. Where it stands: login and webhook are verified end to end; Meta business verification was rejected, and the resubmission is the blocker.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Younger customers DM instead of calling — and those messages sit unread for days.</p></section>
+  </article>
+
+  <article class="page" id="m-09">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">09</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine</p><h2>Old Customer Reactivation</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Communication · Customer Reactivation</strong></li>
+      <li><span>Status</span><strong class="chip built">Built · per roadmap</strong></li>
+      <li><span>Build slot</span><strong>Day 11 · Sep 1 · default mode: Ask me</strong></li>
+    </ul>
+    <p class="lede">Mines the dead customer list using job history — "your furnace is due" — never a blast.</p>
+    <section><h3>What it does</h3><p>Imports past customers, groups them by what was done and when, and writes a personal message that a past job justifies: annual service, warranty ending, seasonal work. The owner sees every message before it sends.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Import history and segment by job type and date.</li>
+        <li>AI drafts one personalised message per segment.</li>
+        <li>CASL filter: existing business relationship only; opt-outs honoured platform-wide.</li>
+        <li>Owner approves; the message sends inside the allowed window.</li>
+        <li>Replies come back as leads into the inbox.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Every message must be justified by a past job. Approval required by default. CASL is hard-coded, not a setting.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>The cheapest revenue there is: people who already trust them.</p></section>
+  </article>
+
+  <article class="page" id="m-10">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">A</span><span class="n">10</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Revenue machine</p><h2>AI Upsell Engine</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Quality · Upsell Detection</strong></li>
+      <li><span>Status</span><strong class="chip built">Built · per roadmap</strong></li>
+      <li><span>Build slot</span><strong>Day 12 · Sep 4</strong></li>
+    </ul>
+    <p class="lede">Looks at job photos, spots legitimate extra work, and asks the manager before anyone is offered anything.</p>
+    <section><h3>What it does</h3><p>From job media, AI separates "this needs fixing" (a defect, which goes to QC) from "this could be offered" (a real opportunity). A review card lands in the approvals inbox. Approved offers go out personalised to the customer and the job.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Job photos or video come in.</li>
+        <li>AI lists opportunities, kept separate from defects.</li>
+        <li>Manager: approve, edit or reject — with reasons.</li>
+        <li>Approved offer goes to the customer, personalised.</li>
+        <li>Logged, so the console can show what it caught.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Never auto-sends. Never upsells on a job with an open complaint. A necessary correction is never dressed up as an upgrade.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>The crew sees the extra work every day and never mentions it.</p></section>
+  </article>
+
+  <!-- ================= CATEGORY B ================= -->
+  <section class="divider" id="cat-b">
+    <div class="letter">B</div>
+    <div>
+      <p class="eyebrow">Category B · 6 machines · Sep 14 → Oct 12 · 15 day-off sprints</p>
+      <h2>Sales &amp; estimating machines</h2>
+      <p>Your unfair advantage — you speak this trade. Also the highest-liability category: in Ontario an estimate generally binds a contractor to within about 10% above it. Nothing here goes paid until the solicitor has reviewed the quote wording and services agreement.</p>
+      <p class="note">One shared pricing engine sits under Photo → Quote, Blueprint AI and Change Orders. The banked Estimate Follow-up Ladder (Build 5) is standardised here on Oct 4 — it's not counted in the 37.</p>
+    </div>
+  </section>
+
+  <article class="page" id="m-11">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">B</span><span class="n">11</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Sales &amp; estimating · three sprint days · the closer</p><h2>Photo → Quote AI</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Sales · Photo Quote / AI Quote</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Days 2–4 · Sep 15–19</strong></li>
+    </ul>
+    <p class="lede">Photograph the job on your phone. Get a formal, priced quote before you leave the driveway.</p>
+    <section><h3>What it does</h3><p>Photos go from the phone into storage. A vision model works out what it is — size, materials, condition, access — and writes a scope. The pricing engine turns scope plus the owner's rate card into materials, labour, hours, equipment, subs, markup and tax. A formal quote goes out by text or email with an accept link.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Upload photos from the phone.</li>
+        <li>AI extracts the scope as structured data against the customer and job.</li>
+        <li>The pricing engine prices it from the rate card.</li>
+        <li>Quote document with the solicitor-approved wording → approval.</li>
+        <li>Sent. Accepted: a job is created. Silent: handed to the follow-up ladder.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>An AI estimate never becomes a final quote on its own. Approval by default; always when it's outside the rules — maximum variance, minimums, approved suppliers, geographic pricing, emergency premiums.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Quotes that took two evenings take fifteen minutes, and the customer has a number while they're still excited.</p></section>
+  </article>
+
+  <article class="page" id="m-12">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">B</span><span class="n">12</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Sales &amp; estimating · two sprint days</p><h2>Blueprint AI</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Sales · Blueprint Analysis</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Days 5–6 · Sep 20–23</strong></li>
+    </ul>
+    <p class="lede">Feed it the drawings. Get a material takeoff and a priced quote.</p>
+    <section><h3>What it does</h3><p>Reads blueprint PDFs: detects the scale, pulls out rooms and elements, and produces quantities per material per area — the takeoff. The same pricing engine prices it. Multi-page sets, a missing scale or partial plans fail loudly instead of guessing.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>PDF in — pages parsed, scale detected.</li>
+        <li>Takeoff built: quantities per material per area.</li>
+        <li>Pricing engine → full material list, labour, quote.</li>
+        <li>Same approval rules, same quote document, same follow-up ladder.</li>
+        <li>Accuracy tuned against a known job until it lands inside the variance guardrail.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Never guess silently — anything unclear escalates. Same quote guardrails as Photo → Quote.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Takeoffs are hours of squinting at drawings. This is the estimator's evening back.</p></section>
+  </article>
+
+  <article class="page" id="m-13">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">B</span><span class="n">13</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Sales &amp; estimating · two sprint days</p><h2>Change Order Capture</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Sales · Change Orders</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Days 7–8 · Sep 24–28</strong></li>
+    </ul>
+    <p class="lede">The "yeah, just add that" on site becomes a signed change order in ten minutes.</p>
+    <section><h3>What it does</h3><p>The PM texts or photographs the verbal change. AI drafts a formal change order — original scope plus added scope plus the material and labour difference plus markup — priced from the rate card. The owner approves, the client e-signs, the countersigned copy is filed against the job.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Text or photo from site.</li>
+        <li>Draft change order priced by the shared pricing engine.</li>
+        <li>Owner card: approve, edit or reject with reasons.</li>
+        <li>E-sign to the client; countersigned copy logged.</li>
+        <li>Ambiguous changes escalate instead of guessing.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>No change order reaches a client without owner approval. Ever.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>The biggest unbilled-revenue leak in construction. Nobody stops mid-pour to do paperwork.</p></section>
+  </article>
+
+  <article class="page" id="m-14">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">B</span><span class="n">14</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Sales &amp; estimating</p><h2>AI Inspection Report</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Quality · AI Inspection</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 9 · Sep 29</strong></li>
+    </ul>
+    <p class="lede">Job photos in. A credible inspection report with photo evidence out — one version for the client, one for the shop.</p>
+    <section><h3>What it does</h3><p>Every finding gets classified — defect, incomplete, safety, scope difference, upsell candidate — with the photo that proves it. Both a client-facing and an internal report are rendered from the same data. Category E's before/after inspection reuses this engine.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Job media comes in.</li>
+        <li>AI findings, each with evidence and a confidence score.</li>
+        <li>Each finding classified.</li>
+        <li>Two reports rendered from one set of facts.</li>
+        <li>Findings feed QC and the upsell engine.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Low confidence goes to a person. Findings are evidence, not verdicts.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>A professional report at the end of a job wins the next one — and settles arguments.</p></section>
+  </article>
+
+  <article class="page" id="m-15">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">B</span><span class="n">15</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Sales &amp; estimating · purchasing intelligence</p><h2>Material &amp; Pricing Finder</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Purchasing</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 10 · Oct 2</strong></li>
+    </ul>
+    <p class="lede">One material list, prices from every approved supplier, the best overall option — not the cheapest — with the reasoning shown.</p>
+    <section><h3>What it does</h3><p>Looks the list up against the approved-supplier set and builds a comparison: price, availability, delivery, distance, quantity breaks. Surfaces the best overall choice and logs why. Wired into the pricing engine so quotes can price from live supplier data.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Material list in.</li>
+        <li>Lookups across the approved suppliers.</li>
+        <li>Comparison table built.</li>
+        <li>Recommendation, with the reasoning logged.</li>
+        <li>Feeds quotes and purchase orders.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Approved suppliers only. It recommends; the PO machine and the purchase cap decide.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Most shops call one supplier out of habit. This is margin on every order.</p></section>
+  </article>
+
+  <article class="page" id="m-16">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">B</span><span class="n">16</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Sales &amp; estimating · purchasing intelligence</p><h2>Supplier Negotiation AI</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Purchasing</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 11 · Oct 3</strong></li>
+    </ul>
+    <p class="lede">Sends the RFQ to five suppliers in the owner's voice, lines up the answers, drafts the counter — and hands the decision to the owner.</p>
+    <section><h3>What it does</h3><p>Drafts the request-for-quote from one material list, collects the replies, normalises them into a single comparison view, and drafts counter-offers for approval.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Material list → RFQ to five suppliers, in the business's tone.</li>
+        <li>Replies collected.</li>
+        <li>One comparison view.</li>
+        <li>Counter-offer drafts → approvals inbox.</li>
+        <li>The owner decides.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Never commits to a purchase. Nothing sends without approval.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Shopping the order stops being a chore, so it actually happens.</p></section>
+  </article>
+
+  <!-- ================= CATEGORY C ================= -->
+  <section class="divider" id="cat-c">
+    <div class="letter">C</div>
+    <div>
+      <p class="eyebrow">Category C · 6 machines · Oct 13 → Oct 30 · 9 day-off sprints</p>
+      <h2>Operations machines</h2>
+      <p>Sticky. Once a contractor runs scheduling and purchasing through the OS, they do not leave. The six run as one chain on a job: schedule → dispatch → materials → reorder → purchase order → invoice.</p>
+      <p class="note">One text from a crew member should ripple correctly through materials → reorder → PO. That is the exit test.</p>
+    </div>
+  </section>
+
+  <article class="page" id="m-17">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">C</span><span class="n">17</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Operations</p><h2>AI Scheduling &amp; Reminders</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Scheduling</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 1 · Oct 13</strong></li>
+    </ul>
+    <p class="lede">Every job gets a crew, a date and a slot. Customer and crew get reminded the day before, the morning of, and en route.</p>
+    <section><h3>What it does</h3><p>Real scheduling on the jobs table: crew, date, duration, location. When the customer texts "can we move it?", AI proposes new slots inside working hours.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Job scheduled with crew, date, duration and location.</li>
+        <li>Reminder ladder to customer and crew.</li>
+        <li>Reschedule request → options offered inside working hours.</li>
+        <li>Big disruptions go to approval.</li>
+        <li>Every change logged.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Schedule changes above the disruption threshold go to the owner.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Fewer no-shows. Fewer "where are you" calls.</p></section>
+  </article>
+
+  <article class="page" id="m-18">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">C</span><span class="n">18</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Operations · the demo that looks like magic</p><h2>Dynamic Dispatch AI</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Dispatch</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 2 · Oct 16</strong></li>
+    </ul>
+    <p class="lede">Matches the right crew to the job by skills, availability, travel time and load — and reshuffles when rain hits a pour day.</p>
+    <section><h3>What it does</h3><p>Proposes dispatch for every job. Watches the forecast: a pour, roof or paint day at risk triggers a proposed reschedule and notifies crew and client. The owner approves or overrides from a card. Every decision is logged with its reasoning.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Jobs, crews, skills, locations and current load.</li>
+        <li>Proposal scored and drafted.</li>
+        <li>Weather watch on weather-sensitive jobs.</li>
+        <li>Dispatch card in the approvals inbox.</li>
+        <li>Crew and client notified.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Dispatch proposals go through the approvals inbox. The owner can override anything, and the override is logged.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Every trade has been burned by weather. Watching the schedule fix itself is the demo.</p></section>
+  </article>
+
+  <article class="page" id="m-19">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">C</span><span class="n">19</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Operations</p><h2>Material Tracking</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Materials</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 3 · Oct 17</strong></li>
+    </ul>
+    <p class="lede">Per job, per material: starting, bought, delivered, used, remaining — updated by a text or a photo, never a spreadsheet.</p>
+    <section><h3>What it does</h3><p>The crew updates by text, voice note, photo, form or job report. Alerts fire for running low, missing, delayed, wrong material and excessive usage.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Job starts with its quantities.</li>
+        <li>Deliveries and usage logged from the field.</li>
+        <li>The ledger reconciles.</li>
+        <li>Alerts fire on the conditions above.</li>
+        <li>Feeds reorder, purchase orders, invoices and cost intelligence.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>The ledger must reconcile end to end. Usage far over plan flags to the PM.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Waste and "where did it all go" become visible, per job.</p></section>
+  </article>
+
+  <article class="page" id="m-20">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">C</span><span class="n">20</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Operations</p><h2>Material Countdown / Reorder AI</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Materials</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 4 · Oct 18</strong></li>
+    </ul>
+    <p class="lede">Watches the burn rate, flags jobs about to run short, and proposes the reorder from the best supplier — up to a cap.</p>
+    <section><h3>What it does</h3><p>A countdown per material per job from the tracking ledger. Reorder proposals come from the approved-supplier list at the best overall option, then hand off to the purchase order machine.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Burn rate calculated from the ledger.</li>
+        <li>"Runs out Thursday" flagged.</li>
+        <li>Reorder proposal drafted.</li>
+        <li>Under the cap: goes ahead. Over: approvals inbox.</li>
+        <li>Handed to the Purchase Order Generator.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>A maximum autonomous purchase amount. Above it, approval — every time.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>A crew standing around waiting on lumber costs more per hour than the fee.</p></section>
+  </article>
+
+  <article class="page" id="m-21">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">C</span><span class="n">21</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Operations</p><h2>Purchase Order Generator</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Purchase Orders</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 5 · Oct 21</strong></li>
+    </ul>
+    <p class="lede">Approved reorder → a formal PO with supplier, quantities, price, delivery and job reference. Sent, tracked, reconciled on delivery.</p>
+    <section><h3>What it does</h3><p>Builds the purchase order and attaches the supplier comparison to it. Below-cap POs flow on their own; above-cap ones sit in approvals with the full context.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Reorder approved (or under the cap).</li>
+        <li>PO built with the comparison attached.</li>
+        <li>Sent to the supplier.</li>
+        <li>Delivery confirmation reconciled against it.</li>
+        <li>Logged against the job.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Same purchase cap as the reorder machine. Every PO carries its comparison and reasoning.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Paperwork the office hates, done in seconds and never lost.</p></section>
+  </article>
+
+  <article class="page" id="m-22">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">C</span><span class="n">22</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Operations · money in</p><h2>Invoice Creation</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Financial · Invoices</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 6 · Oct 22</strong></li>
+    </ul>
+    <p class="lede">The invoice builds itself from the job: work done, labour, materials, approved change orders, pricing rules, taxes.</p>
+    <section><h3>What it does</h3><p>Required fields are enforced per business, so AI cannot ship an incomplete invoice. The draft lands in approvals; approved invoices deliver and log. In Ontario a proper invoice starts the 28-day payment clock — the reminders are sold as reminders, not legal advice.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Job data, change orders and materials pulled together.</li>
+        <li>Invoice drafted.</li>
+        <li>Required-field check.</li>
+        <li>Approval.</li>
+        <li>Delivered and logged.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Required fields are owner-defined. Incomplete never sends.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>A shorter gap between work done and money in.</p></section>
+  </article>
+
+  <!-- ================= CATEGORY D ================= -->
+  <section class="divider" id="cat-d">
+    <div class="letter">D</div>
+    <div>
+      <p class="eyebrow">Category D · 5 machines · Oct 31 → Nov 15 · 9 day-off sprints</p>
+      <h2>Employee machines</h2>
+      <p>Sold to the owner, used by the crew — so the interface bar is higher. SMS-first, voice notes accepted, three taps maximum for anything. The adoption test: a labourer in the rain uses it without being told twice.</p>
+      <p class="note">Blocker: the written employee-notice privacy policy for the camera machine (Day 1).</p>
+    </div>
+  </section>
+
+  <article class="page" id="m-23">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">D</span><span class="n">23</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Employee machine · the crowd-pleaser</p><h2>Employee Job Assistant</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Employee workflows</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 2 · Nov 1</strong></li>
+    </ul>
+    <p class="lede">The crew texts a question — gate code, what's the scope, who's the contact — and gets the answer from the job file.</p>
+    <section><h3>What it does</h3><p>Answers from the job record. Sends each crew member a morning brief: jobs, times, addresses, what to bring. Voice notes are transcribed and filed against the job.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Question by text.</li>
+        <li>Answer pulled from the job file.</li>
+        <li>Morning brief sent per person.</li>
+        <li>Voice notes → text → filed on the job.</li>
+        <li>Logged.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Answers come only from the job file — no guessing on scope or pricing.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>The PM's phone stops ringing with the same six questions.</p></section>
+  </article>
+
+  <article class="page" id="m-24">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">D</span><span class="n">24</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Employee machine</p><h2>AI Job Checklist</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Employee workflows</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 3 · Nov 4</strong></li>
+    </ul>
+    <p class="lede">A per-trade checklist generated from the scope. Steps ticked by text or photo, with the photo kept as evidence.</p>
+    <section><h3>What it does</h3><p>Missing steps are chased politely at the end of the day; repeated gaps alert the PM. The checklist state feeds Completion Verification in Category E.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Scope → checklist template for the trade.</li>
+        <li>Crew ticks steps by text or photo.</li>
+        <li>Photo stored as evidence.</li>
+        <li>End-of-day chase for anything missing.</li>
+        <li>State feeds QC.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Polite by default. The PM is only alerted on repeated gaps.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Fewer callbacks, and proof the steps were done.</p></section>
+  </article>
+
+  <article class="page" id="m-25">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">D</span><span class="n">25</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Employee machine</p><h2>Employee Hours / Reports</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Operations · Hours + Job Reports</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 4 · Nov 5</strong></li>
+    </ul>
+    <p class="lede">Clock in and out by text or geofence. End-of-day report by text, voice or photos. Friday's payroll sheet builds itself.</p>
+    <section><h3>What it does</h3><p>Turns messy field input into a tidy structured record, and handles the edge cases: forgot to punch, double punch, site hop.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Punch in and out.</li>
+        <li>End-of-day report comes in however the crew sends it.</li>
+        <li>Structured into a record.</li>
+        <li>The week rolls up.</li>
+        <li>Payroll sheet ready Friday.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Hours edited after submission are logged and flagged.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Friday morning back.</p></section>
+  </article>
+
+  <article class="page" id="m-26">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">D</span><span class="n">26</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Employee machine</p><h2>Payroll Preparation</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Financial · Payroll Prep</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 5 · Nov 9</strong></li>
+    </ul>
+    <p class="lede">Hours plus rates plus overtime rules → a payroll package with the anomalies flagged. AI prepares. A human approves. No exceptions.</p>
+    <section><h3>What it does</h3><p>Assembles the pay run and flags what looks wrong: missing days, unusual overtime, rate mismatches. Produces one clean approval card.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Hours from the week.</li>
+        <li>Rates and overtime rules applied.</li>
+        <li>Package assembled.</li>
+        <li>Anomalies flagged.</li>
+        <li>A person approves.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Hard guardrail: AI never runs payroll. It prepares; a human signs off.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Payroll from crumpled notes is the thing owners hate most.</p></section>
+  </article>
+
+  <article class="page" id="m-27">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">D</span><span class="n">27</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Employee machine · two sprint days · first slice of the Advanced Suite</p><h2>Camera / Site Intelligence</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Advanced · Camera AI + Site Monitoring</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Days 6–7 · Nov 10–13 · heaviest build in the category</strong></li>
+    </ul>
+    <p class="lede">Site cameras → what's happening, is it safe, is it on plan → alerts and a daily summary. Off until the employee notice is signed.</p>
+    <section><h3>What it does</h3><p>Ingests the camera feeds with storage and retention rules. Detects activity — crew present, work happening, deliveries, visitors. Raises safety flags, compares progress against expected, and writes a daily site summary from detections plus job data. See the three Advanced Suite pages at the top for the full picture.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Feeds in; retention rules set.</li>
+        <li>Detections with confidence scores.</li>
+        <li>Compared to the job plan.</li>
+        <li>Alerts and the daily summary.</li>
+        <li>Logged like every other machine.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>The per-tenant switch stays OFF until the notice is signed. No employee-surveillance framing — policy language is enforced in the outputs. A camera going offline must alert, never silently stop.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Safety, theft, crews standing around — and timestamped progress evidence when a client disputes the work.</p></section>
+  </article>
+
+  <!-- ================= CATEGORY E ================= -->
+  <section class="divider" id="cat-e">
+    <div class="letter">E</div>
+    <div>
+      <p class="eyebrow">Category E · 4 machines · Nov 18 → Nov 29 · 7 day-off sprints</p>
+      <h2>Quality control machines</h2>
+      <p>Potentially the killer product for trades. Finish the job → photograph it → AI checks it → flags missing work → the crew fixes it → AI approves → the invoice releases. Quality tied directly to getting paid, which is what owners actually lose sleep over.</p>
+      <p class="note">Exit test: a flawed job cannot reach invoicing without the fix.</p>
+    </div>
+  </section>
+
+  <article class="page" id="m-28">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">E</span><span class="n">28</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Quality control · two sprint days</p><h2>Photo / Video Job QC</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Quality · Photo/Video QC + Defect Detection</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Days 1–2 · Nov 18–19</strong></li>
+    </ul>
+    <p class="lede">The crew photographs the finished job. AI checks it for mistakes, missing work, defects and safety issues, then runs the fix-and-recheck loop.</p>
+    <section><h3>What it does</h3><p>Detection is tuned per trade — a plumbing pass is not a painting pass. A flag goes to the employee with the photo evidence; they fix it, re-photograph it, AI re-checks, and it's approved. The PM can see the loop at every step.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Completed-job media comes in.</li>
+        <li>Findings scored with confidence.</li>
+        <li>Low confidence goes to a person instead of a guess.</li>
+        <li>Flag → fix → re-check, until it passes.</li>
+        <li>Logged; the catch rate is measured honestly.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Accuracy over automation. It escalates rather than guesses.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Rework caught before the client sees it.</p></section>
+  </article>
+
+  <article class="page" id="m-29">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">E</span><span class="n">29</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Quality control</p><h2>Completion Verification</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Quality · Automated Reports</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 3 · Nov 23</strong></li>
+    </ul>
+    <p class="lede">Everything that was quoted is present in the evidence — including approved change orders — before a job is called done.</p>
+    <section><h3>What it does</h3><p>Compares the final scope against the job media. Misses become fixes; genuine extras become upsell candidates. A verification report is attached to the job record.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Final scope, change orders included.</li>
+        <li>Evidence compared against it.</li>
+        <li>Gaps flagged and routed.</li>
+        <li>Report attached to the job.</li>
+        <li>Feeds invoice release.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Always the final scope, never the original quote.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>"You didn't finish X" disputes end with a report instead of an argument.</p></section>
+  </article>
+
+  <article class="page" id="m-30">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">E</span><span class="n">30</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Quality control</p><h2>AI Inspection — Before / After</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Quality · AI Inspection</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 4 · Nov 24</strong></li>
+    </ul>
+    <p class="lede">A client-facing before-and-after report built from the job's photo timeline. The internal copy carries findings, confidence and reviewer notes.</p>
+    <section><h3>What it does</h3><p>Pairs before and after shots from the timeline and writes up what was done with the evidence. One inspection engine, shared with Category B's inspection report.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Job media timeline.</li>
+        <li>Before/after pairs built.</li>
+        <li>Client report rendered.</li>
+        <li>Internal report rendered from the same data.</li>
+        <li>Filed against the job.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Findings carry confidence. Reviewer notes stay internal.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>It's the report that gets the referral.</p></section>
+  </article>
+
+  <article class="page" id="m-31">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">E</span><span class="n">31</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Quality control · the money loop</p><h2>Invoice Release After QC</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Quality + Financial</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 5 · Nov 27</strong></li>
+    </ul>
+    <p class="lede">QC passes → the invoice goes out. QC fails → release is blocked with reasons. The owner can override, and the override is logged.</p>
+    <section><h3>What it does</h3><p>Connects quality to cash. An approved QC result releases the invoice through the Category C invoice machine. A failed QC holds it and says why.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>QC result comes in.</li>
+        <li>Pass: invoice released.</li>
+        <li>Fail: blocked, with reasons.</li>
+        <li>Owner override, with a logged reason.</li>
+        <li>Invoice out.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>QC never releases an invoice on its own above the approval threshold.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>The last 5% of a job stops taking 30% of the time.</p></section>
+  </article>
+
+  <!-- ================= CATEGORY F ================= -->
+  <section class="divider" id="cat-f">
+    <div class="letter">F</div>
+    <div>
+      <p class="eyebrow">Category F · 6 machines · Dec 2 → Dec 13 · 7 day-off sprints</p>
+      <h2>Management &amp; intelligence</h2>
+      <p>These read from everything the other 31 machines already logged — no new data collection — so they are cheap to build. They are also the reason a contractor keeps paying in month nine.</p>
+      <p class="note">Exit test: answer "was crew two profitable in October?" in under ten seconds, on stage.</p>
+    </div>
+  </section>
+
+  <article class="page" id="m-32">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">F</span><span class="n">32</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Management &amp; intelligence</p><h2>Profit Analysis</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Financial · Profit Analysis</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 1 · Dec 2</strong></li>
+    </ul>
+    <p class="lede">Revenue, costs and margin from what's already logged — by month, job type and crew — with anomalies explained in plain language.</p>
+    <section><h3>What it does</h3><p>Computes profit from events, jobs, invoices and materials. Nothing new to enter. Odd numbers come with a plain-English explanation of what moved them.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Reads events, jobs, invoices, materials.</li>
+        <li>Margin computed.</li>
+        <li>Views by month, job type, crew.</li>
+        <li>Anomalies explained.</li>
+        <li>Reconciled against the ledger before anything renders.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Numbers reconcile against the ledger, or they don't render.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>"Which jobs actually make money" — answered for the first time.</p></section>
+  </article>
+
+  <article class="page" id="m-33">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">F</span><span class="n">33</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Management &amp; intelligence</p><h2>Company Overview Dashboard</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Financial · Business intelligence</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 2 · Dec 3</strong></li>
+    </ul>
+    <p class="lede">One screen from the truck: money in motion, jobs in flight, leads in the funnel, and the alerts that matter. Tap any number to see the records behind it.</p>
+    <section><h3>What it does</h3><p>The owner's morning check. Reads live from the event log, refreshes instantly, built mobile-first.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Reads live from events.</li>
+        <li>Instant refresh.</li>
+        <li>Phone-first layout.</li>
+        <li>Every figure drills down to its records.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Every figure traceable. Seeded showroom figures always labelled MODELLED.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Their CRM says what the crew did last week. This says what the business did while they slept.</p></section>
+  </article>
+
+  <article class="page" id="m-34">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">F</span><span class="n">34</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Management &amp; intelligence · the month-nine argument</p><h2>AI Business Advisor</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Financial · Business intelligence</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 3 · Dec 7</strong></li>
+    </ul>
+    <p class="lede">A monthly plain-English report: what the machines caught, what it was worth, what to fix next — grounded strictly in logged events.</p>
+    <section><h3>What it does</h3><p>Writes the narrative a good bookkeeper would write, with caveats where the data is thin. The tone is adviser, not salesman.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>The month's events.</li>
+        <li>Narrative written.</li>
+        <li>Caveats added where data is thin.</li>
+        <li>Delivered to the owner.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>It never invents a number.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>This report is what justifies the recurring fee. Make it read like it.</p></section>
+  </article>
+
+  <article class="page" id="m-35">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">F</span><span class="n">35</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Management &amp; intelligence</p><h2>Employee Performance</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Financial · Crew profitability</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 4 · Dec 8</strong></li>
+    </ul>
+    <p class="lede">Per crew and per employee: hours, checklists, QC pass rate, callbacks — framed as coaching data, not surveillance.</p>
+    <section><h3>What it does</h3><p>Reads purely from Category C, D and E data that already exists. The language is policy-checked so it reads as coaching, never as a rating of a person.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Hours, checklists, QC results, callbacks pulled from existing events.</li>
+        <li>Per-crew and per-employee views built.</li>
+        <li>Wording checked against the policy.</li>
+        <li>Delivered to the owner and manager only.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Coaching, not surveillance. Language matters and is policy-checked.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Who needs training, who earned the raise — with evidence instead of a hunch.</p></section>
+  </article>
+
+  <article class="page" id="m-36">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">F</span><span class="n">36</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Management &amp; intelligence</p><h2>Job Profitability</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Financial · Job Profitability</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 4 · Dec 8</strong></li>
+    </ul>
+    <p class="lede">Quoted versus actual, per job, with the variance drivers named: labour overrun, material waste, a missed change order.</p>
+    <section><h3>What it does</h3><p>Puts the quote beside what the job really cost — hours, materials, change orders, invoice — and says where the gap came from.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>Quote, hours, materials and invoice pulled per job.</li>
+        <li>Quoted versus actual computed.</li>
+        <li>Variance drivers identified.</li>
+        <li>Rolled up by job type and crew.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Reads existing events only. No new data entry, ever.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>"Was crew two profitable in October?" — answered in ten seconds.</p></section>
+  </article>
+
+  <article class="page" id="m-37">
+    <header class="m-head">
+      <div class="m-num"><span class="cat">F</span><span class="n">37</span><span class="of">of 37</span></div>
+      <div><p class="eyebrow">Management &amp; intelligence · closes the loop back to quoting</p><h2>Material Cost Intelligence</h2></div>
+    </header>
+    <ul class="spec">
+      <li><span>Sells under</span><strong>Financial · Business intelligence</strong></li>
+      <li><span>Status</span><strong class="chip todo">To build</strong></li>
+      <li><span>Build slot</span><strong>Day 5 · Dec 11</strong></li>
+    </ul>
+    <p class="lede">Price trends per material per supplier, waste per job type, and an alert when a supplier drifts above market — fed straight back into the pricing engine.</p>
+    <section><h3>What it does</h3><p>Learns from purchase order and delivery history. Shows where waste happens, which supplier crept up, and recommends adjustments to the rate card so quotes track real prices.</p></section>
+    <section><h3>How it runs</h3>
+      <ol class="steps">
+        <li>PO and delivery history.</li>
+        <li>Price trends per material per supplier.</li>
+        <li>Waste analysis: purchased versus used, per job type.</li>
+        <li>Supplier-drift alerts against the comparison data.</li>
+        <li>Recommendations back into the Category B pricing engine.</li>
+      </ol>
+    </section>
+    <section class="rule"><h3>The rule</h3><p>Reads only from logged data. Recommends; the owner changes the rate card.</p></section>
+    <section class="why"><h3>Why they pay</h3><p>Margin on every order, and quotes that stop drifting away from real prices.</p></section>
+  </article>
+
+  <p class="foot">Source: the live roadmap day cards and suite list, read Sep 5, 2026, plus the current build state. Statuses marked "per roadmap" are checkbox state, not live verification — never call a machine done until it has run live. Seeded showroom figures are always modelled, never a client result.</p>
+
+</div>
+</div>
+</body>
+</html>
