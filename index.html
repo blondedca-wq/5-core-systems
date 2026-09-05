@@ -1721,11 +1721,11 @@ document.getElementById('quranNewBtn').addEventListener('click', quranStartNew);
 let SURAH_TEXT_CACHE = {};
 let TAFSIR_MEM = {};
 let openSurahNum = null;
-const BASMALA_FORMS = ['بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ','بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ','بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ'];
+const BASMALA_EXACT = '\u0628\u0650\u0633\u0652\u0645\u0650\u0020\u0671\u0644\u0644\u0651\u064e\u0647\u0650\u0020\u0671\u0644\u0631\u0651\u064e\u062d\u0652\u0645\u064e\u0670\u0646\u0650\u0020\u0671\u0644\u0631\u0651\u064e\u062d\u0650\u064a\u0645\u0650';
 
 async function fetchSurahText(n) {
   if (SURAH_TEXT_CACHE[n]) return SURAH_TEXT_CACHE[n];
-  const lsKey = 'quran-text-' + n + '-v1';
+  const lsKey = 'quran-text-' + n + '-v2';
   try { const c = localStorage.getItem(lsKey); if (c) { SURAH_TEXT_CACHE[n] = JSON.parse(c); return SURAH_TEXT_CACHE[n]; } } catch (e) {}
   const res = await fetch('https://api.alquran.cloud/v1/surah/' + n + '/editions/quran-uthmani,en.sahih');
   if (!res.ok) throw new Error('load failed');
@@ -1733,10 +1733,9 @@ async function fetchSurahText(n) {
   if (json.code !== 200 || !json.data || json.data.length < 2) throw new Error('bad payload');
   const ar = json.data[0].ayahs, en = json.data[1].ayahs;
   const out = ar.map((a, i) => ({ n: a.numberInSurah, ar: a.text, en: (en[i] && en[i].text) || '' }));
-  if (n !== 1 && n !== 9 && out.length) {
-    for (const b of BASMALA_FORMS) {
-      if (out[0].ar.indexOf(b) === 0) { out[0].ar = out[0].ar.slice(b.length).trim(); break; }
-    }
+  if (out.length) out[0].ar = out[0].ar.replace(/^[\uFEFF\u200E\u200F]+/, '');
+  if (n !== 1 && n !== 9 && out.length && out[0].ar.indexOf(BASMALA_EXACT) === 0) {
+    out[0].ar = out[0].ar.slice(BASMALA_EXACT.length).trim();
   }
   SURAH_TEXT_CACHE[n] = out;
   try { localStorage.setItem(lsKey, JSON.stringify(out)); } catch (e) {}
@@ -1778,7 +1777,7 @@ async function openSurah(n) {
 function renderSurahReader(n, ayahs) {
   const body = document.getElementById('surahModalBody');
   let html = '';
-  if (n !== 1 && n !== 9) html += '<p dir="rtl" class="text-center text-lg font-semibold text-teal-600 dark:text-teal-400 mb-4 mt-1">' + BASMALA_FORMS[0] + '</p>';
+  if (n !== 1 && n !== 9) html += '<p dir="rtl" class="text-center text-lg font-semibold text-teal-600 dark:text-teal-400 mb-4 mt-1">' + BASMALA_EXACT + '</p>';
   html += ayahs.map(a => {
     return '<div class="mb-1 pb-3 pt-2 border-b border-ink-100 dark:border-ink-800">' +
       '<div class="flex items-start gap-3">' +
