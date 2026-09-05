@@ -68,6 +68,7 @@ input[type="checkbox"] { cursor:pointer; }
     <button data-tab="roadmap" class="tabbtn flex-1 py-2 rounded-xl text-[12px] font-bold transition">🗺 Roadmap</button>
     <button data-tab="learn" class="tabbtn flex-1 py-2 rounded-xl text-[12px] font-bold transition">📚 Learn</button>
     <button data-tab="pitch" class="tabbtn flex-1 py-2 rounded-xl text-[12px] font-bold transition">🎯 Pitch</button>
+    <button data-tab="guide" class="tabbtn flex-1 py-2 rounded-xl text-[12px] font-bold transition">🔧 Machines</button>
   </div>
 </div>
 
@@ -238,6 +239,7 @@ input[type="checkbox"] { cursor:pointer; }
 </div>
   <div id="tab-learn" class="hidden pb-6 space-y-1"></div>
   <div id="tab-pitch" class="hidden pb-6"></div>
+<div id="tab-guide" class="hidden pb-6"></div>
 </main>
 
 <script>
@@ -1347,20 +1349,47 @@ function renderPitch() {
 /* ===== tab switching ===== */
 const TABON = 'bg-indigo-600 text-white shadow';
 const TABOFF = 'bg-ink-200/60 dark:bg-ink-800/60 text-ink-500 dark:text-ink-400';
-const renderedTabs = { learn:false, pitch:false };
+const renderedTabs = { learn:false, pitch:false, guide:false };
 function showTab(name) {
-  ['roadmap','learn','pitch'].forEach(t => document.getElementById('tab-'+t).classList.toggle('hidden', t !== name));
+  ['roadmap','learn','pitch','guide'].forEach(t => document.getElementById('tab-'+t).classList.toggle('hidden', t !== name));
   document.querySelectorAll('.tabbtn').forEach(b => {
     b.className = 'tabbtn flex-1 py-2 rounded-xl text-[12px] font-bold transition ' + (b.dataset.tab === name ? TABON : TABOFF);
   });
   if (name === 'learn' && !renderedTabs.learn) { renderLearn(); renderedTabs.learn = true; }
   if (name === 'pitch' && !renderedTabs.pitch) { renderPitch(); renderedTabs.pitch = true; }
+  if (name === 'guide' && !renderedTabs.guide) { renderGuide(); renderedTabs.guide = true; }
   try { localStorage.setItem('lab.roadmap.tab', name); } catch(e) {}
   window.scrollTo({top:0});
 }
 document.querySelectorAll('.tabbtn').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
 showTab(localStorage.getItem('lab.roadmap.tab') || 'roadmap');
 
+</script>
+
+<!-- Machines field guide tab — loads machines.html into #tab-guide -->
+<script>
+async function renderGuide(){
+  var el = document.getElementById('tab-guide');
+  el.innerHTML = '<p class="text-[13px] text-ink-500 dark:text-ink-400 py-6">Loading the machines guide…</p>';
+  try{
+    var r = await fetch('machines.html', {cache:'no-cache'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var doc = new DOMParser().parseFromString(await r.text(), 'text/html');
+    doc.querySelectorAll('link[rel="stylesheet"]').forEach(function(l){
+      var href = l.getAttribute('href');
+      if(!document.querySelector('link[href="'+href+'"]')){ var n = document.createElement('link'); n.rel = 'stylesheet'; n.href = href; document.head.appendChild(n); }
+    });
+    doc.querySelectorAll('style[data-fg]').forEach(function(s){ document.head.appendChild(s.cloneNode(true)); });
+    var fg = doc.querySelector('.fg');
+    fg.classList.add('fg--embedded');
+    el.innerHTML = '';
+    el.appendChild(document.adoptNode(fg));
+    if (location.hash) { var t = document.getElementById(location.hash.slice(1)); if (t) setTimeout(function(){ t.scrollIntoView(); }, 50); }
+  }catch(e){
+    el.innerHTML = '<p class="text-[13px] text-ink-500 dark:text-ink-400 py-6">Could not load the guide (' + e.message + '). <a class="underline font-semibold" href="machines.html">Open machines.html directly</a>.</p>';
+  }
+}
+if (/^#(m-\d\d|cat-[a-f]|advanced|contents|top)$/.test(location.hash)) showTab('guide');
 </script>
 
 <!-- AI Trade Business OS renderer -->
