@@ -421,22 +421,22 @@ const BLOCKS = [
       },
       {
         "d": "Day 15 · Wed Sep 9",
-        "t": "The contract day — no Lovable",
+        "t": "Category B landed early — the contract day did not",
         "steps": [
-          "Tenant #2 onboarded through the Day 2 form — the Day 16 exit test pulled forward, because it is what forces the form-to-database drift fix",
-          "Console data contract only: fleet, money wall, receipt, silence and approvals views, RLS on each, is_demo and modelled on every row — Lovable paints these on Sep 20",
-          "Control-contract regression: notch RPC, master switch, approve-to-drain, and sr_expire_approvals finally scheduled",
-          "Proof kit I can re-run myself, study guide, posture restored"
+          "Rate card is real: 9 tables, btree_gist, RLS on all nine — re-verified against the live database on Sep 10, it genuinely ran",
+          "Pricing engine built offline and proven 128/128, then conformance-proven 30/30 against the live sr_price_line",
+          "Two SQL determinism bugs found by the test matrix and fixed without moving a single number",
+          "The four contract items did NOT ship — tenant #2, the console views, the control regression and sr_expire_approvals all moved to Day 16"
         ]
       },
       {
         "d": "Day 16 · Thu Sep 10",
-        "t": "Demo hardening — ship Category A",
+        "t": "Demo hardening — five machines live, and plenty found broken",
         "steps": [
-          "Run all ten machines live against the fake company end-to-end; fix everything that breaks",
-          "One real voice call, an observe-mode DM webhook, and the first real drain send on the reconnected Instagram token",
-          "60-second demo script per machine, rehearsed out loud; phone-side recordings of the money moments",
-          "Site honesty pass — every stale day card and scoreboard row corrected"
+          "Five proven live on Fennwick: voice, reactivation, upsell, the DM gate on Watch, and booking abandonment refusing its nudge at 07:45 for quiet hours then sending it at 08:00:42",
+          "The receptionist was hanging up on callers — the silence timer was 6 seconds against a 10-second script. Now 15, with a floor and a ceiling on it",
+          "Console data contract shipped: five views live with security_invoker, Money Wall rebuilt to $114,715 after sr_subject_contact was found resolving 0.3% of subjects",
+          "Posture fixed (27 unbuilt machines read Let it run), 14 dead approvals swept, pg_cron installed, site honesty pass shipped"
         ]
       }
     ],
@@ -466,7 +466,7 @@ const BLOCKS = [
         'Delivery by SMS or email with an accept link, logged to events',
         'Accepted → job created; silent → handed to the Estimate Follow-up ladder automatically',
         'Live-fire: photograph something real, hand yourself a quote before you leave the room' ]},
-      { d:'Day 5 · Sun Sep 20', t:'Blueprint AI I — takeoff · Lovable wiring the same day', steps:[
+      { d:'Day 5 · Sun Sep 20', t:'Blueprint AI I — takeoff', steps:[
         'Blueprint / PDF ingestion: page parsing, scale detection, room and element extraction',
         'Material takeoff generated: quantities per material per area',
         'Takeoff stored structured so the pricing engine consumes it untouched — no new pricing code',
@@ -797,16 +797,16 @@ const SCORED = [
   ['Call rescue + text rescue','Build 1 · live since Aug 12','done'],
   ['Lead identifier','Build 2 · 3-second triage','done'],
   ['Review text','Build 3 · catalogue template','done'],
-  ['Voice receptionist','live on +1 226 917 8408','done'],
-  ['Booking abandonment rescue','live since Aug 21','done'],
+  ['Voice receptionist','live · silence timer fixed Sep 10','done'],
+  ['Booking abandonment rescue','proven end-to-end Sep 10 · held for quiet hours, then sent','done'],
   ['Old-customer reactivation','runner · approval required','done'],
   ['Upsell engine','runner · never auto-sends','done'],
   ['Estimate follow-up ladder','Build 5 · quote_log','done'],
-  ['Error watchdog','every minute · fault-injected','done'],
+  ['Error watchdog','runs every minute · but logged nothing for 10 days','next'],
   ['Rate card + pricing engine','Category B · engine proven Sep 9','done'],
   ['Email identifier + reply','built, unpublished Sep 6 — PII leak','blocked'],
-  ['DM rescue (IG/FB)','Meta App Review · token reconnected Sep 7','blocked'],
-  ['Owner console','data contract Day 15 · painted Sep 20','next'],
+  ['DM rescue (IG/FB)','Watch proven · zero real IG messages ever received','blocked'],
+  ['Owner console','five views live Sep 10 · Field Command painting them','next'],
   ['Quote from photo','Category B Day 2 · rate card banked','next'],
   ['Missed-appointment reminder','banked Aug 12, never documented','next'],
   ['Change order capture','Category B Day 7','todo'],
