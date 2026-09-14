@@ -1160,6 +1160,13 @@ ONBOARD_SECRET       = &lt;openssl rand -hex 32&gt;</pre>
     <details><summary>Show workflow JSON</summary><pre class="doccode" id="pre_gate"></pre></details>
   </div>
 
+  <div class="note"><strong>Day 17 (Sep 14 2026).</strong> The schema SQL embedded further down is the
+    <em>v4 design from Aug 13</em> and was never applied — the live database grew a different shape
+    (Day 13 gate, <code>machine_configs</code> KV, <code>tenant_machines</code>). The functions this form
+    needs — <code>sr_onboard_tenant</code>, <code>sr_tenant_config</code>, <code>sr_tenants_missing</code>,
+    <code>sr_set_tenant_status</code> — now exist in the live database, written against that live shape.
+    <strong>Do not run the embedded v4 SQL.</strong> Tenant #2 (Grand River Mechanical) went through
+    this form's own payload on Day 17 and read back clean.</div>
   <h3>Payload contract</h3>
   <p>What the form POSTs, and what <code>sr_onboard_tenant(p_payload jsonb)</code> reads. Every key
     below is emitted by the form and consumed by the SQL — verified field for field.</p>
@@ -1220,24 +1227,39 @@ ONBOARD_SECRET       = &lt;openssl rand -hex 32&gt;</pre>
   <h3>Runtime contract — what the machines call</h3>
   <p>The onboarding webhook runs once per client. These run on every message.</p>
   <table class="doct">
-    <tr><td><code>sr_can_send(<br>&nbsp;tenant_id, phone,<br>&nbsp;channel, machine_key)</code></td>
-        <td><strong>Before every send, without exception.</strong> Returns
-          <code>{allowed, decision, reason, next_send_at, …}</code> where decision is
-          <code>allow</code> · <code>defer</code> · <code>block</code>. Checks, in order: master
-          switch, machine enabled and mode, suppression, blackout dates, send window in the tenant's
-          timezone, rate caps.</td></tr>
-    <tr><td><code>sr_log_send(…)</code></td>
-        <td>After every send attempt — including blocked and deferred ones. It is both the rate-limit
-          counter and the answer to "why didn't my customer get the text".</td></tr>
-    <tr><td><code>sr_handle_inbound_keyword(<br>&nbsp;tenant_id, phone, body)</code></td>
+    <tr><td><code>sr_gate(<br>&nbsp;tenant, machine_key, action,<br>&nbsp;phone, value_cents,<br>&nbsp;subject_type, subject_id,<br>&nbsp;message_text)</code></td>
+        <td><strong>Before every send, without exception.</strong> Calls <code>sr_check_send</code> and
+          logs the decision to <code>events</code> as <code>gate.passed</code> / <code>gate.blocked</code>
+          with <code>guardrail_key = reason</code>. Checks, in order: opt-out (absolute), the master
+          switch (<code>tenant_paused</code>), machine off / not installed, Watch, Ask-me (an approved
+          <code>approvals</code> row is the exemption), human takeover, quiet hours, the daily cap.
+          Emergencies bypass quiet hours and the cap — never the opt-out. Since Day 17 the opt-out check
+          resolves any subject (job, lead, call, booking, review, approval) to its contact, not just DMs.</td></tr>
+    <tr><td><code>sr_check_send(…)</code></td>
+        <td>The same decision without the log line — for dry runs and tests. The Silence Log on the
+          console is <code>v_console_silence</code>, which reads the <code>gate.blocked</code> rows.
+          <em>The v4 names <code>sr_can_send</code> / <code>sr_log_send</code> never shipped; the embedded
+          SQL below that defines them is historical.</em></td></tr>
+    <tr><td><code>sr_handle_inbound_keyword(<br>&nbsp;tenant_id, phone, body, machine_key)</code></td>
         <td>On every inbound message, before anything else looks at it. Honours STOP, ARRET, ARRÊT,
           UNSUBSCRIBE, END, QUIT, CANCEL plus any tenant additions, and START/OUI to opt back in.
           Returns <code>{action: suppressed|released|none}</code>.</td></tr>
-    <tr><td><code>sr_tenant_config(<br>&nbsp;tenant_id, machine_key)</code></td>
-        <td>Everything else the machine needs: templates, tone, review settings, roster, credentials
-          reference, language, billing status.</td></tr>
-    <tr><td><code>sr_set_tenant_status(…)</code></td>
-        <td>The kill switch. One statement, every machine, instantly.</td></tr>
+    <tr><td><code>sr_tenant_config(<br>&nbsp;p_tenant_id, p_machine_key)</code></td>
+        <td>Live since Day 17 (Sep 14 2026): the tenant profile, that machine's settings, the tenant-level
+          gate knobs, the machine's switch state and effective mode, and the SMS window derived from
+          quiet hours. This is what the webhook reads back to prove the write landed.</td></tr>
+    <tr><td><code>sr_set_tenant_status(<br>&nbsp;p_tenant, p_status, p_reason, p_actor)</code></td>
+        <td>Live since Day 17. The master switch: <code>paused</code> makes every machine read
+          <code>paused</code> and the gate refuse everything — emergencies included — with
+          <code>tenant_paused</code>. Switching back to <code>active</code> demands a typed reason.
+          Every flip is an event (<code>tenant.paused</code> / <code>tenant.resumed</code>).</td></tr>
+    <tr><td><code>sr_onboard_tenant(p_payload)</code></td>
+        <td>Live since Day 17, written against the live schema — not the v4 SQL embedded below. Writes
+          <code>tenants</code>, <code>tenant_machines</code> (enabled + mode, what the runners read),
+          <code>machine_configs</code>, the suppression seed into <code>contacts</code>, the price list
+          through <code>sr_onboard_rate_card</code> when any service carries a price, and archives the whole
+          submission in <code>tenant_onboarding_submissions</code>. Registry keys are mapped onto the
+          canonical <code>machines.key</code> values. A raise means nothing was written.</td></tr>
   </table>
   <div class="note"><strong>The gate fails closed.</strong> If Supabase is unreachable or returns
     something unexpected, the sub-workflow returns <code>block</code>, not <code>allow</code>. Failing
@@ -3681,7 +3703,13 @@ const STACK = [
   {cat:"job_reporting",   label:"Job reports / photos",    eg:"Jobber, texts photos to owner, none"},
   {cat:"website_booking", label:"Website / online booking",eg:"Wix form, Calendly, phone only"},
   {cat:"social_dm",       label:"Instagram / Facebook DMs",eg:"owner checks phone, none"},
-  {cat:"winback", label:"Customer win-back / reactivation", eg:"Mailchimp campaigns, manual call-backs, nothing"}
+  {cat:"winback", label:"Customer win-back / reactivation", eg:"Mailchimp campaigns, manual call-backs, nothing"},
+  {cat:"quote_followup",    label:"Quote follow-up",              eg:"Jobber reminders, a sticky note, nothing"},
+  {cat:"estimating_takeoff",label:"Blueprint / plan takeoff",     eg:"PlanSwift, Bluebeam, by hand, subcontracted"},
+  {cat:"change_orders",     label:"Change orders",                eg:"Verbal on site, texted photos, Jobber, paper"},
+  {cat:"inspections",       label:"Inspection / QC reports",      eg:"CompanyCam, photos in a text thread, none"},
+  {cat:"material_pricing",  label:"Material price checks",        eg:"Calls the counter, supplier app, whatever is closest"},
+  {cat:"supplier_rfq",      label:"Supplier quotes / RFQs",       eg:"Email, phone, one supplier for everything"}
 ];
 
 // Single source of truth for the category -> machine mapping.
@@ -3735,7 +3763,7 @@ function auditRegistry(){
 
    Bump SCHEMA_VERSION whenever you add a machine or a config field.
    ===================================================================== */
-const SCHEMA_VERSION = 9;
+const SCHEMA_VERSION = 10;
 
 /* ---- Rate card intake (Day 15, Sep 9 2026) -------------------------------
    Trade service templates: names and the customer wording (aliases) only.
@@ -3807,11 +3835,11 @@ const MACHINES = [
       {id:"tts_voice", label:"Voice", type:"text", def:"Polly.Joanna-Neural"},
       {id:"owner_alert_on", label:"Text the owner about (comma separated: hot, warm, cold, emergency)", type:"text", def:"hot,emergency"},
       {id:"grading_notes", label:"Lead grading notes (business-specific hints for the AI)", type:"textarea", def:""},
-    {id:"silence_reprompt_seconds", label:"Re-prompt after silence (seconds)", type:"number", def:6, hint:"How long the receptionist waits in silence before asking again."}
+    {id:"silence_reprompt_seconds", label:"Re-prompt after silence (seconds)", type:"number", def:15, min:8, max:60, hint:"How long the receptionist waits in silence before asking again. Must be longer than its longest script line — at 6 it talked itself into hanging up (Day 16). Floor 8, ceiling 60."}
     ]
   },
   {
-    key:"build1_missed_call", name:"Build 1 — Missed-Call Rescue",
+    key:"build1_missed_call", dbKey:"missed_call_rescue", name:"Build 1 — Missed-Call Rescue",
     blurb:"When a call to your business number goes unanswered, the caller gets a text back asking what they need, and you get an alert. Nobody who calls you gets ignored.",
     suite:"Communication", status:"live",
     defaultOn:true, defaultMode:"autonomous",
@@ -3819,7 +3847,7 @@ const MACHINES = [
     requires:["twilio_number","owner_phone"],
     config:[
       {id:"ring_seconds",        label:"Ring before rescue (sec)", type:"number", def:20},
-      {id:"text_delay_sec",      label:"Delay before rescue text (sec)", type:"number", def:60,
+      {id:"rescue_delay_seconds", label:"Delay before rescue text (sec)", type:"number", def:60,
        hint:"Long enough that they can't call back first."},
       {id:"alert_owner",         label:"Alert owner on every missed call", type:"bool", def:true},
       {id:"rescue_template",     label:"Rescue text", type:"textarea",
@@ -3841,10 +3869,10 @@ const MACHINES = [
     ]
   },
   {
-    key:"build2_lead_triage", name:"Build 2 — Lead Triage",
+    key:"build2_lead_triage", dbKey:"speed_to_lead", name:"Build 2 — Lead Triage",
     blurb:"Reads every new enquiry, works out how urgent it is, and alerts you straight away if it looks like an emergency or a big job. Everything else is logged so nothing gets lost.",
     suite:"Communication", status:"live",
-    defaultOn:true, defaultMode:"approval",
+    defaultOn:true, defaultMode:"approval_required",
     competes:"crm",
     requires:["owner_phone"],
     config:[
@@ -3857,7 +3885,7 @@ const MACHINES = [
     ]
   },
   {
-    key:"build3_review", name:"Build 3 — Review Engine",
+    key:"build3_review", dbKey:"review_engine", name:"Build 3 — Review Engine",
     blurb:"After a job is finished, your customer gets one text asking how it went. Happy customers are offered your Google review link. Unhappy ones are routed straight to you instead — they are never sent a public review link.",
     suite:"Quality", status:"live",
     defaultOn:true, defaultMode:"observe",
@@ -3866,21 +3894,23 @@ const MACHINES = [
     config:[
       {id:"rating_ask_template", label:"Rating ask", type:"textarea",
        def:"Hi {first_name}, how did we do today? Reply 1-5."},
+      {id:"review_delay_hours", label:"Ask this long after the job closes (hrs)", type:"number", def:2, min:0, max:168},
+      {id:"happy_rating_threshold", label:"Offer the review link at this rating or higher", type:"number", def:4, min:1, max:5, hint:"Below it the owner is told instead — an unhappy customer is never sent a public link."},
       {id:"reminder_enabled", label:"Send one reminder if no reply", type:"bool", def:true},
-      {id:"reminder_delay_hours", label:"Reminder delay (hrs)", type:"number", def:24},
+      {id:"reminder_hours", label:"Reminder delay (hrs)", type:"number", def:24, min:6, hint:"The database refuses anything under 6."},
       {id:"max_asks_per_job", label:"Max asks per job", type:"number", def:2}
     ]
   },
   {
-    key:"build5_estimate_ladder", name:"Build 5 — Estimate Follow-Up Ladder",
+    key:"build5_estimate_ladder", dbKey:"estimate_ladder", name:"Build 5 — Estimate Follow-Up Ladder",
     blurb:"Quotes you send out get followed up automatically over the next couple of weeks, so a customer who went quiet gets a nudge instead of being forgotten. Any reply stops the follow-ups.",
-    suite:"Sales", status:"building",
+    suite:"Sales", status:"live",
     defaultOn:false, defaultMode:"observe",
-    competes:"quoting",
+    competes:"quote_followup",
     requires:["owner_phone"],
     config:[
-      {id:"nudge_stages", label:"Number of nudges", type:"number", def:3},
-      {id:"nudge_gap_days", label:"Days between nudges", type:"number", def:3},
+      {id:"max_nudges", label:"Number of nudges", type:"number", def:3, min:1, max:5},
+      {id:"nudge_days", label:"Nudge on these days after the quote (comma separated)", type:"text", def:"2,5,10"},
       {id:"stop_on_reply", label:"Stop the ladder on any reply", type:"bool", def:true},
       {id:"expiry_reminder", label:"Remind before the quote expires", type:"bool", def:true}
     ]
@@ -3947,6 +3977,129 @@ const MACHINES = [
     {id:"complaint_cooldown_days", label:"No offers within (days) of a complaint", type:"number", def:30, hint:"Applies even after the complaint is resolved. An open complaint blocks offers outright."},
     {id:"excluded_services", label:"Never offer these services (comma separated)", type:"text", def:""},
     {id:"tone_notes", label:"Offer tone guidance", type:"textarea", def:"", hint:"Plain English, e.g. lead with safety and longevity, never discount-led."}
+  ]
+},
+{
+  key:"booking_abandonment",
+  name:"Booking Abandonment Rescue",
+  blurb:"Someone starts booking online and walks away before finishing. After a short wait they get one friendly nudge, then a second and third if they stay quiet — never at night, never after a reply.",
+  suite:"Sales",
+  status:"live",
+  defaultOn:true,
+  defaultMode:"autonomous",
+  competes:"website_booking",
+  requires:["twilio_number"],
+  config:[
+    {id:"stall_minutes", label:"Treat a booking as abandoned after (minutes)", type:"number", def:60, min:15, max:1440},
+    {id:"max_nudges", label:"Max nudges per abandoned booking", type:"number", def:3, min:1, max:3},
+    {id:"nudge2_delay_hours", label:"Second nudge after (hrs)", type:"number", def:24, min:6},
+    {id:"nudge3_delay_hours", label:"Third nudge after (hrs)", type:"number", def:72, min:24}
+  ]
+},
+{
+  key:"email_lead_capture",
+  name:"Email Lead Saver",
+  blurb:"Reads the enquiries that land in your business inbox, pulls out who they are and what they need, and puts them in the same lead list as your calls and texts.",
+  suite:"Communication",
+  status:"blocked",
+  blockedReason:"Unpublished since Sep 6 2026 — it wrote real sender details into the showroom. Retire or re-home is an open decision; nothing installs until then.",
+  defaultOn:false,
+  defaultMode:"observe",
+  competes:null,
+  requires:["owner_email"],
+  config:[]
+},
+{
+  key:"photo_to_quote",
+  name:"Photo → Quote",
+  blurb:"Your tech photographs the job, the system works out the scope and prices it from YOUR price list, and you get a draft quote to approve before the customer ever sees a number. It never invents a price and never sends a final quote on its own.",
+  suite:"Sales",
+  status:"building",
+  defaultOn:false,
+  defaultMode:"approval_required",
+  competes:"quoting",
+  requires:["owner_phone"],
+  config:[
+    {id:"owner_approval_required", label:"A person approves every quote before it is sent", type:"bool", def:true, hint:"Structural: the database refuses a sent quote with no approval on it. Leave on."},
+    {id:"quote_as_range", label:"Present AI quotes as a range, not a single number", type:"bool", def:true},
+    {id:"max_variance_pct", label:"Estimate envelope (%)", type:"number", def:10, min:0, max:10, hint:"Ontario Consumer Protection Act s.10 holds an estimate to +10%. The database will not accept more."},
+    {id:"max_autonomous_quote_cents", label:"Above this value the owner must approve (cents)", type:"number", def:75000, min:0},
+    {id:"approved_suppliers", label:"Approved suppliers (one per line)", type:"textarea", def:"", hint:"Material prices only ever come from this list."}
+  ]
+},
+{
+  key:"blueprint_takeoff",
+  name:"Blueprint AI — takeoff",
+  blurb:"Drop in a plan or PDF and get a material takeoff: quantities per material per area, priced off the same price list as everything else. Missing scale or partial plans fail loudly — it never guesses quietly.",
+  suite:"Sales",
+  status:"building",
+  defaultOn:false,
+  defaultMode:"approval_required",
+  competes:"estimating_takeoff",
+  requires:["owner_phone"],
+  config:[
+    {id:"require_scale", label:"Refuse plans with no readable scale", type:"bool", def:true},
+    {id:"waste_factor_pct", label:"Waste factor added to material quantities (%)", type:"number", def:10, min:0, max:30}
+  ]
+},
+{
+  key:"change_order",
+  name:"Change Order Capture",
+  blurb:"A verbal change on site becomes a written change order: original scope, added scope, the price difference, and a signature from the customer — before the extra work starts. Nothing reaches a client without the owner's approval.",
+  suite:"Sales",
+  status:"building",
+  defaultOn:false,
+  defaultMode:"approval_required",
+  competes:"change_orders",
+  requires:["owner_phone"],
+  config:[
+    {id:"require_customer_signature", label:"Work waits for the customer's signature", type:"bool", def:true},
+    {id:"owner_approval_required", label:"Owner approves every change order", type:"bool", def:true}
+  ]
+},
+{
+  key:"inspection_report",
+  name:"AI Inspection Report",
+  blurb:"Job photos become a structured inspection report: each finding classified as a defect, incomplete work, a safety issue, a scope difference or an upsell candidate, with the photo as evidence. One report, a client version and an internal version.",
+  suite:"Quality",
+  status:"building",
+  defaultOn:false,
+  defaultMode:"observe",
+  competes:"inspections",
+  requires:["owner_phone"],
+  config:[
+    {id:"client_version_enabled", label:"Generate a client-facing version", type:"bool", def:true},
+    {id:"safety_findings_alert_owner", label:"Text the owner on any safety finding", type:"bool", def:true}
+  ]
+},
+{
+  key:"pricing_finder",
+  name:"Material & Pricing Finder",
+  blurb:"Takes a material list and checks price, availability, delivery and distance across your approved suppliers, then surfaces the best overall option — not just the cheapest — with the reasoning written down.",
+  suite:"Operations",
+  status:"building",
+  defaultOn:false,
+  defaultMode:"observe",
+  competes:"material_pricing",
+  requires:[],
+  config:[
+    {id:"max_supplier_distance_km", label:"Ignore suppliers further than (km)", type:"number", def:60, min:5, max:500},
+    {id:"prefer_in_stock", label:"Prefer in-stock over cheapest", type:"bool", def:true}
+  ]
+},
+{
+  key:"supplier_negotiation",
+  name:"Supplier Negotiation AI",
+  blurb:"Drafts a request for quote to your suppliers in your own voice, collects the replies into one comparison, and drafts counter-offers for you to approve. It never commits to a purchase — it hands you a decision.",
+  suite:"Operations",
+  status:"building",
+  defaultOn:false,
+  defaultMode:"approval_required",
+  competes:"supplier_rfq",
+  requires:["owner_email"],
+  config:[
+    {id:"rfq_supplier_count", label:"Suppliers to ask per RFQ", type:"number", def:5, min:1, max:10},
+    {id:"never_commit", label:"Never place an order — decisions only", type:"bool", def:true, hint:"Hard-wired. Shown so the client knows."}
   ]
 }
 ];
@@ -4095,8 +4248,9 @@ function cfgField(mkey, f, blocked){
   if(f.type==='textarea')
     return `<div class="field" style="grid-column:1/-1"><label>${f.label}</label>
       <textarea id="${id}"${dis}>${esc(f.def??'')}</textarea>${hint}</div>`;
+  const lim=(f.type==='number'?(f.min!=null?` min="${f.min}"`:'')+(f.max!=null?` max="${f.max}"`:''):'');
   return `<div class="field"><label>${f.label}</label>
-    <input type="${f.type==='number'?'number':'text'}" id="${id}" value="${esc(f.def??'')}"${dis}>${hint}</div>`;
+    <input type="${f.type==='number'?'number':'text'}" id="${id}" value="${esc(f.def??'')}"${lim}${dis}>${hint}</div>`;
 }
 
 function buildMachines(){
@@ -4117,9 +4271,9 @@ function buildMachines(){
               ${(m.defaultOn && !blocked)?'checked':''} ${blocked?'disabled':''}>
             <span>${m.name} ${badge}<small class="ky">${m.key}</small></span></label></div>
           <div class="modes">
-            ${["autonomous","approval","observe","paused"].map(md=>
-              `<label><input type="radio" name="mode_${m.key}" value="${md}"
-                ${m.defaultMode===md?'checked':''} ${blocked?'disabled':''}>${md}</label>`).join('')}
+            ${[["autonomous","Let it run"],["approval_required","Ask me"],["observe","Watch"],["paused","Off"]].map(([md,lbl])=>
+              `<label title="${md}"><input type="radio" name="mode_${m.key}" value="${md}"
+                ${m.defaultMode===md?'checked':''} ${blocked?'disabled':''}>${lbl}</label>`).join('')}
           </div>
         </div>
         ${blocked?`<div class="note" style="margin:10px 0 0">${m.blockedReason||'Not available yet.'}</div>`:''}
@@ -4207,7 +4361,8 @@ function collect(){
                    : (v(id) || null);
     });
     return {
-      machine_key:m.key,
+      machine_key:m.dbKey||m.key,
+      registry_key:m.key,
       machine_name:m.name,
       suite:m.suite,
       status:m.status,
