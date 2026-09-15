@@ -31,7 +31,7 @@ Since Sep 14 2026 every day on `index.html` is one view with four groups: **Work
 |---|---|---|
 | Work | job shift / build blocks, the day's roadmap card (checkboxes = `lab.roadmap.done.v1`), the dated work summary | `journal.js` → `window.JOURNAL` (summaries) · `window.SPRINT_PLAN` (dated roadmap days, generated from `roadmap.html` BLOCKS) |
 | Life | bills due (cloud-synced), custom events, Monday grocery shop + meal prep + weekly review, month money (income **$4,000**) | existing bills/custom state |
-| Fitness | workouts (3-day rotation, logger), grocery list, first-Monday stock-up (oatmeal + pre-workout + protein, +$150/mo) | existing workout/grocery state |
+| Fitness | workouts (3-day rotation, logger), **all-time PR board + PR on every exercise** (log keys from every old split version folded in via `W_ALIASES`), grocery list, first-Monday stock-up (oatmeal + pre-workout + protein, +$150/mo) | `planner.workoutLog.v2` / `planner.workoutSplit.v8` / `planner.workoutCycle.v1` — **cloud-synced on their own ntfy topic** `5core-ahmeed-lifts-2026-09-15` (gzip + base64, chunked ≤3 KB per message because ntfy turns anything >4 KB into a 3-hour attachment; log merges as a union of entries, split/cycle newest `_m` wins). The main topic payload must stay under 4 KB for the same reason. |
 | Study | Quran khatmah (unchanged progress) + the 60-day Quranic Arabic course (`arabic.js`), lesson done-dates | `planner.arabic.v1` (cloud-synced via ntfy like everything else) |
 
 **Keep it up to date — at the close of every work or study session (this is part of "done", not a footnote):**

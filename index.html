@@ -233,7 +233,7 @@
   <div class="flex items-start justify-between mb-3 gap-3">
     <div class="min-w-0">
       <h2 class="text-xl font-bold">Workouts</h2>
-      <p class="text-xs text-slate-500 dark:text-slate-400">3-day rotation · Chest + Back → Arms → Legs · hit them in order</p>
+      <p class="text-xs text-slate-500 dark:text-slate-400">3-day rotation · Chest + Back → Arms → Legs · all-time PRs on every exercise, synced across your devices</p>
     </div>
     <button id="woResetBtn" class="shrink-0 text-xs px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 font-medium text-slate-700 dark:text-slate-200">
       Reset default
@@ -1170,7 +1170,11 @@ function renderDayGroups(date, ctx) {
       ${nextD ? `<span class="text-[11px] font-semibold text-ink-500 dark:text-ink-400">Next up: <b>Day ${nextN} · ${escapeHtml(nextD.name)}</b></span><button data-wlog="${nextN}" class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-orange-500 text-white">Log sets</button>` : ''}
     </div>`;
     if (logged.length) {
-      body += `<div class="mt-2 rounded-xl bg-white/70 dark:bg-ink-900/60 border border-ink-200/70 dark:border-ink-800 p-3"><div class="text-[10px] font-extrabold uppercase tracking-widest text-orange-500 mb-1">Logged this day</div>${logged.map(l => `<div class="text-[12px]"><span class="font-semibold">${escapeHtml(l.eid.replace(/-/g, ' '))}</span> <span class="text-ink-500 dark:text-ink-400">${escapeHtml(l.weight)} × ${escapeHtml(l.reps)}${l.sets ? ' × ' + escapeHtml(l.sets) + 's' : ''}</span></div>`).join('')}</div>`;
+      body += `<div class="mt-2 rounded-xl bg-white/70 dark:bg-ink-900/60 border border-ink-200/70 dark:border-ink-800 p-3"><div class="text-[10px] font-extrabold uppercase tracking-widest text-orange-500 mb-1">Logged this day</div>${logged.map(l => { const pr = (typeof wPR === 'function') ? wPR(wHistFor(l.eid, log)) : null; const isPR = pr && pr.date === l.date && String(pr.weight) === String(l.weight) && String(pr.reps) === String(l.reps); return `<div class="text-[12px]"><span class="font-semibold">${escapeHtml((typeof wPrettyName === 'function') ? wPrettyName(l.eid) : l.eid.replace(/-/g, ' '))}</span> <span class="text-ink-500 dark:text-ink-400">${escapeHtml(l.weight)} × ${escapeHtml(l.reps)}${l.sets ? ' × ' + escapeHtml(l.sets) + 's' : ''}</span>${isPR ? ' <span class="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400">🏆 PR</span>' : ''}</div>`; }).join('')}</div>`;
+    }
+    if (nextD && (isToday || date > new Date()) && typeof wHistFor === 'function') {
+      const rows = nextD.exercises.map(ex => { const pr = wPR(wHistFor(wExId(ex.name), log)); return `<div class="flex items-center justify-between gap-2 text-[12px]"><span class="truncate">${escapeHtml(ex.name)} <span class="text-ink-400 dark:text-ink-500">${escapeHtml(ex.sets)}×${escapeHtml(ex.reps)}</span></span><span class="shrink-0 font-bold ${pr ? 'text-emerald-600 dark:text-emerald-400' : 'text-ink-300 dark:text-ink-600'}">${pr ? '🏆 ' + wPRText(pr) : '—'}</span></div>`; }).join('');
+      body += `<div class="mt-2 rounded-xl bg-white/70 dark:bg-ink-900/60 border border-ink-200/70 dark:border-ink-800 p-3"><div class="text-[10px] font-extrabold uppercase tracking-widest text-orange-500 mb-1">Day ${nextN} · ${escapeHtml(nextD.name)} — PRs to beat</div><div class="space-y-1">${rows}</div></div>`;
     }
     if (date.getDay() === 1) {
       const gs = gLoad(); let gt = 0, gc = 0;
@@ -2554,7 +2558,7 @@ const DEFAULT_SPLIT = {
   ]
 };
 function wLoadSplit(){try{const r=localStorage.getItem(SPLIT_KEY);if(!r)return JSON.parse(JSON.stringify(DEFAULT_SPLIT));const p=JSON.parse(r);if(!p.days||!Array.isArray(p.days)||p.days.length!==3)return JSON.parse(JSON.stringify(DEFAULT_SPLIT));return p;}catch(e){return JSON.parse(JSON.stringify(DEFAULT_SPLIT));}}
-function wSaveSplit(s){localStorage.setItem(SPLIT_KEY,JSON.stringify(s));}
+function wSaveSplit(s){s._m=Date.now();localStorage.setItem(SPLIT_KEY,JSON.stringify(s));wCloudPublish();}
 function wLoadLog(){
   try{
     const l=JSON.parse(localStorage.getItem(WLOG_KEY)||'{}');
@@ -2570,24 +2574,183 @@ function wLoadLog(){
     return l;
   }catch(e){return {};}
 }
-function wSaveLog(l){localStorage.setItem(WLOG_KEY,JSON.stringify(l));}
+function wSaveLog(l){localStorage.setItem(WLOG_KEY,JSON.stringify(l));wCloudPublish();}
 function wExId(name){return String(name).toLowerCase().replace(/[^a-z0-9]+/g,'-');}
 function wEsc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function wNextDay(){try{const c=JSON.parse(localStorage.getItem(WCYCLE_KEY)||'{}');const l=parseInt(c.last,10)||0;return (l%3)+1;}catch(e){return 1;}}
-function wSetLastDay(n){try{localStorage.setItem(WCYCLE_KEY,JSON.stringify({last:n,_m:Date.now()}));}catch(e){}}
-function wPR(entries){let best=null,bw=-1;(entries||[]).forEach(e=>{const w=parseFloat(String(e.weight).replace(/[^0-9.]+/g,''));if(Number.isFinite(w)&&w>bw){bw=w;best=e;}});return best;}
+function wCycle(){try{return JSON.parse(localStorage.getItem(WCYCLE_KEY)||'{}');}catch(e){return {};}}
+function wNextDay(){try{const c=wCycle();const l=parseInt(c.last,10)||0;return (l%3)+1;}catch(e){return 1;}}
+function wSetLastDay(n){try{localStorage.setItem(WCYCLE_KEY,JSON.stringify({last:n,_m:Date.now()}));}catch(e){}wCloudPublish();}
+
+/* ---- All-time PRs: every exercise ever logged, across every split version ----
+   The log is keyed by exercise slug. Splits were renamed over time (Jul v2 → Jul v6 →
+   Aug v7 → Sep v8); W_ALIASES folds the old slug of the SAME movement into the current
+   one so a PR set in July still shows on today's row. Different movements stay apart. */
+const W_ALIASES = {
+  'triceps-rope-pushdown':'rope-pushdown',
+  'rear-delt-fly':'cable-rear-delt-fly',
+  'incline-db-bench-light-':'incline-dumbbell-press',
+  'incline-db-press':'incline-dumbbell-press',
+  'bench-press':'barbell-bench-press',
+  'bench':'barbell-bench-press',
+  'squat':'back-squat',
+  'barbell-squat':'back-squat',
+  'ohp':'standing-overhead-press',
+  'overhead-press':'standing-overhead-press',
+  'lat-pulldown':'neutral-grip-lat-pulldown',
+  'pulldown':'neutral-grip-lat-pulldown',
+  'leg-curl':'seated-leg-curl',
+  'calf-raise':'standing-calf-raise',
+  'lateral-raise':'cable-lateral-raise',
+  'tricep-rope-pushdown':'rope-pushdown',
+  'tricep-pushdown':'rope-pushdown',
+  'triceps-pushdown':'rope-pushdown',
+  'preacher-curls':'preacher-curl',
+  'hip-thrusts':'hip-thrust',
+  'crunch':'decline-crunch',
+  'decline-crunches':'decline-crunch',
+};
+function wCanon(eid){return W_ALIASES[eid]||eid;}
+function wNum(v){const n=parseFloat(String(v==null?'':v).replace(/[^0-9.]+/g,''));return Number.isFinite(n)?n:NaN;}
+function wE1RM(e){const w=wNum(e&&e.weight),r=wNum(e&&e.reps);if(!Number.isFinite(w))return NaN;if(!Number.isFinite(r)||r<=1)return w;return Math.round(w*(1+r/30));}
+function wDateKey(d){const m=String(d||'').match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);return m?(m[1]+'-'+m[2].padStart(2,'0')+'-'+m[3].padStart(2,'0')):String(d||'');}
+/* full history for a current exercise slug: its own entries + every alias that maps to it */
+function wHistFor(eid,log){
+  log=log||wLoadLog();const c=wCanon(eid);const out=[];
+  Object.keys(log).forEach(k=>{if(k===c||wCanon(k)===c)(log[k]||[]).forEach(e=>out.push(e));});
+  out.sort((a,b)=>wDateKey(a.date).localeCompare(wDateKey(b.date)));
+  return out;
+}
+/* PR = heaviest weight (ties → more reps). Bodyweight moves (no numeric weight) → most reps. */
+function wPR(entries){
+  let best=null,bw=-1,br=-1;
+  (entries||[]).forEach(e=>{const w=wNum(e.weight),r=wNum(e.reps)||0;if(!Number.isFinite(w))return;if(w>bw||(w===bw&&r>br)){bw=w;br=r;best=e;}});
+  if(best)return best;
+  (entries||[]).forEach(e=>{const r=wNum(e.reps);if(Number.isFinite(r)&&r>br){br=r;best=e;}});
+  return best;
+}
+function wPRText(pr){if(!pr)return '';const w=wNum(pr.weight);return Number.isFinite(w)?(wEsc(pr.weight)+' × '+wEsc(pr.reps||'?')):(wEsc(pr.reps)+' reps');}
+function wPrettyName(eid){return String(eid).replace(/-+$/,'').split('-').filter(Boolean).map(s=>s.charAt(0).toUpperCase()+s.slice(1)).join(' ');}
+/* every exercise with a PR, all-time, grouped: in the current split (by day) or retired */
+function wAllTimePRs(){
+  const log=wLoadLog();const split=wLoadSplit();const rows=[];const seen=new Set();
+  split.days.forEach(day=>day.exercises.forEach(ex=>{
+    const eid=wExId(ex.name);const c=wCanon(eid);if(seen.has(c))return;seen.add(c);
+    const h=wHistFor(eid,log);const pr=wPR(h);
+    rows.push({eid:c,name:ex.name,day:day.day,dayName:day.name,pr:pr,n:h.length,last:h[h.length-1]||null,inSplit:true});
+  }));
+  Object.keys(log).forEach(k=>{const c=wCanon(k);if(seen.has(c))return;seen.add(c);
+    const h=wHistFor(c,log);const pr=wPR(h);if(!pr)return;
+    rows.push({eid:c,name:wPrettyName(c),day:0,dayName:'Not in current split',pr:pr,n:h.length,last:h[h.length-1]||null,inSplit:false});
+  });
+  return rows;
+}
+
+/* ---- Lifts cloud sync — own ntfy topic so the log can grow without touching the main
+   payload; gzip + base64 + chunked ≤3 KB per message (ntfy turns anything >4 KB into a
+   3-hour attachment, which would silently break sync). Merge: log = union of entries,
+   split + cycle = newest _m wins. Same eventual-consistency model as the bills sync. */
+const WSYNC_TOPIC='5core-ahmeed-lifts-2026-09-15';
+const WSYNC_BASE='https://ntfy.sh/'+WSYNC_TOPIC;
+const WSYNC_CHUNK=3000;
+let _wsyncTimer=null,_wsyncLastId='',_wsyncLastSig='',_wsyncBusy=false,_wsyncLastRepub=0;
+function _wEntryKey(e){return wDateKey(e.date)+'|'+String(e.weight||'').trim()+'|'+String(e.reps||'').trim()+'|'+String(e.sets||'').trim();}
+function wMergeLogs(local,cloud){
+  const out={};const add=(src)=>{Object.keys(src||{}).forEach(k=>{if(!Array.isArray(src[k]))return;const seen=new Set((out[k]||[]).map(_wEntryKey));src[k].forEach(e=>{if(!e||typeof e!=='object')return;const kk=_wEntryKey(e);if(seen.has(kk))return;seen.add(kk);(out[k]=out[k]||[]).push(Object.assign({},e));});});};
+  add(local);add(cloud);
+  Object.keys(out).forEach(k=>out[k].sort((a,b)=>wDateKey(a.date).localeCompare(wDateKey(b.date))));
+  return out;
+}
+function _wSig(snap){return JSON.stringify({log:snap.log,split:snap.split,cycle:snap.cycle});}
+function wSnapshot(){const s=wLoadSplit();return {log:wLoadLog(),split:s,cycle:wCycle(),_t:Date.now()};}
+async function _wGzipB64(str){
+  const bytes=new TextEncoder().encode(str);
+  if(typeof CompressionStream==='undefined')return {enc:'raw',d:btoa(unescape(encodeURIComponent(str)))};
+  const cs=new CompressionStream('gzip');const w=cs.writable.getWriter();w.write(bytes);w.close();
+  const buf=new Uint8Array(await new Response(cs.readable).arrayBuffer());let bin='';for(let i=0;i<buf.length;i++)bin+=String.fromCharCode(buf[i]);
+  return {enc:'gz',d:btoa(bin)};
+}
+async function _wUnB64(enc,d){
+  const bin=atob(d);const u8=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);
+  if(enc==='gz'){const ds=new DecompressionStream('gzip');const w=ds.writable.getWriter();w.write(u8);w.close();return await new Response(ds.readable).text();}
+  return new TextDecoder().decode(u8);
+}
+async function wCloudFetchLatest(){
+  try{
+    const r=await fetch(WSYNC_BASE+'/json?poll=1&since=all');if(!r.ok)return null;
+    const lines=(await r.text()).trim().split('\n').filter(Boolean);const sets={};
+    for(const line of lines){try{const msg=JSON.parse(line);if(msg.event!=='message')continue;let text=msg.message||'';
+      if(msg.attachment&&msg.attachment.url){try{text=await (await fetch(msg.attachment.url)).text();}catch(e){}}
+      const env=JSON.parse(text);if(!env||env.v!==1||!env.id)continue;
+      const s=sets[env.id]=sets[env.id]||{n:env.n,enc:env.enc,parts:{},time:0};s.parts[env.i]=env.d;s.time=Math.max(s.time,msg.time||0);
+    }catch(e){}}
+    let best=null;Object.keys(sets).forEach(id=>{const s=sets[id];if(Object.keys(s.parts).length!==s.n)return;if(!best||s.time>best.time)best=Object.assign({id:id},s);});
+    if(!best)return null;let d='';for(let i=0;i<best.n;i++)d+=best.parts[i]||'';
+    const snap=JSON.parse(await _wUnB64(best.enc,d));snap._id=best.id;return snap;
+  }catch(e){return null;}
+}
+function wCloudPublish(){
+  clearTimeout(_wsyncTimer);
+  _wsyncTimer=setTimeout(async()=>{
+    try{
+      const snap=wSnapshot();const sig=_wSig(snap);if(sig===_wsyncLastSig)return;_wsyncLastSig=sig;
+      const packed=await _wGzipB64(JSON.stringify(snap));const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+      const chunks=[];for(let i=0;i<packed.d.length;i+=WSYNC_CHUNK)chunks.push(packed.d.slice(i,i+WSYNC_CHUNK));
+      for(let i=0;i<chunks.length;i++){await fetch(WSYNC_BASE,{method:'POST',headers:{'Cache':'yes'},body:JSON.stringify({v:1,id:id,i:i,n:chunks.length,enc:packed.enc,d:chunks[i]})}).catch(function(){});}
+      _wsyncLastId=id;
+    }catch(e){}
+  },800);
+}
+async function wSyncFromCloud(initial){
+  if(_wsyncBusy)return;_wsyncBusy=true;
+  try{
+    const cloud=await wCloudFetchLatest();
+    if(cloud&&cloud._id===_wsyncLastId&&!initial)return;
+    let changed=false;
+    const localLog=wLoadLog();const merged=wMergeLogs(localLog,cloud&&cloud.log);
+    if(JSON.stringify(merged)!==JSON.stringify(localLog)){localStorage.setItem(WLOG_KEY,JSON.stringify(merged));changed=true;}
+    if(cloud&&cloud.split&&cloud.split.days&&cloud.split.days.length===3){const ls=wLoadSplit();if((cloud.split._m||0)>(ls._m||0)){localStorage.setItem(SPLIT_KEY,JSON.stringify(cloud.split));changed=true;}}
+    if(cloud&&cloud.cycle&&cloud.cycle.last){const lc=wCycle();if((cloud.cycle._m||0)>(lc._m||0)){localStorage.setItem(WCYCLE_KEY,JSON.stringify(cloud.cycle));changed=true;}}
+    if(cloud)_wsyncLastId=cloud._id;
+    if(changed){try{renderWorkouts();}catch(e){}try{renderToday();}catch(e){}}
+    /* push if we hold something the cloud doesn't (first device on the new build, offline edits,
+       or ntfy expired the last copy). Rate-limited so a failed publish can't loop. */
+    const mine=_wSig(wSnapshot());const theirs=cloud?_wSig({log:wMergeLogs({},cloud.log),split:cloud.split,cycle:cloud.cycle}):'';
+    const hasData=Object.keys(merged).length||(wLoadSplit()._m)||(wCycle().last);
+    if(mine!==theirs&&hasData){
+      const wait=cloud?120000:1800000;
+      if(initial||Date.now()-_wsyncLastRepub>wait){_wsyncLastRepub=Date.now();_wsyncLastSig='';wCloudPublish();}
+    }
+  }finally{_wsyncBusy=false;}
+}
+(async function initLiftsSync(){try{await wSyncFromCloud(true);}catch(e){}setInterval(function(){wSyncFromCloud(false);},15000);})();
 function splitLabelFor(dow){try{const s=wLoadSplit();const n=wNextDay();const d=s.days.find(x=>x.day===n);return d?('Day '+n+' · '+d.name):'';}catch(e){return '';}}
 let wLoggingDay = null;
 
 function renderWorkouts(){
   const root=document.getElementById('workoutsRoot');if(!root)return;
   const split=wLoadSplit();const log=wLoadLog();const nextDay=wNextDay();
-  const cards=split.days.map(day=>{
+  /* ---- All-time PR board: every exercise, every version of the split, every device ---- */
+  const prRows=wAllTimePRs();const withPR=prRows.filter(r=>r.pr);const totalSets=Object.keys(log).reduce((a,k)=>a+(log[k]||[]).length,0);
+  const board='<div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-amber-300/70 dark:border-amber-700/60 overflow-hidden" id="prBoard">'+
+    '<div class="px-4 py-3 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 border-b border-slate-200 dark:border-slate-700 flex items-center gap-2">'+
+      '<span class="text-lg">🏆</span><div class="flex-1 min-w-0"><div class="text-sm font-bold tracking-tight">All-time PRs</div>'+
+      '<div class="text-[11px] text-slate-500 dark:text-slate-400">'+withPR.length+' of '+prRows.length+' exercises · '+totalSets+' logged top sets · synced across your devices</div></div>'+
+    '</div>'+
+    (withPR.length?('<ul class="divide-y divide-slate-100 dark:divide-slate-700">'+prRows.filter(r=>r.pr||r.inSplit).map(r=>{
+      const e1=wE1RM(r.pr);
+      return '<li class="px-4 py-2.5 flex items-center gap-3">'+
+        '<div class="flex-1 min-w-0"><div class="text-sm font-semibold truncate">'+wEsc(r.name)+'</div>'+
+        '<div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">'+(r.inSplit?('Day '+r.day+' · '+wEsc(r.dayName)):'Not in current split')+(r.pr?(' · '+r.n+' session'+(r.n===1?'':'s')+' · set '+wEsc(wDateKey(r.pr.date))):'')+'</div></div>'+
+        (r.pr?('<div class="text-right shrink-0"><div class="text-base font-extrabold text-emerald-600 dark:text-emerald-400 leading-tight">'+wPRText(r.pr)+'</div>'+(Number.isFinite(e1)?('<div class="text-[10px] font-semibold text-slate-400 dark:text-slate-500">e1RM '+e1+'</div>'):'')+'</div>'):'<div class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 shrink-0">no PR yet</div>')+
+      '</li>';}).join('')+'</ul>'):
+    '<div class="px-4 py-4 text-[12px] text-slate-500 dark:text-slate-400">No sets logged on this device yet. Log a day below, or open 5 Core on the phone you logged on — its history syncs here within a minute.</div>')+
+  '</div>';
+  const cards=board+split.days.map(day=>{
     const isNext=day.day===nextDay;
     const exs=day.exercises.map((ex,exIdx)=>{
-      const eid=wExId(ex.name);const entries=log[eid]||[];const last=entries[entries.length-1];const pr=wPR(entries);
-      const lastTxt=last?('Last cycle: '+wEsc(last.weight)+' × '+wEsc(last.reps)+' ('+wEsc(last.date)+')'):'No log yet';
-      const prTxt=pr?(' · <span class="font-bold text-emerald-600 dark:text-emerald-400">PR '+wEsc(pr.weight)+' × '+wEsc(pr.reps)+'</span>'):'';
+      const eid=wExId(ex.name);const entries=wHistFor(eid,log);const last=entries[entries.length-1];const pr=wPR(entries);const e1=wE1RM(pr);
+      const lastTxt=last?('Last: '+wEsc(last.weight)+' × '+wEsc(last.reps)+' ('+wEsc(wDateKey(last.date))+')'):'No log yet';
+      const prTxt=pr?(' · <span class="font-bold text-emerald-600 dark:text-emerald-400">🏆 PR '+wPRText(pr)+'</span> <span class="text-slate-400">'+wEsc(wDateKey(pr.date))+(Number.isFinite(e1)?(' · e1RM '+e1):'')+'</span>'):' · <span class="text-slate-400">no PR yet</span>';
       return '<li class="p-3 bg-slate-50 dark:bg-slate-700/40 rounded-lg space-y-2" data-day="'+day.day+'" data-ex="'+exIdx+'">'+
         '<div class="flex items-center gap-2">'+
           '<input class="wo-ex-name flex-1 min-w-0 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md px-2 py-1 text-sm font-medium" value="'+wEsc(ex.name)+'" data-field="name" />'+
@@ -2659,10 +2822,10 @@ function wOpenLogger(dayN){
   dateInp.value=new Date().toISOString().slice(0,10);
   const log=wLoadLog();
   body.innerHTML=d.exercises.map((ex,idx)=>{
-    const eid=wExId(ex.name);const entries=log[eid]||[];const last=entries[entries.length-1];const pr=wPR(entries);
-    const lastLine=last?('Last cycle: '+wEsc(last.weight)+' × '+wEsc(last.reps)+' ('+wEsc(last.date)+')'):'First time — set the bar';
-    const prLine=pr?(' · PR '+wEsc(pr.weight)+' × '+wEsc(pr.reps)):'';
-    const hist=entries.slice(-3).reverse().map(e=>'<div class="text-[11px] text-slate-500 dark:text-slate-400">'+wEsc(e.date)+': '+wEsc(e.weight)+' × '+wEsc(e.reps)+(e.sets?(' × '+wEsc(e.sets)+'s'):'')+'</div>').join('');
+    const eid=wExId(ex.name);const entries=wHistFor(eid,log);const last=entries[entries.length-1];const pr=wPR(entries);
+    const lastLine=last?('Last: '+wEsc(last.weight)+' × '+wEsc(last.reps)+' ('+wEsc(wDateKey(last.date))+')'):'First time — set the bar';
+    const prLine=pr?(' · 🏆 PR '+wPRText(pr)+' <span class="text-slate-400 font-normal">('+wEsc(wDateKey(pr.date))+') — beat it</span>'):'';
+    const hist=entries.slice(-3).reverse().map(e=>'<div class="text-[11px] text-slate-500 dark:text-slate-400">'+wEsc(wDateKey(e.date))+': '+wEsc(e.weight)+' × '+wEsc(e.reps)+(e.sets?(' × '+wEsc(e.sets)+'s'):'')+'</div>').join('');
     return '<div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg space-y-2" data-log-row="'+dayN+'::'+idx+'" data-eid="'+eid+'">'+
       '<div class="flex items-center justify-between gap-2">'+
         '<div class="text-sm font-medium min-w-0 truncate">'+wEsc(ex.name)+'</div>'+
@@ -2684,16 +2847,24 @@ function wSaveLoggerEntries(){
   const s=wLoadSplit();const d=s.days.find(x=>x.day===dayN);
   const log=wLoadLog();
   const date=(document.getElementById('woLogDate').value||new Date().toISOString().slice(0,10));
-  let saved=0;
+  let saved=0;const newPRs=[];
   document.querySelectorAll('[data-log-row]').forEach((row,idx)=>{
     const eid=row.dataset.eid;const w=row.querySelector('.wo-log-weight').value.trim();const r=row.querySelector('.wo-log-reps').value.trim();
     if(!w&&!r)return;if(!log[eid])log[eid]=[];const ex=d.exercises[idx];
-    log[eid].push({date:date,weight:w,reps:r,sets:ex?ex.sets:''});saved++;
+    const before=wPR(wHistFor(eid,log));const entry={date:date,weight:w,reps:r,sets:ex?ex.sets:''};
+    log[eid].push(entry);saved++;
+    const after=wPR(wHistFor(eid,log));if(after===entry&&(!before||_wEntryKey(before)!==_wEntryKey(entry)))newPRs.push((ex?ex.name:eid)+' '+wPRText(entry).replace(/&[^;]+;/g,''));
   });
   wSaveLog(log);
   if(saved>0)wSetLastDay(dayN);
   wCloseLogger();renderWorkouts();
   if(typeof refreshAll==='function')refreshAll();
+  if(newPRs.length){try{confetti('🏆💪🔥');}catch(e){}wToast('🏆 New PR'+(newPRs.length>1?'s':'')+': '+newPRs.join(' · '));}
+}
+function wToast(msg){
+  let t=document.getElementById('wToast');
+  if(!t){t=document.createElement('div');t.id='wToast';t.className='fixed left-1/2 -translate-x-1/2 bottom-24 z-[80] max-w-[92vw] px-4 py-3 rounded-2xl bg-emerald-600 text-white text-sm font-bold shadow-2xl transition-opacity duration-300';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';clearTimeout(t._h);t._h=setTimeout(()=>{t.style.opacity='0';},4500);
 }
 function wResetSplit(){
   if(!confirm('Reset to the 3-day default (Chest+Back / Arms / Legs)? Your logged history is kept.'))return;
