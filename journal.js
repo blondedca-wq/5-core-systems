@@ -138,6 +138,21 @@ window.JOURNAL = [
              'Life: income set to $4,000; grocery shop + meal prep moved to Monday. Fitness: monthly oatmeal + pre-workout + protein stock-up (+$150) on the first Monday.',
              'Study: 60-day Quranic Arabic course (Day 1, Day 2… no dates) woven with Quran memorization; phonetic transliteration added to the surah reader. The Work log (this list) reads from journal.js.'],
     sources:['this rebuild'] },
+  { date:'2026-09-14', group:'work', tag:'B · Day 1', title:'Legal + rate card foundation — three of four boxes already landed on Day 17',
+    bullets:['Category B opens. Rate card live and re-verified (nine tables with RLS, overlap guard, five pricing functions; Fennwick 25 services, Grand River 46 — both installed through sr_onboard_rate_card).',
+             'Quote guardrails are registry config (v10): max_variance_pct capped at 10, owner_approval_required, quote_as_range, approved_suppliers. The Ontario 10% rule is a database rule, not a habit.',
+             'Solicitor brief written Sep 7 (what to review, the three questions, three Ontario firms with published fixed fees) — booking it is still Ahmed\'s and still blocks going paid. Plain-English lawful-business guide (CASL, CRTC, PIPEDA, Ontario CPA) written as the study guide for this box.'],
+    sources:['roadmap bB-0..3','SecondRing Vault/Day 17/lawful-business-guide.md'] },
+  { date:'2026-09-15', group:'work', tag:'B · Day 2', title:'Photo → Quote AI I — intake, vision contract and scope drafts built; usable-rate rule proven',
+    bullets:['Photo intake → Supabase Storage → signed URLs done: job-photos bucket with tenant-scoped storage RLS, sr_photo_intake registers a photo against a job or contact and logs photo.intake.',
+             'Scope-extraction contract fixed (b2-scope-contract.md): exact vision prompt, the JSON schema the model must return, Haiku 4.5 at ~$0.0016/photo; scope-extract-workflow.json built webhook-style, ready to import.',
+             'scope_drafts table + sr_save_scope_draft / sr_scope_read / sr_scope_usable / sr_scope_stats: "usable" is a database rule (item named, a measurement or count, condition + access, not flagged needs_more_photos, confidence ≥ 0.55). Proven on synthetic data — full water-heater scope passed, bare "pipe" failed at 0.9 confidence.',
+             'Box 4 needs Ahmed: 10 photo sets from real jobs (no faces, plates, addresses, paperwork), one deliberately bad; then the workflow is imported, the Haiku model id validated on the first photo and sr_scope_stats prints the real usable rate. Also owed for Day 5: one PII-scrubbed blueprint with a known final cost.'],
+    sources:['SecondRing Vault/Day 18/b2-day2-status.md','SecondRing Vault/Day 18/b2-scope-contract.md'] },
+  { date:'2026-09-15', group:'life', tag:'5 Core', title:'All-time PRs on every exercise · lifts synced across devices · study guides attached to every Work day',
+    bullets:['Workout log now syncs phone ↔ desktop (compressed, chunked ntfy channel), so the all-time PR board and per-exercise PRs read from the whole history, not one device.',
+             'Every Work day in the log carries a 📘 study guide: originals from the SecondRing Vault where one was written (Day 1–2, B Day 1, Days 16–17, B Day 2); the other days got a reconstructed plain-English guide built from that day\'s bullets, git refs and the ledger, labelled as such.'],
+    sources:['this session'] },
 ];
 
 /* Dated sprint plan — generated from roadmap.html BLOCKS (regenerate when the roadmap changes). keys[] are the roadmap checkbox ids in localStorage lab.roadmap.done.v1. */

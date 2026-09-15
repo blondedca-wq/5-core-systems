@@ -29,17 +29,18 @@ Since Sep 14 2026 every day on `index.html` is one view with four groups: **Work
 
 | Group | What lands there | Where the data lives |
 |---|---|---|
-| Work | job shift / build blocks, the day's roadmap card (checkboxes = `lab.roadmap.done.v1`), the dated work summary | `journal.js` → `window.JOURNAL` (summaries) · `window.SPRINT_PLAN` (dated roadmap days, generated from `roadmap.html` BLOCKS) |
+| Work | job shift / build blocks, the day's roadmap card (checkboxes = `lab.roadmap.done.v1`), the dated work summary, **and that day's 📘 study guide(s)** | `journal.js` → `window.JOURNAL` (summaries) · `window.SPRINT_PLAN` (dated roadmap days, generated from `roadmap.html` BLOCKS) · `guides.js` → `window.GUIDES` (one or more markdown guides per journal day, keyed by `date` + `group`; `origin` = `original` (embedded as written from the SecondRing Vault / project docs) or `reconstructed` (written after the fact from the log — dashed chip). Rendered in-app by `mdToHtml`; reader = `#guideModal` with earlier/later-day nav) |
 | Life | bills due (cloud-synced), custom events, Monday grocery shop + meal prep + weekly review, month money (income **$4,000**) | existing bills/custom state |
 | Fitness | workouts (3-day rotation, logger), **all-time PR board + PR on every exercise** (log keys from every old split version folded in via `W_ALIASES`), grocery list, first-Monday stock-up (oatmeal + pre-workout + protein, +$150/mo) | `planner.workoutLog.v2` / `planner.workoutSplit.v8` / `planner.workoutCycle.v1` — **cloud-synced on their own ntfy topic** `5core-ahmeed-lifts-2026-09-15` (gzip + base64, chunked ≤3 KB per message because ntfy turns anything >4 KB into a 3-hour attachment; log merges as a union of entries, split/cycle newest `_m` wins). The main topic payload must stay under 4 KB for the same reason. |
 | Study | Quran khatmah (unchanged progress) + the 60-day Quranic Arabic course (`arabic.js`), lesson done-dates | `planner.arabic.v1` (cloud-synced via ntfy like everything else) |
 
 **Keep it up to date — at the close of every work or study session (this is part of "done", not a footnote):**
 
-1. Append ONE entry to `window.JOURNAL` in `journal.js` — `{ date:'YYYY-MM-DD', group:'work'|'study'|'life'|'fitness', tag:'A · Day 18', title, bullets:[…], sources:[…] }`. Never edit history; add. Sunday-night sessions are dated the Sunday.
-2. If `roadmap.html` BLOCKS changed (a new day card, a rewritten title, dates moved), regenerate `window.SPRINT_PLAN` from it: parse `BLOCKS`, `Day N · Ddd Mon D` → date, and `keys` = `'b'+block.id+'-'+flatIndex` in step order (this is what makes the day sheet's checkboxes the same boxes as the roadmap).
-3. Bump the `?v=` on both `<script src="journal.js?v=…">` and `<script src="arabic.js?v=…">` tags in `index.html` (GitHub Pages caches ~10 min).
-4. Quran surah dates and Arabic lesson dates need nothing — the app derives them from the synced progress timestamps.
+1. Append ONE entry to `window.JOURNAL` in `journal.js` — `{ date:'YYYY-MM-DD', group:'work'|'study'|'life'|'fitness', tag:'B · Day 3', title, bullets:[…], sources:[…] }`. Never edit history; add. Sunday-night sessions are dated the Sunday.
+2. Write the day's plain-English study guide (what the day was · what changed and the sales line · glossary · how to check it yourself · lessons · sources) and append it to `window.GUIDES` in `guides.js` — `{ date, group:'work', kind:'guide', label:'Study guide', origin:'original', source:'…', title, md:'…markdown…' }` (JSON-escape the markdown; extra docs for the day — findings, startup prompt, contracts — go in as more objects with their own `kind`/`label`). The Work tab shows a "no study guide yet" flag on any work day without one. A guide written after the fact is `origin:'reconstructed'`.
+3. If `roadmap.html` BLOCKS changed (a new day card, a rewritten title, dates moved), regenerate `window.SPRINT_PLAN` from it: parse `BLOCKS`, `Day N · Ddd Mon D` → date, and `keys` = `'b'+block.id+'-'+flatIndex` in step order (this is what makes the day sheet's checkboxes the same boxes as the roadmap).
+4. Bump the `?v=` on the `<script src="journal.js?v=…">`, `guides.js?v=…` and `arabic.js?v=…` tags in `index.html` (GitHub Pages caches ~10 min).
+5. Quran surah dates and Arabic lesson dates need nothing — the app derives them from the synced progress timestamps.
 
 Ship all of it to `main` and verify the live day sheet shows the new entry, same as any other site change.
 
