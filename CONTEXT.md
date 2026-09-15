@@ -23,6 +23,26 @@ Ahmed. Based in the GTA. Building an AI automation practice from zero, selling t
 
 Sprint tabs: **Sprint** (30-day day-by-day plan), **Learn**, **Build** (11 automation builds), **Pitch** (verticals, scripts, objections, channels), **Pipeline**, **Money**.
 
+## 5 Core (index.html) — the four groups, and how the calendar stays current
+
+Since Sep 14 2026 every day on `index.html` is one view with four groups: **Work · Life · Fitness · Study**. The Today tab and the calendar day sheet share it.
+
+| Group | What lands there | Where the data lives |
+|---|---|---|
+| Work | job shift / build blocks, the day's roadmap card (checkboxes = `lab.roadmap.done.v1`), the dated work summary | `journal.js` → `window.JOURNAL` (summaries) · `window.SPRINT_PLAN` (dated roadmap days, generated from `roadmap.html` BLOCKS) |
+| Life | bills due (cloud-synced), custom events, Monday grocery shop + meal prep + weekly review, month money (income **$4,000**) | existing bills/custom state |
+| Fitness | workouts (3-day rotation, logger), grocery list, first-Monday stock-up (oatmeal + pre-workout + protein, +$150/mo) | existing workout/grocery state |
+| Study | Quran khatmah (unchanged progress) + the 60-day Quranic Arabic course (`arabic.js`), lesson done-dates | `planner.arabic.v1` (cloud-synced via ntfy like everything else) |
+
+**Keep it up to date — at the close of every work or study session (this is part of "done", not a footnote):**
+
+1. Append ONE entry to `window.JOURNAL` in `journal.js` — `{ date:'YYYY-MM-DD', group:'work'|'study'|'life'|'fitness', tag:'A · Day 18', title, bullets:[…], sources:[…] }`. Never edit history; add. Sunday-night sessions are dated the Sunday.
+2. If `roadmap.html` BLOCKS changed (a new day card, a rewritten title, dates moved), regenerate `window.SPRINT_PLAN` from it: parse `BLOCKS`, `Day N · Ddd Mon D` → date, and `keys` = `'b'+block.id+'-'+flatIndex` in step order (this is what makes the day sheet's checkboxes the same boxes as the roadmap).
+3. Bump the `?v=` on both `<script src="journal.js?v=…">` and `<script src="arabic.js?v=…">` tags in `index.html` (GitHub Pages caches ~10 min).
+4. Quran surah dates and Arabic lesson dates need nothing — the app derives them from the synced progress timestamps.
+
+Ship all of it to `main` and verify the live day sheet shows the new entry, same as any other site change.
+
 ---
 
 ## "Refresh memory" — the protocol

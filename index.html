@@ -8,7 +8,7 @@
 <title>5 Core Systems</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Amiri:wght@400;700&amp;display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -54,7 +54,42 @@
   .habit-pill { transition: all .15s ease; }
   .habit-pill:active { transform: scale(.92); }
   .ring-anim { transition: stroke-dashoffset .8s cubic-bezier(.21,.8,.35,1); }
+  /* ---- 4-group day view + study ---- */
+  .ar { font-family: 'Amiri', 'Scheherazade New', 'Noto Naskh Arabic', 'Traditional Arabic', serif; direction: rtl; unicode-bidi: isolate; }
+  .ar-lg { font-size: 1.55rem; line-height: 2.3; }
+  .ar-md { font-size: 1.25rem; line-height: 2; }
+  .lesson-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .lesson-table th { text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #94a3b8; padding: 4px 6px; }
+  .lesson-table td { padding: 7px 6px; border-top: 1px solid rgba(148,163,184,.18); vertical-align: top; }
+  .lesson-table td:first-child { font-family: 'Amiri', serif; font-size: 1.2rem; line-height: 1.7; direction: rtl; text-align: right; white-space: nowrap; min-width: 92px; }
+  .lesson-table td:nth-child(2) { font-weight: 600; color: #6366f1; }
+  .dark .lesson-table td:nth-child(2) { color: #a5b4fc; }
+  .lesson-table td:nth-child(3) { color: #64748b; }
+  .dark .lesson-table td:nth-child(3) { color: #cbd5e1; }
+  .lesson-table.plain td:first-child { font-family: inherit; font-size: 13px; direction: ltr; text-align: left; white-space: normal; font-weight: 600; }
+  .lesson-body p { margin: 6px 0; line-height: 1.6; }
+  .lesson-body h4 { font-weight: 800; font-size: 13px; letter-spacing: -.01em; margin: 16px 0 4px; }
+  .lesson-body ul { margin: 6px 0; padding-left: 18px; list-style: disc; }
+  .lesson-body li { margin: 4px 0; line-height: 1.55; }
+  .tip { border-left: 3px solid #f59e0b; padding: 8px 12px; border-radius: 0 10px 10px 0; background: rgba(245,158,11,.08); font-size: 13px; line-height: 1.55; margin: 10px 0; }
+  .segbtn { flex: 1; padding: 7px 10px; border-radius: 10px; font-size: 12px; font-weight: 700; transition: all .15s; }
+  .seg-on { background: #4f46e5; color: #fff; box-shadow: 0 2px 8px rgba(79,70,229,.35); }
+  .gcard { border-radius: 1rem; border-width: 1px; }
+  .gline { display:flex; align-items:center; gap:.6rem; padding:.3rem 0; font-size:12px; }
+  .gline .t { font-weight:700; font-variant-numeric: tabular-nums; font-size:11px; color:#94a3b8; white-space:nowrap; }
+  .plan-step { display:flex; gap:.6rem; align-items:flex-start; padding:.3rem 0; font-size:12px; line-height:1.45; }
+  .plan-step input { margin-top:2px; flex-shrink:0; }
+  .ayah-row { padding: 10px 0; border-bottom: 1px solid rgba(148,163,184,.18); }
+  .ayah-row .tr { font-size: 13px; font-weight: 600; color: #6366f1; margin-top: 4px; }
+  .dark .ayah-row .tr { color: #a5b4fc; }
+  .ayah-row .en { font-size: 13px; line-height: 1.55; color: #64748b; margin-top: 3px; }
+  .dark .ayah-row .en { color: #cbd5e1; }
+  .hide-tr .tr { display: none; }
+  .jbul { font-size: 12px; line-height: 1.5; padding-left: 14px; position: relative; margin: 3px 0; }
+  .jbul::before { content: ''; position: absolute; left: 2px; top: 8px; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .45; }
 </style>
+<script src="journal.js?v=20260914a"></script>
+<script src="arabic.js?v=20260914a"></script>
 <style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.inset-x-0{left:0px;right:0px}.bottom-0{bottom:0px}.top-0{top:0px}.-bottom-10{bottom:-2.5rem}.-left-6{left:-1.5rem}.-right-8{right:-2rem}.-top-8{top:-2rem}.z-10{z-index:10}.z-30{z-index:30}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-1\.5{margin-bottom:0.375rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mt-0\.5{margin-top:0.125rem}.mt-1\.5{margin-top:0.375rem}.mt-3{margin-top:0.75rem}.mt-5{margin-top:1.25rem}.mt-6{margin-top:1.5rem}.mb-2\.5{margin-bottom:0.625rem}.mt-1{margin-top:0.25rem}.mt-4{margin-top:1rem}.-mt-1{margin-top:-0.25rem}.mb-2{margin-bottom:0.5rem}.ml-2{margin-left:0.5rem}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-1{height:0.25rem}.h-1\.5{height:0.375rem}.h-2{height:0.5rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.h-5{height:1.25rem}.h-10{height:2.5rem}.h-32{height:8rem}.h-36{height:9rem}.h-7{height:1.75rem}.h-px{height:1px}.h-\[72px\]{height:72px}.max-h-\[85vh\]{max-height:85vh}.min-h-screen{min-height:100vh}.min-h-\[56px\]{min-height:56px}.w-2{width:0.5rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-full{width:100%}.w-5{width:1.25rem}.w-1{width:0.25rem}.w-1\.5{width:0.375rem}.w-10{width:2.5rem}.w-32{width:8rem}.w-36{width:9rem}.w-\[72px\]{width:72px}.min-w-0{min-width:0px}.max-w-2xl{max-width:42rem}.max-w-5xl{max-width:64rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-rotate-90{--tw-rotate:-90deg;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.grid-cols-7{grid-template-columns:repeat(7, minmax(0, 1fr))}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.375rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.375rem * var(--tw-space-y-reverse))}.divide-y > :not([hidden]) ~ :not([hidden]){--tw-divide-y-reverse:0;border-top-width:calc(1px * calc(1 - var(--tw-divide-y-reverse)));border-bottom-width:calc(1px * var(--tw-divide-y-reverse))}.divide-ink-100 > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(241 245 249 / var(--tw-divide-opacity, 1))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-xl{border-radius:0.75rem}.rounded{border-radius:0.25rem}.rounded-3xl{border-radius:1.5rem}.rounded-md{border-radius:0.375rem}.rounded-t-3xl{border-top-left-radius:1.5rem;border-top-right-radius:1.5rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-amber-200\/70{border-color:rgb(253 230 138 / 0.7)}.border-ink-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-ink-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.border-ink-200\/70{border-color:rgb(226 232 240 / 0.7)}.border-ink-200\/80{border-color:rgb(226 232 240 / 0.8)}.border-ink-300{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.border-indigo-400{--tw-border-opacity:1;border-color:rgb(129 140 248 / var(--tw-border-opacity, 1))}.border-red-200{--tw-border-opacity:1;border-color:rgb(254 202 202 / var(--tw-border-opacity, 1))}.border-amber-300{--tw-border-opacity:1;border-color:rgb(252 211 77 / var(--tw-border-opacity, 1))}.bg-amber-50{--tw-bg-opacity:1;background-color:rgb(255 251 235 / var(--tw-bg-opacity, 1))}.bg-amber-600{--tw-bg-opacity:1;background-color:rgb(217 119 6 / var(--tw-bg-opacity, 1))}.bg-blue-900{--tw-bg-opacity:1;background-color:rgb(30 58 138 / var(--tw-bg-opacity, 1))}.bg-gray-500{--tw-bg-opacity:1;background-color:rgb(107 114 128 / var(--tw-bg-opacity, 1))}.bg-green-600{--tw-bg-opacity:1;background-color:rgb(22 163 74 / var(--tw-bg-opacity, 1))}.bg-indigo-500{--tw-bg-opacity:1;background-color:rgb(99 102 241 / var(--tw-bg-opacity, 1))}.bg-ink-100{--tw-bg-opacity:1;background-color:rgb(241 245 249 / var(--tw-bg-opacity, 1))}.bg-ink-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-ink-200\/60{background-color:rgb(226 232 240 / 0.6)}.bg-ink-950\/60{background-color:rgb(10 15 30 / 0.6)}.bg-orange-500{--tw-bg-opacity:1;background-color:rgb(249 115 22 / var(--tw-bg-opacity, 1))}.bg-pink-500{--tw-bg-opacity:1;background-color:rgb(236 72 153 / var(--tw-bg-opacity, 1))}.bg-purple-600{--tw-bg-opacity:1;background-color:rgb(147 51 234 / var(--tw-bg-opacity, 1))}.bg-red-600{--tw-bg-opacity:1;background-color:rgb(220 38 38 / var(--tw-bg-opacity, 1))}.bg-teal-500{--tw-bg-opacity:1;background-color:rgb(20 184 166 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-white\/85{background-color:rgb(255 255 255 / 0.85)}.bg-white\/90{background-color:rgb(255 255 255 / 0.9)}.bg-ink-50\/80{background-color:rgb(248 250 252 / 0.8)}.bg-transparent{background-color:transparent}.bg-emerald-100{--tw-bg-opacity:1;background-color:rgb(209 250 229 / var(--tw-bg-opacity, 1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-indigo-50{--tw-bg-opacity:1;background-color:rgb(238 242 255 / var(--tw-bg-opacity, 1))}.bg-ink-200\/80{background-color:rgb(226 232 240 / 0.8)}.bg-ink-50{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.bg-ink-50\/70{background-color:rgb(248 250 252 / 0.7)}.bg-red-400\/60{background-color:rgb(248 113 113 / 0.6)}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity, 1))}.bg-red-500{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity, 1))}.bg-violet-300\/10{background-color:rgb(196 181 253 / 0.1)}.bg-white\/10{background-color:rgb(255 255 255 / 0.1)}.bg-white\/15{background-color:rgb(255 255 255 / 0.15)}.bg-white\/20{background-color:rgb(255 255 255 / 0.2)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-emerald-500{--tw-gradient-from:#10b981 var(--tw-gradient-from-position);--tw-gradient-to:rgb(16 185 129 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-emerald-600{--tw-gradient-from:#059669 var(--tw-gradient-from-position);--tw-gradient-to:rgb(5 150 105 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-indigo-500{--tw-gradient-from:#6366f1 var(--tw-gradient-from-position);--tw-gradient-to:rgb(99 102 241 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-indigo-600{--tw-gradient-from:#4f46e5 var(--tw-gradient-from-position);--tw-gradient-to:rgb(79 70 229 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-teal-500{--tw-gradient-from:#14b8a6 var(--tw-gradient-from-position);--tw-gradient-to:rgb(20 184 166 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-teal-600{--tw-gradient-from:#0d9488 var(--tw-gradient-from-position);--tw-gradient-to:rgb(13 148 136 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-indigo-500{--tw-gradient-to:rgb(99 102 241 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #6366f1 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-emerald-400{--tw-gradient-to:#34d399 var(--tw-gradient-to-position)}.to-teal-500{--tw-gradient-to:#14b8a6 var(--tw-gradient-to-position)}.to-teal-600{--tw-gradient-to:#0d9488 var(--tw-gradient-to-position)}.to-violet-600{--tw-gradient-to:#7c3aed var(--tw-gradient-to-position)}.to-emerald-600{--tw-gradient-to:#059669 var(--tw-gradient-to-position)}.p-0{padding:0px}.p-5{padding:1.25rem}.p-1{padding:0.25rem}.p-2\.5{padding:0.625rem}.p-4{padding:1rem}.p-3\.5{padding:0.875rem}.px-1{padding-left:0.25rem;padding-right:0.25rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.pb-24{padding-bottom:6rem}.pb-28{padding-bottom:7rem}.pb-\[env\(safe-area-inset-bottom\)\]{padding-bottom:env(safe-area-inset-bottom)}.pt-2\.5{padding-top:0.625rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.text-\[10px\]{font-size:10px}.text-\[11px\]{font-size:11px}.text-\[13px\]{font-size:13px}.text-\[15px\]{font-size:15px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[8px\]{font-size:8px}.text-\[9px\]{font-size:9px}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.tabular-nums{--tw-numeric-spacing:tabular-nums;font-variant-numeric:var(--tw-ordinal) var(--tw-slashed-zero) var(--tw-numeric-figure) var(--tw-numeric-spacing) var(--tw-numeric-fraction)}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.leading-snug{line-height:1.375}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-amber-700{--tw-text-opacity:1;color:rgb(180 83 9 / var(--tw-text-opacity, 1))}.text-emerald-100{--tw-text-opacity:1;color:rgb(209 250 229 / var(--tw-text-opacity, 1))}.text-emerald-600{--tw-text-opacity:1;color:rgb(5 150 105 / var(--tw-text-opacity, 1))}.text-ink-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-ink-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-ink-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-ink-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-ink-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-emerald-700{--tw-text-opacity:1;color:rgb(4 120 87 / var(--tw-text-opacity, 1))}.text-indigo-600{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.\!text-ink-500{--tw-text-opacity:1 !important;color:rgb(100 116 139 / var(--tw-text-opacity, 1)) !important}.text-indigo-200{--tw-text-opacity:1;color:rgb(199 210 254 / var(--tw-text-opacity, 1))}.text-red-500{--tw-text-opacity:1;color:rgb(239 68 68 / var(--tw-text-opacity, 1))}.text-red-600{--tw-text-opacity:1;color:rgb(220 38 38 / var(--tw-text-opacity, 1))}.text-teal-100{--tw-text-opacity:1;color:rgb(204 251 241 / var(--tw-text-opacity, 1))}.text-amber-600{--tw-text-opacity:1;color:rgb(217 119 6 / var(--tw-text-opacity, 1))}.text-emerald-500{--tw-text-opacity:1;color:rgb(16 185 129 / var(--tw-text-opacity, 1))}.text-ink-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-orange-500{--tw-text-opacity:1;color:rgb(249 115 22 / var(--tw-text-opacity, 1))}.text-teal-500{--tw-text-opacity:1;color:rgb(20 184 166 / var(--tw-text-opacity, 1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.accent-emerald-600{accent-color:#059669}.opacity-45{opacity:0.45}.shadow-card{--tw-shadow:0 1px 2px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.05);--tw-shadow-colored:0 1px 2px var(--tw-shadow-color), 0 4px 16px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-nav{--tw-shadow:0 -4px 24px rgba(15,23,42,0.08);--tw-shadow-colored:0 -4px 24px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-glow{--tw-shadow:0 8px 32px rgba(79,70,229,0.25);--tw-shadow-colored:0 8px 32px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.ring-2{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-indigo-300\/60{--tw-ring-color:rgb(165 180 252 / 0.6)}.ring-amber-300\/50{--tw-ring-color:rgb(252 211 77 / 0.5)}.blur-2xl{--tw-blur:blur(40px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur-\[2px\]{--tw-backdrop-blur:blur(2px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-lg{--tw-backdrop-blur:blur(16px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-xl{--tw-backdrop-blur:blur(24px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-500{transition-duration:500ms}.duration-700{transition-duration:700ms}.selection\:bg-indigo-200 *::selection{--tw-bg-opacity:1;background-color:rgb(199 210 254 / var(--tw-bg-opacity, 1))}.selection\:bg-indigo-200::selection{--tw-bg-opacity:1;background-color:rgb(199 210 254 / var(--tw-bg-opacity, 1))}.hover\:border-ink-300:hover{--tw-border-opacity:1;border-color:rgb(203 213 225 / var(--tw-border-opacity, 1))}.hover\:bg-ink-50:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.hover\:text-indigo-600:hover{--tw-text-opacity:1;color:rgb(79 70 229 / var(--tw-text-opacity, 1))}.hover\:text-ink-700:hover{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-\[0\.97\]:active{--tw-scale-x:0.97;--tw-scale-y:0.97;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:scale-\[0\.99\]:active{--tw-scale-x:0.99;--tw-scale-y:0.99;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\:bg-ink-50:active{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}.dark\:divide-ink-800:is(.dark *) > :not([hidden]) ~ :not([hidden]){--tw-divide-opacity:1;border-color:rgb(30 41 59 / var(--tw-divide-opacity, 1))}.dark\:border-amber-800\/60:is(.dark *){border-color:rgb(146 64 14 / 0.6)}.dark\:border-ink-700:is(.dark *){--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.dark\:border-ink-800:is(.dark *){--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.dark\:border-ink-600:is(.dark *){--tw-border-opacity:1;border-color:rgb(71 85 105 / var(--tw-border-opacity, 1))}.dark\:border-indigo-600:is(.dark *){--tw-border-opacity:1;border-color:rgb(79 70 229 / var(--tw-border-opacity, 1))}.dark\:border-red-800:is(.dark *){--tw-border-opacity:1;border-color:rgb(153 27 27 / var(--tw-border-opacity, 1))}.dark\:border-amber-700:is(.dark *){--tw-border-opacity:1;border-color:rgb(180 83 9 / var(--tw-border-opacity, 1))}.dark\:bg-amber-900\/30:is(.dark *){background-color:rgb(120 53 15 / 0.3)}.dark\:bg-ink-700:is(.dark *){--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.dark\:bg-ink-800:is(.dark *){--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.dark\:bg-ink-850:is(.dark *){--tw-bg-opacity:1;background-color:rgb(23 32 51 / var(--tw-bg-opacity, 1))}.dark\:bg-ink-900:is(.dark *){--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.dark\:bg-ink-900\/85:is(.dark *){background-color:rgb(15 23 42 / 0.85)}.dark\:bg-ink-900\/90:is(.dark *){background-color:rgb(15 23 42 / 0.9)}.dark\:bg-ink-950:is(.dark *){--tw-bg-opacity:1;background-color:rgb(10 15 30 / var(--tw-bg-opacity, 1))}.dark\:bg-ink-800\/50:is(.dark *){background-color:rgb(30 41 59 / 0.5)}.dark\:bg-emerald-900\/50:is(.dark *){background-color:rgb(6 78 59 / 0.5)}.dark\:bg-indigo-950\/60:is(.dark *){background-color:rgb(30 27 75 / 0.6)}.dark\:bg-ink-900\/60:is(.dark *){background-color:rgb(15 23 42 / 0.6)}.dark\:bg-red-900\/25:is(.dark *){background-color:rgb(127 29 29 / 0.25)}.dark\:bg-amber-900\/20:is(.dark *){background-color:rgb(120 53 15 / 0.2)}.dark\:text-amber-300:is(.dark *){--tw-text-opacity:1;color:rgb(252 211 77 / var(--tw-text-opacity, 1))}.dark\:text-emerald-400:is(.dark *){--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.dark\:text-ink-100:is(.dark *){--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.dark\:text-ink-200:is(.dark *){--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.dark\:text-ink-300:is(.dark *){--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.dark\:text-ink-400:is(.dark *){--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.dark\:text-ink-500:is(.dark *){--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.dark\:text-ink-600:is(.dark *){--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.dark\:text-indigo-400:is(.dark *){--tw-text-opacity:1;color:rgb(129 140 248 / var(--tw-text-opacity, 1))}.dark\:text-slate-400:is(.dark *){--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.dark\:\!text-ink-300:is(.dark *){--tw-text-opacity:1 !important;color:rgb(203 213 225 / var(--tw-text-opacity, 1)) !important}.dark\:text-emerald-300:is(.dark *){--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.dark\:text-indigo-300:is(.dark *){--tw-text-opacity:1;color:rgb(165 180 252 / var(--tw-text-opacity, 1))}.dark\:text-red-400:is(.dark *){--tw-text-opacity:1;color:rgb(248 113 113 / var(--tw-text-opacity, 1))}.dark\:text-amber-400:is(.dark *){--tw-text-opacity:1;color:rgb(251 191 36 / var(--tw-text-opacity, 1))}.dark\:text-ink-800:is(.dark *){--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.dark\:ring-indigo-700\/60:is(.dark *){--tw-ring-color:rgb(67 56 202 / 0.6)}.dark\:selection\:bg-indigo-800 *:is(.dark *)::selection{--tw-bg-opacity:1;background-color:rgb(55 48 163 / var(--tw-bg-opacity, 1))}.dark\:selection\:bg-indigo-800:is(.dark *)::selection{--tw-bg-opacity:1;background-color:rgb(55 48 163 / var(--tw-bg-opacity, 1))}.dark\:hover\:border-ink-700:hover:is(.dark *){--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.dark\:hover\:bg-ink-700:hover:is(.dark *){--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.dark\:hover\:text-indigo-400:hover:is(.dark *){--tw-text-opacity:1;color:rgb(129 140 248 / var(--tw-text-opacity, 1))}.dark\:hover\:text-white:hover:is(.dark *){--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.dark\:active\:bg-ink-800\/60:active:is(.dark *){background-color:rgb(30 41 59 / 0.6)}@media (min-width: 640px){.sm\:block{display:block}.sm\:hidden{display:none}.sm\:max-w-md{max-width:28rem}.sm\:items-center{align-items:center}.sm\:gap-1\.5{gap:0.375rem}.sm\:rounded-3xl{border-radius:1.5rem}.sm\:border{border-width:1px}.sm\:p-4{padding:1rem}.sm\:p-1\.5{padding:0.375rem}.sm\:px-4{padding-left:1rem;padding-right:1rem}.sm\:text-\[11px\]{font-size:11px}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}.sm\:text-xs{font-size:0.75rem;line-height:1rem}.sm\:text-\[9px\]{font-size:9px}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}}</style></head>
 <body class="bg-ink-100 dark:bg-ink-950 text-ink-800 dark:text-ink-100 min-h-screen pb-24 antialiased selection:bg-indigo-200 dark:selection:bg-indigo-800">
 
@@ -64,7 +99,7 @@
     <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-[13px] font-extrabold shadow-sm">5</div>
     <div class="leading-tight">
       <h1 class="text-[15px] sm:text-base font-bold tracking-tight">Core Systems</h1>
-      <p class="text-[10px] text-ink-400 dark:text-ink-500 font-medium">Plan · Pay · Pray · Lift · Ship</p>
+      <p class="text-[10px] text-ink-400 dark:text-ink-500 font-medium">Work · Life · Fitness · Study</p>
     </div>
   </div>
   <div class="flex items-center gap-2">
@@ -104,15 +139,12 @@
   </div>
 
   <div class="flex flex-wrap gap-1.5 mb-3 px-1">
-    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-blue-900"></span>Job</span>
-    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-orange-500"></span>Workout</span>
-    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-purple-600"></span>Meal/Review</span>
-    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-amber-600"></span>Groceries</span>
-    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-pink-500"></span>Family</span>
-    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-gray-500"></span>Wind-down</span>
-    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-teal-500"></span>Prayer</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-blue-600"></span>Work</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-pink-500"></span>Life</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-orange-500"></span>Fitness</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-violet-600"></span>Study</span>
+    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-emerald-600"></span>Quran read</span>
     <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-red-600"></span>Bill</span>
-    <span class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-ink-500 dark:text-ink-400 bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 rounded-full px-2 py-0.5"><span class="w-2 h-2 rounded-full bg-indigo-500"></span>Custom</span>
   </div>
 
   <div class="grid grid-cols-7 gap-1 sm:gap-1.5 mb-1.5 text-center text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500">
@@ -124,9 +156,28 @@
 </section>
 
 <!-- ============================================================== -->
-<!-- BILLS TAB -->
+<!-- WORK TAB — dated work log + sprint plan -->
 <!-- ============================================================== -->
-<section id="tab-bills" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto">
+<section id="tab-work" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28">
+  <div class="flex items-start justify-between mb-3 gap-3">
+    <div class="min-w-0">
+      <h2 class="text-xl font-bold tracking-tight">Work log</h2>
+      <p class="text-xs text-ink-400 dark:text-ink-500">Every sprint day, dated. Tap a day on the calendar to see it in context.</p>
+    </div>
+    <a href="./roadmap.html" class="shrink-0 text-xs px-3.5 py-2 rounded-xl bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 shadow-card font-semibold text-ink-600 dark:text-ink-200 active:scale-95 transition">🗺 Roadmap</a>
+  </div>
+  <div id="workRoot" class="space-y-3"></div>
+</section>
+
+<!-- ============================================================== -->
+<!-- LIFE TAB — bills + monthly summary -->
+<!-- ============================================================== -->
+<section id="tab-life" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28">
+  <div class="flex gap-1 p-1 rounded-xl bg-ink-200/60 dark:bg-ink-800 mb-4" data-seg="life">
+    <button class="segbtn seg-on" data-sub="bills">💵 Bills</button>
+    <button class="segbtn" data-sub="summary">📊 Summary</button>
+  </div>
+<div id="tab-bills">
   <h2 class="text-xl font-bold tracking-tight mb-1" id="billsMonthLabel">July 2026 bills</h2>
   <p class="text-xs text-ink-400 dark:text-ink-500 mb-4">Tap to mark as paid · ✎ to edit · + to add. Synced to all your devices.</p>
 
@@ -141,7 +192,7 @@
         <div class="text-xl font-bold mt-0.5" id="billsAfterSavings">$1,920</div>
       </div>
       <div>
-        <div class="text-[11px] font-medium uppercase tracking-wide text-ink-400 dark:text-ink-500">% of $3,200 income</div>
+        <div class="text-[11px] font-medium uppercase tracking-wide text-ink-400 dark:text-ink-500">% of $4,000 income</div>
         <div class="text-xl font-bold mt-0.5" id="billsPctIncome">91%</div>
       </div>
       <div>
@@ -161,25 +212,40 @@
   </div>
 
   <div id="billsList" class="space-y-2"></div>
-</section>
+</div>
 
-<!-- ============================================================== -->
-<!-- SUMMARY TAB -->
-<!-- ============================================================== -->
-<section id="tab-summary" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto">
+<div id="tab-summary" class="hidden">
   <h2 class="text-xl font-bold tracking-tight mb-1" id="summaryMonthLabel">July 2026 snapshot</h2>
   <p class="text-xs text-ink-400 dark:text-ink-500 mb-3">Your month at a glance — live from your logs.</p>
   <div id="summaryRoot" class="space-y-3"></div>
+</div>
 </section>
 
 <!-- ====================================================================== -->
-<!-- GROCERIES TAB -->
+<!-- FITNESS TAB — workouts + grocery list -->
 <!-- ====================================================================== -->
-<section id="tab-groceries" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28">
+<section id="tab-fitness" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28">
+  <div class="flex gap-1 p-1 rounded-xl bg-ink-200/60 dark:bg-ink-800 mb-4" data-seg="fitness">
+    <button class="segbtn seg-on" data-sub="workouts">💪 Workouts</button>
+    <button class="segbtn" data-sub="groceries">🛒 Groceries</button>
+  </div>
+<div id="tab-workouts">
+  <div class="flex items-start justify-between mb-3 gap-3">
+    <div class="min-w-0">
+      <h2 class="text-xl font-bold">Workouts</h2>
+      <p class="text-xs text-slate-500 dark:text-slate-400">3-day rotation · Chest + Back → Arms → Legs · hit them in order</p>
+    </div>
+    <button id="woResetBtn" class="shrink-0 text-xs px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 font-medium text-slate-700 dark:text-slate-200">
+      Reset default
+    </button>
+  </div>
+  <div id="workoutsRoot" class="space-y-3"></div>
+</div>
+<div id="tab-groceries" class="hidden">
   <div class="flex items-start justify-between mb-1 gap-3">
     <div class="min-w-0">
-      <h2 class="text-xl font-bold tracking-tight">Weekly Groceries</h2>
-      <p class="text-xs text-ink-400 dark:text-ink-500">Zehrs run · tap to check off</p>
+      <h2 class="text-xl font-bold tracking-tight">Groceries</h2>
+      <p class="text-xs text-ink-400 dark:text-ink-500">Monday Zehrs run · tap to check off · monthly stock-up on the first Monday</p>
     </div>
     <button id="groceriesClear" class="shrink-0 text-xs px-3.5 py-2 rounded-xl bg-white dark:bg-ink-800 border border-ink-200 dark:border-ink-700 shadow-card hover:bg-ink-50 dark:hover:bg-ink-700 font-semibold text-ink-600 dark:text-ink-200 active:scale-95 transition">
       Start fresh week
@@ -200,16 +266,28 @@
       <span>Weekly total</span><span>$65–85</span>
     </div>
     <div class="flex justify-between text-sm font-semibold mt-1.5">
-      <span>Monthly total</span><span>$260–340</span>
+      <span>Monthly stock-up (oats · pre · protein)</span><span>$150</span>
     </div>
-    <p class="text-xs text-emerald-100 mt-3 leading-relaxed">Prices based on normal Zehrs pricing — watch the flyer for sales on beef and yogurt.</p>
+    <div class="flex justify-between text-sm font-semibold mt-1.5 pt-1.5 border-t border-white/20">
+      <span>Monthly total</span><span>$410–490</span>
+    </div>
+    <p class="text-xs text-emerald-100 mt-3 leading-relaxed">Weekly list is the Monday Zehrs run — watch the flyer for beef and yogurt. Oatmeal, pre-workout and protein are bought together once a month, first Monday.</p>
   </div>
+</div>
 </section>
 
 <!-- ====================================================================== -->
-<!-- QURAN TAB -->
+<!-- STUDY TAB — Arabic course + Quran khatmah -->
 <!-- ====================================================================== -->
-<section id="tab-quran" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28">
+<section id="tab-study" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28">
+  <div class="flex gap-1 p-1 rounded-xl bg-ink-200/60 dark:bg-ink-800 mb-4" data-seg="study">
+    <button class="segbtn seg-on" data-sub="arabic">🗣 Arabic</button>
+    <button class="segbtn" data-sub="quran">📖 Quran</button>
+  </div>
+<div id="tab-arabic">
+  <div id="arabicRoot"></div>
+</div>
+<div id="tab-quran" class="hidden">
   <h2 class="text-xl font-bold tracking-tight mb-1">Quran Khatmah</h2>
   <p class="text-xs text-ink-400 dark:text-ink-500 mb-4">Check off each surah as you finish it — إن شاء الله you'll get through all of it. Synced to all your devices.</p>
 
@@ -236,25 +314,36 @@
   <div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/80 dark:border-ink-800 overflow-hidden fade-up">
     <div id="quranList" class="divide-y divide-ink-100 dark:divide-ink-800"></div>
   </div>
+</div>
 </section>
 
-<!-- ====================================================================== -->
-<!-- WORKOUTS TAB                                                          -->
-<!-- ====================================================================== -->
-<section id="tab-workouts" class="hidden px-3 sm:px-4 py-4 max-w-2xl mx-auto pb-28">
-  <div class="flex items-start justify-between mb-3 gap-3">
-    <div class="min-w-0">
-      <h2 class="text-xl font-bold">Workouts</h2>
-      <p class="text-xs text-slate-500 dark:text-slate-400">3-day rotation · Chest + Back → Arms → Legs · hit them in order</p>
+<!-- ============================================================== -->
+<!-- ARABIC LESSON SHEET -->
+<!-- ============================================================== -->
+<div id="lessonModal" class="hidden fixed inset-0 z-[60] bg-ink-950/60 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
+  <div class="bg-white dark:bg-ink-900 w-full sm:max-w-2xl rounded-t-3xl sm:rounded-3xl h-[94vh] sm:h-[88vh] flex flex-col overflow-hidden sheet-in border-t sm:border border-ink-200/70 dark:border-ink-800">
+    <div class="sm:hidden pt-2.5 flex justify-center shrink-0"><div class="w-9 h-1 rounded-full bg-ink-200 dark:bg-ink-700"></div></div>
+    <div class="shrink-0 bg-white/90 dark:bg-ink-900/90 backdrop-blur-lg border-b border-ink-100 dark:border-ink-800 px-5 py-3.5 flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <div id="lessonKicker" class="text-[10px] font-extrabold uppercase tracking-widest text-violet-500"></div>
+        <h3 id="lessonTitle" class="font-bold text-lg tracking-tight leading-tight"></h3>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button id="lessonPrev" class="w-8 h-8 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-400 hover:text-ink-700 dark:hover:text-white flex items-center justify-center" aria-label="Previous day">‹</button>
+        <button id="lessonNext" class="w-8 h-8 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-400 hover:text-ink-700 dark:hover:text-white flex items-center justify-center" aria-label="Next day">›</button>
+        <button id="lessonClose" class="w-8 h-8 rounded-full bg-ink-100 dark:bg-ink-800 flex items-center justify-center text-ink-400 hover:text-ink-700 dark:hover:text-white transition" aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+      </div>
     </div>
-    <button id="woResetBtn" class="shrink-0 text-xs px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 font-medium text-slate-700 dark:text-slate-200">
-      Reset default
-    </button>
+    <div id="lessonBody" class="flex-1 overflow-y-auto px-5 py-4 lesson-body text-[13px]"></div>
+    <div class="shrink-0 px-5 py-3 border-t border-ink-100 dark:border-ink-800 bg-white/90 dark:bg-ink-900/90">
+      <button id="lessonDone" class="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold transition active:scale-[0.98]">✓ Mark this day done</button>
+    </div>
   </div>
-  <div id="workoutsRoot" class="space-y-3"></div>
-</section>
+</div>
 
-<div id="woLogModal" class="hidden fixed inset-0 z-40 bg-black/50 flex items-end sm:items-center justify-center p-2 sm:p-4">
+<div id="woLogModal" class="hidden fixed inset-0 z-[65] bg-black/50 flex items-end sm:items-center justify-center p-2 sm:p-4">
   <div class="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden shadow-xl">
     <div class="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
       <div class="min-w-0">
@@ -326,7 +415,7 @@
 <!-- ============================================================== -->
 <!-- SURAH READER MODAL -->
 <!-- ============================================================== -->
-<div id="surahModal" class="hidden fixed inset-0 z-50 bg-ink-950/60 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
+<div id="surahModal" class="hidden fixed inset-0 z-[70] bg-ink-950/60 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4">
   <div class="bg-white dark:bg-ink-900 w-full sm:max-w-2xl rounded-t-3xl sm:rounded-3xl h-[92vh] sm:h-[85vh] flex flex-col overflow-hidden sheet-in border-t sm:border border-ink-200/70 dark:border-ink-800">
     <div class="sm:hidden pt-2.5 flex justify-center shrink-0"><div class="w-9 h-1 rounded-full bg-ink-200 dark:bg-ink-700"></div></div>
     <div class="shrink-0 bg-white/90 dark:bg-ink-900/90 backdrop-blur-lg border-b border-ink-100 dark:border-ink-800 px-5 py-3.5 flex items-center justify-between gap-3">
@@ -334,6 +423,7 @@
         <h3 id="surahModalTitle" class="font-bold text-lg tracking-tight truncate"></h3>
         <div id="surahModalSub" class="text-[11px] font-medium text-ink-400 dark:text-ink-500"></div>
       </div>
+      <button id="surahPhonetic" class="shrink-0 h-8 px-3 rounded-full text-[11px] font-bold bg-violet-600 text-white transition" aria-label="Toggle phonetic">Phonetic</button>
       <button id="surahModalClose" class="w-8 h-8 rounded-full bg-ink-100 dark:bg-ink-800 flex items-center justify-center text-ink-400 hover:text-ink-700 dark:hover:text-white transition shrink-0" aria-label="Close">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>
       </button>
@@ -370,7 +460,7 @@
 <!-- BOTTOM TAB BAR -->
 <!-- ============================================================== -->
 <nav class="fixed bottom-0 inset-x-0 z-30 bg-white/90 dark:bg-ink-900/90 backdrop-blur-xl border-t border-ink-200/70 dark:border-ink-800 shadow-nav pb-[env(safe-area-inset-bottom)]">
-  <div class="grid grid-cols-7 max-w-2xl mx-auto">
+  <div class="grid grid-cols-6 max-w-2xl mx-auto">
     <button data-tab="today" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-indigo-600 dark:text-indigo-400">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
       <span>Today</span>
@@ -379,27 +469,22 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
       <span>Calendar</span>
     </button>
-    <button data-tab="bills" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"></rect><circle cx="12" cy="12" r="2.6"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
-      <span>Bills</span>
+    <button data-tab="work" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="3"></rect><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M2 13h20"></path></svg>
+      <span>Work</span>
     </button>
-    <button data-tab="summary" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M7 13l3-3 4 4 5-6"></path></svg>
-      <span>Summary</span>
+    <button data-tab="life" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"></path><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"></path></svg>
+      <span>Life</span>
     </button>
-    <button data-tab="groceries" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"></circle><circle cx="18" cy="20" r="1.4"></circle><path d="M2 3h2.5l2.3 12.2a2 2 0 0 0 2 1.8h8.6a2 2 0 0 0 2-1.6L21 7H6"></path></svg>
-      <span>Groceries</span>
-    </button>
-    <button data-tab="workouts" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+    <button data-tab="fitness" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="M18 22l4-4"/><path d="M2 6l4-4"/><path d="M3 10l7-7"/><path d="M14 21l7-7"/></svg>
-      <span>Workouts</span>
+      <span>Fitness</span>
     </button>
-    <button data-tab="quran" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
+    <button data-tab="study" class="tab-btn flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition text-slate-500 dark:text-slate-400">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"></path><path d="M22 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"></path></svg>
-      <span>Quran</span>
+      <span>Study</span>
     </button>
-    
   </div>
 </nav>
 
@@ -415,8 +500,25 @@ let activeTab = 'today';
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
-const CAT_COLORS = { job:'bg-blue-900', build:'bg-emerald-600', drop:'bg-green-600', workout:'bg-orange-500', meal:'bg-purple-600', grocery:'bg-amber-600', family:'bg-pink-500', winddown:'bg-gray-500', prayer:'bg-teal-500', custom:'bg-indigo-500', quran:'bg-cyan-600' };
-const CAT_NAMES = { job:'Job', build:'AI Build', drop:'Dropshipping', workout:'Workout', meal:'Meal/Review', grocery:'Groceries', family:'Family', winddown:'Wind-down', prayer:'Prayer', custom:'Custom', quran:'Quran' };
+/* The four groups every item of a day falls into */
+const GROUPS = {
+  work:    { name:'Work',    emoji:'💼', color:'bg-blue-600',   text:'text-blue-600 dark:text-blue-300',     soft:'bg-blue-50 dark:bg-blue-950/40 border-blue-200/70 dark:border-blue-900/60' },
+  life:    { name:'Life',    emoji:'🏠', color:'bg-pink-500',   text:'text-pink-600 dark:text-pink-300',     soft:'bg-pink-50 dark:bg-pink-950/30 border-pink-200/70 dark:border-pink-900/60' },
+  fitness: { name:'Fitness', emoji:'💪', color:'bg-orange-500', text:'text-orange-600 dark:text-orange-300', soft:'bg-orange-50 dark:bg-orange-950/30 border-orange-200/70 dark:border-orange-900/60' },
+  study:   { name:'Study',   emoji:'📚', color:'bg-violet-600', text:'text-violet-600 dark:text-violet-300', soft:'bg-violet-50 dark:bg-violet-950/30 border-violet-200/70 dark:border-violet-900/60' },
+};
+const GROUP_ORDER = ['work','life','fitness','study'];
+/* Every event category maps to one group (old categories kept so saved custom events still render) */
+const CAT_GROUP = { job:'work', build:'work', drop:'work', work:'work', workout:'fitness', grocery:'fitness', fitness:'fitness', meal:'life', family:'life', winddown:'life', custom:'life', life:'life', bill:'life', quran:'study', study:'study', arabic:'study', prayer:'prayer' };
+function groupOf(cat) { return CAT_GROUP[cat] || 'life'; }
+const CAT_COLORS = { job:'bg-blue-600', build:'bg-blue-600', drop:'bg-blue-600', work:'bg-blue-600', workout:'bg-orange-500', grocery:'bg-orange-500', fitness:'bg-orange-500', meal:'bg-pink-500', family:'bg-pink-500', winddown:'bg-pink-500', custom:'bg-pink-500', life:'bg-pink-500', prayer:'bg-teal-500', quran:'bg-violet-600', study:'bg-violet-600', arabic:'bg-violet-600' };
+const CAT_NAMES = { job:'Job', build:'AI Build', drop:'Dropshipping', work:'Work', workout:'Workout', grocery:'Groceries', fitness:'Fitness', meal:'Meal prep', family:'Family', winddown:'Wind-down', custom:'Life', life:'Life', prayer:'Prayer', quran:'Quran', study:'Study', arabic:'Arabic' };
+const INCOME = 4000;
+const JOURNAL = Array.isArray(window.JOURNAL) ? window.JOURNAL : [];
+const SPRINT_PLAN = Array.isArray(window.SPRINT_PLAN) ? window.SPRINT_PLAN : [];
+const ARABIC_COURSE = window.ARABIC_COURSE || { days: [], phases: [], key: [], title: 'Arabic', goal: '' };
+function isoDate(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; }
+function isFirstMonday(date) { return date.getDay() === 1 && date.getDate() <= 7; }
 
 function dateKey(y, m, d) { return `${y}-${m + 1}-${d}`; }
 function sameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
@@ -523,9 +625,10 @@ function eventsForDay(date) {
   // Evening workout (1h) after the 7–7 block, every day
   if (work) events.push({ cat: 'workout', label: 'Workout (PM)', start: '7:15 PM', end: '8:15 PM', color: CAT_COLORS.workout });
 
-  if (work && dow === 6) events.push({ cat: 'grocery', label: 'Buy groceries', start: '8:30 PM', end: '9:30 PM', color: CAT_COLORS.grocery });
-  if (work && dow === 0) {
-    events.push({ cat: 'meal', label: 'Meal prep + Weekly review', start: '8:30 PM', end: '10:30 PM', color: CAT_COLORS.meal });
+  // Monday = grocery shop + meal prep + weekly review (moved from Sat/Sun). First Monday adds the monthly stock-up.
+  if (work && dow === 1) {
+    events.push({ cat: 'meal', label: '🛒 Grocery shop + meal prep + weekly review', start: '8:30 PM', end: '10:30 PM', color: CAT_COLORS.meal });
+    if (isFirstMonday(date)) events.push({ cat: 'grocery', label: '🥣 Monthly stock-up · oatmeal + pre + protein ($150)', start: '8:30 PM', end: '9:00 PM', color: CAT_COLORS.grocery });
     events.push({ cat: 'winddown', label: 'Wind-down', start: '10:30 PM', end: '11:30 PM', color: CAT_COLORS.winddown });
   } else if (work) {
     events.push({ cat: 'winddown', label: 'Wind-down', start: '9:30 PM', end: '10:30 PM', color: CAT_COLORS.winddown });
@@ -611,6 +714,48 @@ function prayerStreak() {
   return streak;
 }
 
+/* =====================================================================
+   ARABIC COURSE PROGRESS (cloud-synced) + JOURNAL LOOKUPS
+   ARABIC = { d3: { done:true, date:'2026-9-15', _m:ts }, ... }
+===================================================================== */
+const ARABIC_KEY = 'planner.arabic.v1';
+let ARABIC = {};
+function arabicLoad() { try { return JSON.parse(localStorage.getItem(ARABIC_KEY) || '{}'); } catch (e) { return {}; } }
+function arabicSave() { try { localStorage.setItem(ARABIC_KEY, JSON.stringify(ARABIC)); } catch (e) {} }
+ARABIC = arabicLoad();
+function arabicIsDone(n) { const e = ARABIC['d' + n]; return !!(e && e.done); }
+function arabicDoneCount() { return ARABIC_COURSE.days.filter(d => arabicIsDone(d.n)).length; }
+function arabicNextDay() { return ARABIC_COURSE.days.find(d => !arabicIsDone(d.n)) || null; }
+function arabicToggle(n, date) {
+  const d = date || new Date();
+  const was = arabicIsDone(n);
+  ARABIC['d' + n] = was ? { done: false, _m: Date.now() } : { done: true, date: dateKey(d.getFullYear(), d.getMonth(), d.getDate()), _m: Date.now() };
+  arabicSave();
+  cloudPublish();
+}
+function arabicDoneOn(date) {
+  const k = dateKey(date.getFullYear(), date.getMonth(), date.getDate());
+  return ARABIC_COURSE.days.filter(d => { const e = ARABIC['d' + d.n]; return e && e.done && e.date === k; });
+}
+/* Surahs marked read on a given day — derived from the khatmah timestamps, so past study is dated automatically */
+function quranReadOn(date) {
+  const out = [];
+  Object.keys(QURAN).forEach(k => {
+    if (!/^\d+$/.test(k)) return;
+    const e = QURAN[k];
+    if (!e || !e.done || !e._m) return;
+    const t = new Date(e._m);
+    if (sameDay(t, date)) out.push(+k);
+  });
+  return out.sort((a, b) => a - b);
+}
+function journalFor(date) { const k = isoDate(date); return JOURNAL.filter(j => j.date === k); }
+function planFor(date) { const k = isoDate(date); return SPRINT_PLAN.find(p => p.date === k) || null; }
+function nextPlan(fromDate) { const k = isoDate(fromDate); return SPRINT_PLAN.find(p => p.date >= k) || null; }
+const ROADMAP_KEY = 'lab.roadmap.done.v1';
+function roadmapDone() { try { return JSON.parse(localStorage.getItem(ROADMAP_KEY) || '{}'); } catch (e) { return {}; } }
+function roadmapToggle(key) { const d = roadmapDone(); if (d[key]) delete d[key]; else d[key] = 1; try { localStorage.setItem(ROADMAP_KEY, JSON.stringify(d)); } catch (e) {} }
+
 /* Merged + chronologically sorted day timeline (prayers + custom slotted in) */
 function buildDayTimeline(date, dayPrayers) {
   const items = eventsForDay(date).map(e => ({ ...e, isPrayer: false }));
@@ -625,12 +770,18 @@ function buildDayTimeline(date, dayPrayers) {
     const m2t = (m) => { m = ((m % 1440) + 1440) % 1440; return to12h(String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0')); };
     const put = (cat, label, start, end) => items.push({ cat: cat, label: label, start: start, end: end, color: CAT_COLORS[cat], isPrayer: false });
     const breakStart = m2t(timeToMinutes(dayPrayers.Dhuhr) - 150);
-    put('build', '🤖 AI automation — build block', dayPrayers.Fajr, breakStart);
+    const plan = planFor(date);
+    const buildLabel = plan ? `🤖 Build · ${plan.cat} Day ${plan.day} — ${plan.title}` : '🤖 AI automation — build block';
+    put('build', buildLabel, dayPrayers.Fajr, breakStart);
     put('workout', '💪 Workout · eat · break', breakStart, dayPrayers.Dhuhr);
-    put('build', '🤖 AI automation — build block', dayPrayers.Dhuhr, dayPrayers.Asr);
-    put('build', '📚 Study', dayPrayers.Asr, dayPrayers.Maghrib);
-    put('quran', '📖 Quran study', dayPrayers.Maghrib, dayPrayers.Isha);
-    if (date.getDay() === 0) put('meal', '🍱 Meal prep + Weekly review', dayPrayers.Isha, m2t(timeToMinutes(dayPrayers.Isha) + 120));
+    put('build', buildLabel, dayPrayers.Dhuhr, dayPrayers.Asr);
+    const ad = arabicNextDay();
+    put('arabic', ad ? `🗣 Arabic · Day ${ad.n} — ${ad.title}` : '🗣 Arabic study', dayPrayers.Asr, dayPrayers.Maghrib);
+    put('quran', '📖 Quran — read + memorize', dayPrayers.Maghrib, dayPrayers.Isha);
+    if (date.getDay() === 1) {
+      put('meal', '🛒 Grocery shop + meal prep + weekly review', dayPrayers.Isha, m2t(timeToMinutes(dayPrayers.Isha) + 120));
+      if (isFirstMonday(date)) put('grocery', '🥣 Monthly stock-up · oatmeal + pre + protein ($150)', dayPrayers.Isha, m2t(timeToMinutes(dayPrayers.Isha) + 30));
+    }
     else put('winddown', '🌙 Wind-down', dayPrayers.Isha, m2t(timeToMinutes(dayPrayers.Isha) + 90));
   }
   items.sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
@@ -734,7 +885,7 @@ function cloudPublish() {
   clearTimeout(_pubTimer);
   _pubTimer = setTimeout(() => {
     try {
-      fetch(NTFY_BASE, { method: "POST", headers: { "Cache": "yes" }, body: JSON.stringify({ paid: CLOUD_PAID, custom: CUSTOM, habits: HABITS, bills: BILLS_EDITS, quran: QURAN, _t: Date.now() }) }).catch(function(){});
+      fetch(NTFY_BASE, { method: "POST", headers: { "Cache": "yes" }, body: JSON.stringify({ paid: CLOUD_PAID, custom: CUSTOM, habits: HABITS, bills: BILLS_EDITS, quran: QURAN, arabic: ARABIC, _t: Date.now() }) }).catch(function(){});
     } catch (e) {}
   }, 600);
 }
@@ -753,7 +904,7 @@ async function cloudFetchLatest() {
           const payload = JSON.parse(msg.message);
           if (payload && payload.paid && typeof payload.paid === "object") {
             if (!latest || msg.time > latest._time) {
-              latest = { paid: payload.paid, custom: payload.custom || null, habits: payload.habits || null, bills: payload.bills || null, quran: payload.quran || null, _time: msg.time };
+              latest = { paid: payload.paid, custom: payload.custom || null, habits: payload.habits || null, bills: payload.bills || null, quran: payload.quran || null, arabic: payload.arabic || null, _time: msg.time };
             }
           }
         }
@@ -841,6 +992,10 @@ async function syncFromCloud(initial) {
     const m5 = _mergeByTimestamp(QURAN, latest.quran);
     if (JSON.stringify(m5) !== JSON.stringify(QURAN)) { QURAN = m5; quranSave(); extraChanged = true; }
   }
+  if (latest && latest.arabic) {
+    const m6 = _mergeByTimestamp(ARABIC, latest.arabic);
+    if (JSON.stringify(m6) !== JSON.stringify(ARABIC)) { ARABIC = m6; arabicSave(); extraChanged = true; }
+  }
 
   if (paidChanged || extraChanged) {
     try { renderBills(); } catch(e){}
@@ -848,13 +1003,15 @@ async function syncFromCloud(initial) {
     try { renderSummary(); } catch(e){}
     try { renderToday(); } catch(e){}
     try { renderQuran(); } catch(e){}
+    try { renderArabic(); } catch(e){}
   }
   if (initial) {
     const cloudHadCustom = latest && latest.custom;
     const cloudHadHabits = latest && latest.habits;
     const cloudHadBills = latest && latest.bills;
     const cloudHadQuran = latest && latest.quran;
-    if (JSON.stringify(cloudPaid) !== JSON.stringify(merged) || !cloudHadCustom && Object.keys(CUSTOM).length || !cloudHadHabits && Object.keys(HABITS).length || !cloudHadBills && Object.keys(BILLS_EDITS).length || !cloudHadQuran && Object.keys(QURAN).length) {
+    const cloudHadArabic = latest && latest.arabic;
+    if (JSON.stringify(cloudPaid) !== JSON.stringify(merged) || !cloudHadCustom && Object.keys(CUSTOM).length || !cloudHadHabits && Object.keys(HABITS).length || !cloudHadBills && Object.keys(BILLS_EDITS).length || !cloudHadQuran && Object.keys(QURAN).length || !cloudHadArabic && Object.keys(ARABIC).length) {
       cloudPublish();
     }
   }
@@ -868,6 +1025,8 @@ async function syncFromCloud(initial) {
   try { renderSummary(); } catch(e){}
   try { renderToday(); } catch(e){}
   try { renderQuran(); } catch(e){}
+  try { renderArabic(); } catch(e){}
+  try { renderWorkLog(); } catch(e){}
   setInterval(function(){ syncFromCloud(false); }, 5000);
 })();
 
@@ -903,6 +1062,170 @@ function fmtLeft(mins) {
   const h = Math.floor(mins / 60), m = mins % 60;
   if (h <= 0) return `${m}m`;
   return `${h}h ${m}m`;
+}
+
+/* =====================================================================
+   THE 4-GROUP DAY VIEW — shared by the Today tab and the calendar day sheet
+   Work · Life · Fitness · Study, everything relevant to that date in one place.
+===================================================================== */
+function gTitle(g, right) {
+  const G = GROUPS[g];
+  return `<div class="flex items-center justify-between mb-2 gap-2">
+    <div class="text-[11px] font-extrabold uppercase tracking-widest ${G.text}">${G.emoji} ${G.name}</div>
+    ${right ? `<div class="text-[10px] font-bold text-ink-400 dark:text-ink-500 text-right">${right}</div>` : ''}
+  </div>`;
+}
+function gLine(e, extra) {
+  const time = e.end ? `${e.start}–${e.end}` : e.start;
+  return `<div class="gline"><span class="w-1 h-5 rounded-full ${e.color} shrink-0"></span><span class="flex-1 font-semibold min-w-0 truncate">${escapeHtml(e.label)}${e.isCustom ? ' <span class="text-[9px] font-bold text-pink-500">●</span>' : ''}</span>${extra || ''}<span class="t">${time}</span>${e.isCustom ? `<button data-del-custom="${e.id}" class="w-6 h-6 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-400 hover:text-red-500 flex items-center justify-center shrink-0" aria-label="Remove">×</button>` : ''}</div>`;
+}
+function jEntry(j) {
+  return `<div class="mt-2 rounded-xl bg-white/70 dark:bg-ink-900/60 border border-ink-200/70 dark:border-ink-800 p-3">
+    <div class="flex items-center gap-2 mb-1"><span class="text-[9px] font-extrabold uppercase tracking-widest px-1.5 py-0.5 rounded-md whitespace-nowrap shrink-0 ${GROUPS[j.group] ? GROUPS[j.group].color : 'bg-ink-500'} text-white">${escapeHtml(j.tag || '')}</span><span class="text-[12px] font-bold leading-tight">${escapeHtml(j.title)}</span></div>
+    ${(j.bullets || []).map(b => `<div class="jbul text-ink-600 dark:text-ink-300">${escapeHtml(b)}</div>`).join('')}
+  </div>`;
+}
+function renderPrayerStrip(date, dayPrayers, habits, canLog) {
+  const pills = PRAYER_LABELS.map(p => {
+    const on = !!habits[p];
+    const t = dayPrayers ? dayPrayers[p] : '';
+    return `<button ${canLog ? `data-ghabit="${p}"` : 'disabled'} class="habit-pill px-2.5 py-1.5 rounded-xl text-[11px] font-bold border ${on ? 'bg-teal-500 border-teal-500 text-white shadow-sm' : 'bg-ink-50 dark:bg-ink-800 border-ink-200 dark:border-ink-700 text-ink-500 dark:text-ink-400'}">${on ? '✓ ' : ''}${p}${t ? `<span class="block text-[9px] font-semibold ${on ? 'text-teal-100' : 'text-ink-400 dark:text-ink-500'}">${t}</span>` : ''}</button>`;
+  }).join('');
+  const done = PRAYER_LABELS.filter(p => habits[p]).length;
+  return `<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-3.5 fade-up">
+    <div class="flex items-center justify-between mb-2"><div class="text-[11px] font-extrabold uppercase tracking-widest text-teal-600 dark:text-teal-300">🕌 Prayers</div><div class="text-[10px] font-bold text-ink-400 dark:text-ink-500">${done}/5 logged</div></div>
+    <div class="flex flex-wrap gap-1.5">${pills}</div>
+  </div>`;
+}
+function renderDayGroups(date, ctx) {
+  const { dayPrayers, habits, timeline, dayBills, paid, canLog, isToday } = ctx;
+  const byGroup = { work: [], life: [], fitness: [], study: [] };
+  timeline.forEach(e => { if (e.isPrayer) return; const g = groupOf(e.cat); if (byGroup[g]) byGroup[g].push(e); });
+  const journal = journalFor(date);
+  const plan = planFor(date);
+  const rd = roadmapDone();
+  const past = isPastOrToday(date);
+  const work = isWorkDay(date);
+  let html = '';
+
+  /* ---- WORK ---- */
+  {
+    const jw = journal.filter(j => j.group === 'work');
+    let body = byGroup.work.map(e => gLine(e)).join('');
+    if (!byGroup.work.length && !work) body += `<div class="text-[12px] text-ink-400 dark:text-ink-500">Off day — build day (5a–5p, prayer-anchored once prayer times load).</div>`;
+    jw.forEach(j => body += jEntry(j));
+    if (plan) {
+      const doneN = plan.keys.filter(k => rd[k]).length;
+      body += `<div class="mt-2 rounded-xl bg-white/70 dark:bg-ink-900/60 border border-ink-200/70 dark:border-ink-800 p-3">
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <div class="text-[12px] font-bold leading-tight"><span class="text-[9px] font-extrabold uppercase tracking-widest px-1.5 py-0.5 rounded-md bg-blue-600 text-white mr-1.5">Roadmap · ${escapeHtml(plan.cat)} Day ${plan.day}</span>${escapeHtml(plan.title)}</div>
+          <div class="text-[10px] font-bold text-ink-400 dark:text-ink-500 shrink-0">${doneN}/${plan.keys.length}</div>
+        </div>
+        ${plan.steps.map((s, i) => `<label class="plan-step cursor-pointer"><input type="checkbox" data-rkey="${plan.keys[i]}" ${rd[plan.keys[i]] ? 'checked' : ''} class="w-4 h-4 rounded accent-blue-600" /><span class="${rd[plan.keys[i]] ? 'line-through text-ink-400 dark:text-ink-500' : 'text-ink-700 dark:text-ink-200'}">${escapeHtml(s)}</span></label>`).join('')}
+        <div class="text-[10px] text-ink-400 dark:text-ink-500 mt-1">Ticks are the same boxes as the Roadmap page (saved on this device).</div>
+      </div>`;
+    } else if (!jw.length && !work && past) {
+      body += `<div class="mt-1.5 text-[11px] text-ink-400 dark:text-ink-500">No work summary logged for this day.</div>`;
+    }
+    html += `<div class="gcard border ${GROUPS.work.soft} p-3.5 fade-up">${gTitle('work', work ? 'Work day · 7–7' : 'Off day · build')}${body}</div>`;
+  }
+
+  /* ---- LIFE ---- */
+  {
+    const jl = journal.filter(j => j.group === 'life');
+    const monthBills = getMonthBills(date.getFullYear(), date.getMonth());
+    const total = monthBills.reduce((s, b) => s + b.amount, 0);
+    const paidCount = monthBills.filter(b => paid.has(b.instanceId)).length;
+    let body = '';
+    if (dayBills.length) {
+      body += `<div class="space-y-1.5 mb-2">${dayBills.map(b => {
+        const isPaid = paid.has(b.instanceId);
+        return `<label class="flex items-center gap-2.5 p-2 rounded-xl border cursor-pointer ${isPaid ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/25 dark:border-emerald-800' : 'border-red-200 bg-red-50 dark:bg-red-900/25 dark:border-red-800'}">
+          <input type="checkbox" data-gbill="${b.instanceId}" ${isPaid ? 'checked' : ''} class="w-4 h-4 rounded accent-emerald-600" />
+          <span class="text-base">${b.emoji || '💵'}</span>
+          <span class="flex-1 font-semibold text-[12px] ${isPaid ? 'line-through text-ink-400' : ''}">${escapeHtml(b.name)}</span>
+          <span class="font-bold text-[12px] ${isPaid ? 'line-through text-ink-400' : 'text-red-600 dark:text-red-400'}">$${b.amount}</span>
+        </label>`; }).join('')}</div>`;
+    }
+    body += byGroup.life.map(e => gLine(e)).join('');
+    jl.forEach(j => body += jEntry(j));
+    if (!dayBills.length && !byGroup.life.length && !jl.length) body += `<div class="text-[12px] text-ink-400 dark:text-ink-500">No bills due, nothing scheduled.</div>`;
+    body += `<div class="mt-2 pt-2 border-t border-ink-200/60 dark:border-ink-800 flex items-center justify-between text-[11px]"><span class="font-semibold text-ink-500 dark:text-ink-400">Month: $${total.toLocaleString()} of $${INCOME.toLocaleString()} · ${paidCount}/${monthBills.length} paid</span><button data-goto="life" class="font-bold text-pink-600 dark:text-pink-300">Bills & summary →</button></div>`;
+    html += `<div class="gcard border ${GROUPS.life.soft} p-3.5 fade-up">${gTitle('life', `$${Math.max(0, INCOME - total).toLocaleString()} left this month`)}${body}</div>`;
+  }
+
+  /* ---- FITNESS ---- */
+  {
+    const jf = journal.filter(j => j.group === 'fitness');
+    const split = (typeof wLoadSplit === 'function') ? wLoadSplit() : null;
+    const nextN = (typeof wNextDay === 'function') ? wNextDay() : 1;
+    const nextD = split ? split.days.find(x => x.day === nextN) : null;
+    const log = (typeof wLoadLog === 'function') ? wLoadLog() : {};
+    const k = isoDate(date);
+    const logged = [];
+    Object.keys(log).forEach(eid => (log[eid] || []).forEach(en => { if (en.date === k) logged.push({ eid, ...en }); }));
+    let body = byGroup.fitness.map(e => gLine(e)).join('');
+    body += `<div class="mt-2 flex items-center gap-2 flex-wrap">
+      ${canLog ? `<button data-ghabit="Workout" class="habit-pill px-3 py-1.5 rounded-xl text-[11px] font-bold border ${habits.Workout ? 'bg-orange-500 border-orange-500 text-white shadow-sm' : 'bg-ink-50 dark:bg-ink-800 border-ink-200 dark:border-ink-700 text-ink-500 dark:text-ink-400'}">${habits.Workout ? '✓ Workout done' : '💪 Workout done?'}</button>` : ''}
+      ${nextD ? `<span class="text-[11px] font-semibold text-ink-500 dark:text-ink-400">Next up: <b>Day ${nextN} · ${escapeHtml(nextD.name)}</b></span><button data-wlog="${nextN}" class="text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-orange-500 text-white">Log sets</button>` : ''}
+    </div>`;
+    if (logged.length) {
+      body += `<div class="mt-2 rounded-xl bg-white/70 dark:bg-ink-900/60 border border-ink-200/70 dark:border-ink-800 p-3"><div class="text-[10px] font-extrabold uppercase tracking-widest text-orange-500 mb-1">Logged this day</div>${logged.map(l => `<div class="text-[12px]"><span class="font-semibold">${escapeHtml(l.eid.replace(/-/g, ' '))}</span> <span class="text-ink-500 dark:text-ink-400">${escapeHtml(l.weight)} × ${escapeHtml(l.reps)}${l.sets ? ' × ' + escapeHtml(l.sets) + 's' : ''}</span></div>`).join('')}</div>`;
+    }
+    if (date.getDay() === 1) {
+      const gs = gLoad(); let gt = 0, gc = 0;
+      GROCERIES_DATA.forEach(g => { if (g.monthly) return; g.items.forEach(it => { gt++; if (gs[gId(g.cat, it.name)]) gc++; }); });
+      body += `<div class="mt-2 pt-2 border-t border-ink-200/60 dark:border-ink-800 flex items-center justify-between text-[11px]"><span class="font-semibold text-ink-500 dark:text-ink-400">🛒 Grocery run · ${gc}/${gt} on the list${isFirstMonday(date) ? ' · 🥣 stock-up month ($150)' : ''}</span><button data-goto="fitness:groceries" class="font-bold text-orange-600 dark:text-orange-300">Open list →</button></div>`;
+    }
+    jf.forEach(j => body += jEntry(j));
+    html += `<div class="gcard border ${GROUPS.fitness.soft} p-3.5 fade-up">${gTitle('fitness', work ? 'AM + PM lifts' : 'Lift in the break')}${body}</div>`;
+  }
+
+  /* ---- STUDY ---- */
+  {
+    const js = journal.filter(j => j.group === 'study');
+    const adone = arabicDoneOn(date);
+    const qread = quranReadOn(date);
+    const nextA = arabicNextDay();
+    let readS = 0, nextQ = null;
+    QURAN_SURAHS.forEach((s, i) => { if (quranIsRead(i + 1)) readS++; else if (!nextQ) nextQ = { n: i + 1, name: s[0] }; });
+    let body = byGroup.study.map(e => gLine(e)).join('');
+    if (adone.length) body += adone.map(d => `<div class="mt-1.5 flex items-center gap-2 text-[12px]"><span class="px-1.5 py-0.5 rounded-md bg-violet-600 text-white text-[9px] font-extrabold uppercase tracking-widest">Arabic · Day ${d.n} ✓</span><button data-open-lesson="${d.n}" class="font-semibold text-left flex-1 truncate">${escapeHtml(d.title)}</button></div>`).join('');
+    if (qread.length) body += `<div class="mt-1.5 flex items-center gap-1.5 flex-wrap">${qread.map(n => `<button data-open-surah="${n}" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-bold">📖 ${n}. ${QURAN_SURAHS[n - 1][0]} ✓</button>`).join('')}</div>`;
+    if (!past || isToday) {
+      body += `<div class="mt-2 rounded-xl bg-white/70 dark:bg-ink-900/60 border border-ink-200/70 dark:border-ink-800 p-3 space-y-2">
+        <div class="flex items-center justify-between gap-2"><div class="text-[12px] min-w-0"><span class="text-[9px] font-extrabold uppercase tracking-widest text-violet-500">Arabic · ${arabicDoneCount()}/${ARABIC_COURSE.days.length}</span><div class="font-bold truncate">${nextA ? `Day ${nextA.n} — ${escapeHtml(nextA.title)}` : 'Course complete — الحمد لله'}</div></div>${nextA ? `<button data-open-lesson="${nextA.n}" class="shrink-0 text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-violet-600 text-white">Open lesson</button>` : ''}</div>
+        <div class="flex items-center justify-between gap-2"><div class="text-[12px] min-w-0"><span class="text-[9px] font-extrabold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Quran · khatmah #${quranKhatmahN()} · ${readS}/114</span><div class="font-bold truncate">${nextQ ? `Up next: ${nextQ.n}. ${nextQ.name}` : 'Khatmah complete 🌙'}</div></div>${nextQ ? `<button data-open-surah="${nextQ.n}" class="shrink-0 text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white">Read</button>` : ''}</div>
+      </div>`;
+    } else if (!adone.length && !qread.length && !js.length) {
+      body += `<div class="text-[12px] text-ink-400 dark:text-ink-500">No study logged this day.</div>`;
+    }
+    js.forEach(j => body += jEntry(j));
+    html += `<div class="gcard border ${GROUPS.study.soft} p-3.5 fade-up">${gTitle('study', work ? 'Evening review' : 'Asr → Isha')}${body}</div>`;
+  }
+  return html;
+}
+function wireDayGroups(root, date, rerender) {
+  root.querySelectorAll('[data-ghabit]').forEach(btn => btn.addEventListener('click', () => {
+    toggleHabit(date, btn.dataset.ghabit);
+    const h2 = getHabits(date);
+    if (btn.dataset.ghabit !== 'Workout' && PRAYER_LABELS.every(p => h2[p])) confetti('🕌✨💚');
+    rerender(); renderSummary();
+  }));
+  root.querySelectorAll('[data-gbill]').forEach(cb => cb.addEventListener('change', () => {
+    const set = getPaidSet(date.getFullYear(), date.getMonth());
+    if (cb.checked) set.add(cb.dataset.gbill); else set.delete(cb.dataset.gbill);
+    setPaidSet(date.getFullYear(), date.getMonth(), set);
+    renderBills(); renderCalendar(); renderSummary(); rerender();
+  }));
+  root.querySelectorAll('[data-del-custom]').forEach(btn => btn.addEventListener('click', () => {
+    deleteCustomEvent(btn.dataset.delCustom); renderCalendar(); rerender();
+  }));
+  root.querySelectorAll('[data-rkey]').forEach(cb => cb.addEventListener('change', () => { roadmapToggle(cb.dataset.rkey); rerender(); }));
+  root.querySelectorAll('[data-wlog]').forEach(btn => btn.addEventListener('click', () => wOpenLogger(+btn.dataset.wlog)));
+  root.querySelectorAll('[data-open-lesson]').forEach(btn => btn.addEventListener('click', () => openLesson(+btn.dataset.openLesson)));
+  root.querySelectorAll('[data-open-surah]').forEach(btn => btn.addEventListener('click', () => openSurah(+btn.dataset.openSurah)));
+  root.querySelectorAll('[data-goto]').forEach(btn => btn.addEventListener('click', () => { const [t, s] = btn.dataset.goto.split(':'); closeModal(); setTab(t, s); }));
 }
 
 async function renderToday() {
@@ -994,43 +1317,11 @@ async function renderToday() {
     </div>
   </div>`;
 
-  // ---- HABITS ----
-  html += `<div class="mt-3 bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4 fade-up">
-    <div class="flex items-center justify-between mb-3">
-      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500">Today's log</div>
-      <div class="flex items-center gap-2 text-[11px] font-bold">
-        ${pStreak > 0 ? `<span class="px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300">🔥 ${pStreak}d prayers</span>` : ''}
-      </div>
-    </div>
-    <div class="flex flex-wrap gap-1.5">
-      ${PRAYER_LABELS.map(p => {
-        const on = !!habits[p];
-        const t = dayPrayers ? dayPrayers[p] : '';
-        return `<button data-habit="${p}" class="habit-pill px-3 py-2 rounded-xl text-xs font-bold border ${on ? 'bg-teal-500 border-teal-500 text-white shadow-sm' : 'bg-ink-50 dark:bg-ink-800 border-ink-200 dark:border-ink-700 text-ink-500 dark:text-ink-400'}">${on ? '✓ ' : ''}${p}${t ? `<span class="block text-[9px] font-semibold ${on ? 'text-teal-100' : 'text-ink-400 dark:text-ink-500'}">${t}</span>` : ''}</button>`;
-      }).join('')}
-      <button data-habit="Workout" class="habit-pill px-3 py-2 rounded-xl text-xs font-bold border ${habits.Workout ? 'bg-orange-500 border-orange-500 text-white shadow-sm' : 'bg-ink-50 dark:bg-ink-800 border-ink-200 dark:border-ink-700 text-ink-500 dark:text-ink-400'}">${habits.Workout ? '✓ ' : ''}💪 Workout</button>
-    </div>
-    <div class="mt-3 h-1.5 bg-ink-100 dark:bg-ink-800 rounded-full overflow-hidden">
-      <div class="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-500" style="width:${Math.round((prayersDone/5)*100)}%"></div>
-    </div>
-    <div class="mt-1.5 text-[11px] font-medium text-ink-400 dark:text-ink-500">${prayersDone} of 5 prayers logged${habits.Workout ? ' · workout done 💪' : ''}</div>
-  </div>`;
+  // ---- PRAYERS (the spine of the day) ----
+  html += `<div class="mt-3">${renderPrayerStrip(d, dayPrayers, habits, true).replace('🕌 Prayers', `🕌 Prayers${pStreak > 0 ? ` <span class="ml-1 px-1.5 py-0.5 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 normal-case tracking-normal">🔥 ${pStreak}d</span>` : ''}`)}</div>`;
 
-  // ---- BILLS DUE TODAY ----
-  if (dayBills.length) {
-    html += `<div class="mt-3 bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4 fade-up">
-      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-2.5">Bills due today</div>
-      <div class="space-y-2">${dayBills.map(b => {
-        const isPaid = paid.has(b.instanceId);
-        return `<label class="flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer ${isPaid ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/25 dark:border-emerald-800' : 'border-red-200 bg-red-50 dark:bg-red-900/25 dark:border-red-800'}">
-          <input type="checkbox" data-todaybill="${b.instanceId}" ${isPaid ? 'checked' : ''} class="w-5 h-5 rounded accent-emerald-600" />
-          <span class="text-lg">${b.emoji || '💵'}</span>
-          <span class="flex-1 font-semibold text-sm ${isPaid ? 'line-through text-ink-400' : ''}">${escapeHtml(b.name)}</span>
-          <span class="font-bold ${isPaid ? 'line-through text-ink-400' : 'text-red-600 dark:text-red-400'}">$${b.amount}</span>
-        </label>`;
-      }).join('')}</div>
-    </div>`;
-  }
+  // ---- THE FOUR GROUPS ----
+  html += `<div class="mt-3 space-y-3">${renderDayGroups(d, { dayPrayers, habits, timeline, dayBills, paid, canLog: true, isToday: true })}</div>`;
 
   // ---- TIMELINE ----
   html += `<div class="mt-3 bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4 fade-up">
@@ -1060,25 +1351,7 @@ async function renderToday() {
   html += `</div></div>`;
 
   root.innerHTML = html;
-
-  // wire habit pills
-  root.querySelectorAll('[data-habit]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      toggleHabit(d, btn.dataset.habit);
-      renderToday();
-      const h2 = getHabits(d);
-      if (PRAYER_LABELS.every(p => h2[p])) confetti('🕌✨💚');
-    });
-  });
-  // wire today bills
-  root.querySelectorAll('[data-todaybill]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      const set = getPaidSet(d.getFullYear(), d.getMonth());
-      if (cb.checked) set.add(cb.dataset.todaybill); else set.delete(cb.dataset.todaybill);
-      setPaidSet(d.getFullYear(), d.getMonth(), set);
-      renderToday(); renderBills(); renderCalendar(); renderSummary();
-    });
-  });
+  wireDayGroups(root, d, renderToday);
   const openBtn = document.getElementById('todayOpenModal');
   if (openBtn) openBtn.addEventListener('click', () => openDayModal(d));
 }
@@ -1106,14 +1379,12 @@ function confetti(chars) {
 /* =====================================================================
    RENDER CALENDAR
 ===================================================================== */
+let _calToken = 0;
 async function renderCalendar() {
   const grid = document.getElementById('calendarGrid');
   const monthLabel = document.getElementById('monthLabel');
+  const token = ++_calToken;
   monthLabel.textContent = `${MONTH_NAMES[viewMonth]} ${viewYear}`;
-  grid.innerHTML = '';
-  grid.classList.remove('grid-swap');
-  void grid.offsetWidth;
-  grid.classList.add('grid-swap');
 
   const firstDay = new Date(viewYear, viewMonth, 1);
   const startDow = firstDay.getDay();
@@ -1121,13 +1392,17 @@ async function renderCalendar() {
   const monthBills = getMonthBills(viewYear, viewMonth);
   const paid = getPaidSet(viewYear, viewMonth);
 
+  const prayers = await ensurePrayers(viewYear, viewMonth);
+  if (token !== _calToken) return;   // a newer render is in flight — never paint the grid twice
+  grid.innerHTML = '';
+  grid.classList.remove('grid-swap');
+  void grid.offsetWidth;
+  grid.classList.add('grid-swap');
   for (let i = 0; i < startDow; i++) {
     const blank = document.createElement('div');
     blank.className = 'day-cell bg-transparent';
     grid.appendChild(blank);
   }
-
-  const prayers = await ensurePrayers(viewYear, viewMonth);
 
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(viewYear, viewMonth, d);
@@ -1155,26 +1430,22 @@ async function renderCalendar() {
     head.appendChild(badge);
     cell.appendChild(head);
 
-    const timeline = buildDayTimeline(date, prayers ? prayers[d] : null);
     const chipBox = document.createElement('div');
     chipBox.className = 'mt-1';
-
+    const chips = dayChips(date);
     const mobileLimit = 3;
     const desktopLimit = 6;
-    timeline.forEach((e, idx) => {
-      const label = e.isPrayer ? `🕌 ${e.label} ${e.start}` : e.label;
-      const chip = makeChip(label, e.color);
+    chips.forEach((c, idx) => {
+      const chip = makeChip(c.label, c.color);
       if (idx >= mobileLimit && idx < desktopLimit) chip.classList.add('hidden', 'sm:block');
       if (idx >= desktopLimit) chip.classList.add('hidden');
       chipBox.appendChild(chip);
     });
-    // "+N more" indicators
-    const extraMobile = timeline.length - mobileLimit;
-    const extraDesk = timeline.length - desktopLimit;
+    const extraMobile = chips.length - mobileLimit;
+    const extraDesk = chips.length - desktopLimit;
     if (extraMobile > 0) {
       const more = makeChip(`+${extraMobile} more`, 'bg-ink-200/80 dark:bg-ink-700 !text-ink-500 dark:!text-ink-300');
       more.classList.add('sm:hidden');
-      more.style.color = '';
       chipBox.appendChild(more);
     }
     if (extraDesk > 0) {
@@ -1200,6 +1471,42 @@ function makeChip(label, colorClass) {
   span.className = `chip ${colorClass}`;
   span.textContent = label;
   return span;
+}
+
+/* One chip per group for a calendar cell: what happened (past) or what is planned (future) */
+function dayChips(date) {
+  const chips = [];
+  const work = isWorkDay(date);
+  const past = isPastOrToday(date);
+  const journal = journalFor(date);
+  const plan = planFor(date);
+  const jw = journal.find(j => j.group === 'work');
+  const short = t => String(t || '').replace(/\s*·\s*Day\s*/i, '·D').replace(/\s*·\s*Days\s*/i, '·D');
+  // WORK (colour says the group; the label is the fact)
+  if (jw) chips.push({ label: `${short(jw.tag)} ${jw.title}`, color: GROUPS.work.color });
+  else if (plan) chips.push({ label: `${plan.cat}·D${plan.day} ${plan.title}`, color: GROUPS.work.color });
+  else if (work) chips.push({ label: 'Job 7–7', color: GROUPS.work.color });
+  else chips.push({ label: 'Build day', color: GROUPS.work.color });
+  // STUDY
+  const adone = arabicDoneOn(date);
+  const qread = quranReadOn(date);
+  const js = journal.find(j => j.group === 'study');
+  if (adone.length) chips.push({ label: `Arabic D${adone.map(d => d.n).join(', D')}`, color: GROUPS.study.color });
+  if (qread.length) chips.push({ label: `📖 ${qread.map(n => QURAN_SURAHS[n - 1][0].replace(/^A[a-z]{1,2}-/, '')).join(' · ')}`, color: 'bg-emerald-600' });
+  if (js) chips.push({ label: `${short(js.tag)} ${js.title}`, color: GROUPS.study.color });
+  if (!adone.length && !qread.length && !js && !work && !past) chips.push({ label: 'Arabic + Quran', color: GROUPS.study.color });
+  // FITNESS
+  if (isFirstMonday(date)) chips.push({ label: '🥣 Stock-up + lifts', color: GROUPS.fitness.color });
+  else chips.push({ label: work ? 'AM + PM lifts' : 'Lift in the break', color: GROUPS.fitness.color });
+  // LIFE
+  const jl = journal.find(j => j.group === 'life');
+  const customs = customEventsForDay(date).filter(e => groupOf(e.cat) === 'life');
+  if (jl) chips.push({ label: `${jl.tag} · ${jl.title}`, color: GROUPS.life.color });
+  customs.forEach(e => chips.push({ label: e.label, color: GROUPS.life.color }));
+  if (date.getDay() === 1) chips.push({ label: '🛒 Groceries + meal prep', color: GROUPS.life.color });
+  // custom events in other groups
+  customEventsForDay(date).filter(e => groupOf(e.cat) !== 'life').forEach(e => chips.push({ label: e.label, color: GROUPS[groupOf(e.cat)].color }));
+  return chips;
 }
 
 /* swipe month navigation */
@@ -1236,116 +1543,51 @@ async function openDayModal(date) {
   const dayPrayers = prayers ? prayers[date.getDate()] : null;
   const habits = getHabits(date);
   const canLog = isPastOrToday(date);
+  const isToday = sameDay(date, TODAY);
+  const timeline = buildDayTimeline(date, dayPrayers);
 
   let html = '';
-
-  html += `<div class="mb-4 flex items-center gap-2 flex-wrap">
-    <span class="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wide ${isWorkDay(date) ? 'bg-blue-900 text-white' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'}">
-      ${isWorkDay(date) ? 'Work day' : 'Off day'} · Week ${isWeekA(date) ? 'A' : 'B'}
+  html += `<div class="mb-3 flex items-center gap-2 flex-wrap">
+    <span class="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wide ${isWorkDay(date) ? 'bg-blue-600 text-white' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'}">
+      ${isWorkDay(date) ? 'Work day' : 'Off day · build'} · Week ${isWeekA(date) ? 'A' : 'B'}
     </span>
     <span class="text-[11px] font-medium text-ink-400 dark:text-ink-500">☪️ ${hijriDate(date)}</span>
   </div>`;
+  if (!dayPrayers) html += `<div class="mb-3 text-xs text-amber-600 dark:text-amber-300 italic">Prayer times unavailable — connect to internet to load.</div>`;
 
-  if (!dayPrayers) {
-    html += `<div class="mb-3 text-xs text-amber-600 dark:text-amber-300 italic">Prayer times unavailable — connect to internet to load.</div>`;
-  }
-
-  const timeline = buildDayTimeline(date, dayPrayers);
-  html += `<div class="mb-5">
-    <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-2.5">Daily schedule</div>
-    <div class="space-y-2">`;
-  timeline.forEach(e => {
-    const timeStr = e.end ? `${e.start} – ${e.end}` : e.start;
-    if (e.isPrayer) {
-      const done = !!habits[e.label];
-      html += `<div class="flex items-center gap-3 bg-teal-50 dark:bg-teal-900/25 border border-teal-200/80 dark:border-teal-800/60 rounded-xl px-3 py-2">
-        <span class="w-1.5 h-8 rounded-full ${e.color} flex-shrink-0"></span>
-        <div class="flex-1 flex items-baseline justify-between gap-2">
-          <span class="font-semibold text-sm text-teal-800 dark:text-teal-200 ${done ? 'line-through opacity-70' : ''}">🕌 ${e.label}</span>
-          <span class="text-xs font-bold text-teal-700 dark:text-teal-300">${e.start}</span>
-        </div>
-        ${canLog ? `<input type="checkbox" data-modal-habit="${e.label}" ${done ? 'checked' : ''} class="w-5 h-5 rounded accent-teal-600" />` : ''}
-      </div>`;
-    } else {
-      html += `<div class="flex items-start gap-3 rounded-xl px-3 py-2 bg-ink-50/80 dark:bg-ink-800/50 border border-ink-100 dark:border-ink-800">
-        <span class="w-1.5 h-11 rounded-full ${e.color} flex-shrink-0 mt-0.5"></span>
-        <div class="flex-1">
-          <div class="font-semibold text-sm">${e.label}${e.isCustom ? ' <span class="text-[9px] font-bold text-indigo-500 align-middle">CUSTOM</span>' : ''}</div>
-          <div class="text-xs text-ink-400 dark:text-ink-500 font-medium mt-0.5">${timeStr}</div>
-        </div>
-        ${e.cat === 'workout' && canLog ? `<input type="checkbox" data-modal-habit="Workout" ${habits.Workout ? 'checked' : ''} class="w-5 h-5 rounded accent-orange-500 mt-2" />` : ''}
-        ${e.isCustom ? `<button data-del-custom="${e.id}" class="w-7 h-7 rounded-full bg-ink-100 dark:bg-ink-800 text-ink-400 hover:text-red-500 flex items-center justify-center mt-1.5"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>` : ''}
-      </div>`;
-    }
-  });
-  html += `</div></div>`;
+  html += renderPrayerStrip(date, dayPrayers, habits, canLog);
+  html += `<div class="mt-3 space-y-3">${renderDayGroups(date, { dayPrayers, habits, timeline, dayBills, paid, canLog, isToday })}</div>`;
 
   // Add event form
-  html += `<div class="mb-5">
-    <button id="addEventToggle" class="w-full py-2.5 rounded-xl border-2 border-dashed border-ink-200 dark:border-ink-700 text-xs font-bold text-ink-400 dark:text-ink-500 hover:border-indigo-400 hover:text-indigo-500 transition">+ Add event to this day</button>
+  html += `<div class="my-4">
+    <button id="addEventToggle" class="w-full py-2.5 rounded-xl border-2 border-dashed border-ink-200 dark:border-ink-700 text-xs font-bold text-ink-400 dark:text-ink-500 hover:border-indigo-400 hover:text-indigo-500 transition">+ Add to this day</button>
     <div id="addEventForm" class="hidden mt-3 p-3.5 rounded-xl bg-ink-50/80 dark:bg-ink-800/50 border border-ink-200 dark:border-ink-800 space-y-2.5">
       <input id="evLabel" type="text" placeholder="What's happening?" class="w-full px-3 py-2.5 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400" />
       <div class="flex gap-2">
         <input id="evTime" type="time" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400" />
         <select id="evCat" class="flex-1 px-3 py-2 rounded-lg border border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-400">
-          <option value="custom">Custom</option><option value="job">Job</option><option value="workout">Workout</option><option value="meal">Meal/Review</option><option value="grocery">Groceries</option><option value="family">Family</option><option value="winddown">Wind-down</option>
+          <option value="life">🏠 Life</option><option value="work">💼 Work</option><option value="fitness">💪 Fitness</option><option value="study">📚 Study</option>
         </select>
       </div>
-      <button id="evSave" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition active:scale-[0.98]">Save event</button>
+      <button id="evSave" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition active:scale-[0.98]">Save</button>
     </div>
   </div>`;
 
-  if (dayBills.length) {
-    html += `<div class="mb-2">
-      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-2.5">Bills due today</div>
-      <div class="space-y-2">`;
-    dayBills.forEach(b => {
-      const isPaid = paid.has(b.instanceId);
-      html += `<div class="flex items-center gap-3 p-3 rounded-xl border ${isPaid ? 'border-emerald-300 bg-emerald-50 dark:bg-emerald-900/25 dark:border-emerald-800' : 'border-red-200 bg-red-50 dark:bg-red-900/25 dark:border-red-800'}">
-        <input type="checkbox" data-bill-toggle="${b.instanceId}" data-year="${date.getFullYear()}" data-month="${date.getMonth()}" ${isPaid ? 'checked' : ''} class="w-5 h-5 rounded accent-emerald-600" />
-        <span class="text-lg">${b.emoji || '💵'}</span>
-        <div class="flex-1">
-          <div class="font-semibold text-sm ${isPaid ? 'line-through text-ink-400' : ''}">${escapeHtml(b.name)}</div>
-          <div class="text-xs text-ink-400 dark:text-ink-500">8:00 AM · Pay ${escapeHtml(b.name)} — $${b.amount}</div>
-        </div>
-        <div class="font-bold ${isPaid ? 'line-through text-ink-400' : 'text-red-600 dark:text-red-400'}">$${b.amount}</div>
-      </div>`;
-    });
-    html += `</div></div>`;
-  }
+  // Full schedule
+  html += `<div class="mb-2">
+    <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-2">Full schedule</div>
+    <div class="space-y-1.5">${timeline.map(e => {
+      const timeStr = e.end ? `${e.start} – ${e.end}` : e.start;
+      const done = e.isPrayer && habits[e.label];
+      return `<div class="flex items-center gap-2.5 py-1"><span class="w-1 h-6 rounded-full ${e.color} shrink-0"></span><span class="text-xs font-semibold flex-1 min-w-0 truncate ${done ? 'line-through opacity-60' : ''}">${e.isPrayer ? '🕌 ' : ''}${escapeHtml(e.label)}</span><span class="text-[11px] font-bold text-ink-400 dark:text-ink-500 tabular-nums shrink-0">${timeStr}</span></div>`;
+    }).join('')}</div>
+  </div>`;
 
   body.innerHTML = html;
   modal.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
-  body.querySelectorAll('[data-bill-toggle]').forEach(cb => {
-    cb.addEventListener('change', (e) => {
-      const id = e.target.dataset.billToggle;
-      const y = parseInt(e.target.dataset.year, 10);
-      const m = parseInt(e.target.dataset.month, 10);
-      const set = getPaidSet(y, m);
-      if (e.target.checked) set.add(id); else set.delete(id);
-      setPaidSet(y, m, set);
-      renderCalendar(); renderBills(); renderSummary(); renderToday();
-      openDayModal(date);
-    });
-  });
-
-  body.querySelectorAll('[data-modal-habit]').forEach(cb => {
-    cb.addEventListener('change', (e) => {
-      toggleHabit(date, e.target.dataset.modalHabit);
-      renderToday(); renderSummary();
-      openDayModal(date);
-    });
-  });
-
-  body.querySelectorAll('[data-del-custom]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      deleteCustomEvent(btn.dataset.delCustom);
-      renderCalendar(); renderToday();
-      openDayModal(date);
-    });
-  });
+  wireDayGroups(body, date, () => openDayModal(date));
 
   const tog = document.getElementById('addEventToggle');
   const form = document.getElementById('addEventForm');
@@ -1438,7 +1680,7 @@ function renderBills() {
   const total = monthBills.reduce((s, b) => s + b.amount, 0);
   const savings = monthBills.filter(b => b.billId === 'savings').reduce((s, b) => s + b.amount, 0);
   const afterSavings = total - savings;
-  const income = 3200;
+  const income = INCOME;
   const pct = ((total / income) * 100).toFixed(0);
   const remainder = income - total;
 
@@ -1555,8 +1797,9 @@ function renderSummary() {
   const monthBills = getMonthBills(viewYear, viewMonth);
   const paid = getPaidSet(viewYear, viewMonth);
   const total = monthBills.reduce((s, b) => s + b.amount, 0);
-  const income = 3200;
+  const income = INCOME;
   const residual = income - total;
+  const savingsTotal = monthBills.filter(b => b.billId === 'savings').reduce((s, b) => s + b.amount, 0);
   const paidCount = monthBills.filter(b => paid.has(b.instanceId)).length;
   const totalCount = monthBills.length;
 
@@ -1602,9 +1845,9 @@ function renderSummary() {
   html += `<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 border border-ink-200/70 dark:border-ink-800 fade-up">
     <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-3">Money</div>
     <div class="grid grid-cols-2 gap-4 text-sm">
-      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Income</div><div class="font-bold text-lg mt-0.5">$3,200</div></div>
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Income</div><div class="font-bold text-lg mt-0.5">$${INCOME.toLocaleString()}</div></div>
       <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Fixed outflow</div><div class="font-bold text-lg mt-0.5">$${total.toLocaleString()}</div></div>
-      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Savings</div><div class="font-bold text-lg mt-0.5">$1,000</div></div>
+      <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Savings</div><div class="font-bold text-lg mt-0.5">$${savingsTotal.toLocaleString()}</div></div>
       <div><div class="text-ink-400 dark:text-ink-500 text-[11px] font-medium">Residual</div><div class="font-bold text-lg mt-0.5 text-emerald-600 dark:text-emerald-400">$${residual.toLocaleString()}</div></div>
     </div>
   </div>`;
@@ -1620,10 +1863,29 @@ function renderSummary() {
     </div>
   </div>`;
 
+  // Month log — the four groups
+  {
+    const mk = `${viewYear}-${String(viewMonth + 1).padStart(2, '0')}`;
+    const jm = JOURNAL.filter(j => j.date.startsWith(mk));
+    const sprintDays = jm.filter(j => j.group === 'work' && /^[A-G] · Days? \d+/.test(j.tag || '')).length;
+    let arabicDays = 0, surahs = 0;
+    for (let d = 1; d <= daysInMonth; d++) { const dt = new Date(viewYear, viewMonth, d); arabicDays += arabicDoneOn(dt).length; surahs += quranReadOn(dt).length; }
+    const plannedLeft = SPRINT_PLAN.filter(p => p.date.startsWith(mk) && new Date(p.date + 'T12:00:00') > TODAY).length;
+    html += `<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card p-5 border border-ink-200/70 dark:border-ink-800 fade-up">
+      <div class="text-[11px] font-semibold uppercase tracking-wider text-ink-400 dark:text-ink-500 mb-3">Month log</div>
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div><div class="text-[11px] font-bold ${GROUPS.work.text}">💼 Work</div><div class="font-bold text-lg mt-0.5">${sprintDays} <span class="text-xs font-semibold text-ink-400">sprint sessions</span></div>${plannedLeft ? `<div class="text-[11px] text-ink-400 dark:text-ink-500">${plannedLeft} more planned this month</div>` : ''}</div>
+        <div><div class="text-[11px] font-bold ${GROUPS.study.text}">📚 Study</div><div class="font-bold text-lg mt-0.5">${arabicDays} <span class="text-xs font-semibold text-ink-400">Arabic days</span></div><div class="text-[11px] text-ink-400 dark:text-ink-500">${surahs} surahs read · course ${arabicDoneCount()}/${ARABIC_COURSE.days.length}</div></div>
+        <div><div class="text-[11px] font-bold ${GROUPS.fitness.text}">💪 Fitness</div><div class="font-bold text-lg mt-0.5">${workoutsChecked} <span class="text-xs font-semibold text-ink-400">workouts logged</span></div></div>
+        <div><div class="text-[11px] font-bold ${GROUPS.life.text}">🏠 Life</div><div class="font-bold text-lg mt-0.5">${paidCount}/${totalCount} <span class="text-xs font-semibold text-ink-400">bills paid</span></div><div class="text-[11px] text-ink-400 dark:text-ink-500">${jm.filter(j => j.group === 'life').length} life notes</div></div>
+      </div>
+    </div>`;
+  }
+
   // Insight sentence
   let sentence;
   if (residual >= 0) {
-    sentence = `You've cleared ${paidCount} of ${totalCount} bills this month, with $${residual.toLocaleString()} residual after all outflow including your $1,000 savings — keep stacking.`;
+    sentence = `You've cleared ${paidCount} of ${totalCount} bills this month, with $${residual.toLocaleString()} residual after all outflow including $${savingsTotal.toLocaleString()} of savings — keep stacking.`;
   } else {
     sentence = `Heads up: bills exceed income by $${Math.abs(residual).toLocaleString()} this month. Consider adjusting the gas or food budget.`;
   }
@@ -1725,22 +1987,33 @@ const BASMALA_EXACT = '\u0628\u0650\u0633\u0652\u0645\u0650\u0020\u0671\u0644\u0
 
 async function fetchSurahText(n) {
   if (SURAH_TEXT_CACHE[n]) return SURAH_TEXT_CACHE[n];
-  const lsKey = 'quran-text-' + n + '-v2';
+  const lsKey = 'quran-text-' + n + '-v3';
   try { const c = localStorage.getItem(lsKey); if (c) { SURAH_TEXT_CACHE[n] = JSON.parse(c); return SURAH_TEXT_CACHE[n]; } } catch (e) {}
-  const res = await fetch('https://api.alquran.cloud/v1/surah/' + n + '/editions/quran-uthmani,en.sahih');
+  const res = await fetch('https://api.alquran.cloud/v1/surah/' + n + '/editions/quran-uthmani,en.sahih,en.transliteration');
   if (!res.ok) throw new Error('load failed');
   const json = await res.json();
   if (json.code !== 200 || !json.data || json.data.length < 2) throw new Error('bad payload');
-  const ar = json.data[0].ayahs, en = json.data[1].ayahs;
-  const out = ar.map((a, i) => ({ n: a.numberInSurah, ar: a.text, en: (en[i] && en[i].text) || '' }));
+  const ar = json.data[0].ayahs, en = json.data[1].ayahs, tr = (json.data[2] && json.data[2].ayahs) || [];
+  const out = ar.map((a, i) => ({ n: a.numberInSurah, ar: a.text, en: (en[i] && en[i].text) || '', tr: (tr[i] && tr[i].text) || '' }));
   if (out.length) out[0].ar = out[0].ar.replace(/^[\uFEFF\u200E\u200F]+/, '');
   if (n !== 1 && n !== 9 && out.length && out[0].ar.indexOf(BASMALA_EXACT) === 0) {
     out[0].ar = out[0].ar.slice(BASMALA_EXACT.length).trim();
+    if (out[0].tr) out[0].tr = out[0].tr.replace(/^Bismillaahir?\s*Rahmaanir?\s*Raheem\s*/i, '').trim();
   }
   SURAH_TEXT_CACHE[n] = out;
   try { localStorage.setItem(lsKey, JSON.stringify(out)); } catch (e) {}
   return out;
 }
+/* Phonetic (transliteration) line under every ayah — on by default, remembered per device */
+const PHON_KEY = 'planner.phonetic.v1';
+function phoneticOn() { try { return localStorage.getItem(PHON_KEY) !== '0'; } catch (e) { return true; } }
+function applyPhonetic() {
+  const on = phoneticOn();
+  const b = document.getElementById('surahPhonetic');
+  if (b) { b.classList.toggle('bg-violet-600', on); b.classList.toggle('text-white', on); b.classList.toggle('bg-ink-100', !on); b.classList.toggle('dark:bg-ink-800', !on); b.classList.toggle('text-ink-500', !on); b.textContent = on ? 'Phonetic on' : 'Phonetic off'; }
+  document.querySelectorAll('.phon-scope').forEach(el => el.classList.toggle('hide-tr', !on));
+}
+document.getElementById('surahPhonetic').addEventListener('click', () => { try { localStorage.setItem(PHON_KEY, phoneticOn() ? '0' : '1'); } catch (e) {} applyPhonetic(); });
 
 async function fetchTafsir(n, a) {
   const k = n + ':' + a;
@@ -1777,20 +2050,23 @@ async function openSurah(n) {
 function renderSurahReader(n, ayahs) {
   const body = document.getElementById('surahModalBody');
   let html = '';
-  if (n !== 1 && n !== 9) html += '<p dir="rtl" class="text-center text-lg font-semibold text-teal-600 dark:text-teal-400 mb-4 mt-1">' + BASMALA_EXACT + '</p>';
+  if (n !== 1 && n !== 9) html += '<p dir="rtl" class="ar text-center text-2xl font-semibold text-teal-600 dark:text-teal-400 mb-1 mt-1">' + BASMALA_EXACT + '</p><p class="tr text-center text-[12px] font-semibold text-violet-600 dark:text-violet-300 mb-4">Bismillāhir-raḥmānir-raḥīm</p>';
   html += ayahs.map(a => {
     return '<div class="mb-1 pb-3 pt-2 border-b border-ink-100 dark:border-ink-800">' +
       '<div class="flex items-start gap-3">' +
         '<span class="shrink-0 w-7 h-7 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-[11px] font-bold flex items-center justify-center mt-1.5">' + a.n + '</span>' +
-        '<p dir="rtl" lang="ar" class="flex-1 text-right text-xl leading-loose font-medium">' + escapeHtml(a.ar) + '</p>' +
+        '<p dir="rtl" lang="ar" class="ar flex-1 text-right text-2xl leading-loose">' + escapeHtml(a.ar) + '</p>' +
       '</div>' +
-      '<p class="mt-1.5 text-sm leading-relaxed text-ink-600 dark:text-ink-300">' + escapeHtml(a.en) + '</p>' +
+      (a.tr ? '<p class="tr mt-1 text-[13px] font-semibold text-violet-600 dark:text-violet-300 leading-relaxed">' + escapeHtml(a.tr) + '</p>' : '') +
+      '<p class="en mt-1.5 text-sm leading-relaxed text-ink-600 dark:text-ink-300">' + escapeHtml(a.en) + '</p>' +
       '<button data-tafsir-btn="' + a.n + '" class="mt-2 text-[11px] font-bold text-indigo-600 dark:text-indigo-400">📚 Tafsir & hadith — Ibn Kathir ▾</button>' +
       '<div data-tafsir-box="' + a.n + '" class="hidden mt-2 p-3.5 rounded-xl bg-ink-50/80 dark:bg-ink-800/50 border border-ink-100 dark:border-ink-800 text-[13px] leading-relaxed text-ink-600 dark:text-ink-300"></div>' +
     '</div>';
   }).join('');
-  html += '<p class="text-center text-[10px] text-ink-300 dark:text-ink-600 mt-4 mb-2">Arabic: Uthmani · Translation: Saheeh International (alquran.cloud) · Tafsir: Ibn Kathir (abridged English) — hadith are cited inside with their narrators and sources</p>';
+  html += '<p class="text-center text-[10px] text-ink-300 dark:text-ink-600 mt-4 mb-2">Arabic: Uthmani · Phonetic: alquran.cloud transliteration · Translation: Saheeh International · Tafsir: Ibn Kathir (abridged English) — hadith are cited inside with their narrators and sources</p>';
   body.innerHTML = html;
+  body.classList.add('phon-scope');
+  applyPhonetic();
   body.querySelectorAll('[data-tafsir-btn]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const an = +btn.dataset.tafsirBtn;
@@ -1833,13 +2109,243 @@ document.getElementById('surahMarkRead').addEventListener('click', () => {
 
 
 /* =====================================================================
+   WORK TAB — dated log of every sprint day + what is planned next
+===================================================================== */
+function fmtDate(iso) { const d = new Date(iso + 'T12:00:00'); return `${DOW_NAMES[d.getDay()].slice(0, 3)} ${MONTH_NAMES[d.getMonth()].slice(0, 3)} ${d.getDate()}`; }
+let workExpanded = {};
+function renderWorkLog() {
+  const root = document.getElementById('workRoot');
+  if (!root) return;
+  const rd = roadmapDone();
+  const next = nextPlan(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()));
+  const sprintDays = JOURNAL.filter(j => j.group === 'work' && /^[A-G] · Days? \d+/.test(j.tag || '')).length;
+  let html = '';
+  // stats
+  html += `<div class="rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 text-white p-5 shadow-glow fade-up">
+    <div class="text-[11px] font-semibold uppercase tracking-widest text-blue-100">SecondRing · AI Trade Business OS</div>
+    <div class="flex items-end gap-4 mt-2">
+      <div><div class="text-3xl font-extrabold tracking-tight">${sprintDays}</div><div class="text-[11px] font-semibold text-blue-100">sprint sessions logged</div></div>
+      <div><div class="text-3xl font-extrabold tracking-tight">${JOURNAL.length}</div><div class="text-[11px] font-semibold text-blue-100">dated entries</div></div>
+      <div><div class="text-3xl font-extrabold tracking-tight">${SPRINT_PLAN.filter(p => new Date(p.date + 'T12:00:00') > TODAY).length}</div><div class="text-[11px] font-semibold text-blue-100">days still planned</div></div>
+    </div>
+  </div>`;
+  // next up
+  if (next) {
+    const doneN = next.keys.filter(k => rd[k]).length;
+    html += `<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-blue-200/70 dark:border-blue-900/60 p-4 fade-up">
+      <div class="flex items-center justify-between gap-2 mb-1"><div class="text-[11px] font-extrabold uppercase tracking-widest text-blue-600 dark:text-blue-300">Up next · ${fmtDate(next.date)}</div><div class="text-[10px] font-bold text-ink-400 dark:text-ink-500">${doneN}/${next.keys.length}</div></div>
+      <div class="font-bold text-sm leading-snug"><span class="text-[9px] font-extrabold uppercase tracking-widest px-1.5 py-0.5 rounded-md bg-blue-600 text-white mr-1.5">${escapeHtml(next.cat)} Day ${next.day}</span>${escapeHtml(next.title)}</div>
+      <div class="text-[11px] text-ink-400 dark:text-ink-500 mb-2">${escapeHtml(next.catName || '')}</div>
+      ${next.steps.map((s, i) => `<label class="plan-step cursor-pointer"><input type="checkbox" data-rkey="${next.keys[i]}" ${rd[next.keys[i]] ? 'checked' : ''} class="w-4 h-4 rounded accent-blue-600" /><span class="${rd[next.keys[i]] ? 'line-through text-ink-400 dark:text-ink-500' : 'text-ink-700 dark:text-ink-200'}">${escapeHtml(s)}</span></label>`).join('')}
+      <div class="mt-2 flex gap-2"><button data-open-day="${next.date}" class="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-blue-600 text-white">Open that day</button><a href="./roadmap.html" class="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-ink-100 dark:bg-ink-800 text-ink-600 dark:text-ink-200">Full roadmap</a></div>
+    </div>`;
+  }
+  // log by month, newest first
+  const sorted = JOURNAL.slice().sort((a, b) => b.date.localeCompare(a.date));
+  let curMonth = '';
+  sorted.forEach((j, idx) => {
+    const mk = j.date.slice(0, 7);
+    if (mk !== curMonth) {
+      curMonth = mk;
+      const d = new Date(j.date + 'T12:00:00');
+      html += `<div class="text-[11px] font-extrabold uppercase tracking-widest text-ink-400 dark:text-ink-500 pt-2 px-1">${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}</div>`;
+    }
+    const G = GROUPS[j.group] || GROUPS.work;
+    const open = !!workExpanded[idx];
+    const bullets = (j.bullets || []);
+    const shown = open ? bullets : bullets.slice(0, 2);
+    html += `<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4 fade-up">
+      <div class="flex items-center gap-2 mb-1.5">
+        <button data-open-day="${j.date}" class="text-[11px] font-bold text-ink-400 dark:text-ink-500 tabular-nums shrink-0 hover:text-indigo-500">${fmtDate(j.date)}</button>
+        <span class="text-[9px] font-extrabold uppercase tracking-widest px-1.5 py-0.5 rounded-md ${G.color} text-white shrink-0">${escapeHtml(j.tag || G.name)}</span>
+      </div>
+      <div class="font-bold text-sm leading-snug">${escapeHtml(j.title)}</div>
+      <div class="mt-1.5 text-ink-600 dark:text-ink-300">${shown.map(b => `<div class="jbul">${escapeHtml(b)}</div>`).join('')}</div>
+      ${bullets.length > 2 ? `<button data-expand="${idx}" class="mt-1.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400">${open ? 'Show less ▴' : `Show all ${bullets.length} ▾`}</button>` : ''}
+      ${open && j.sources && j.sources.length ? `<div class="mt-2 text-[10px] text-ink-400 dark:text-ink-500">Sources: ${escapeHtml(j.sources.join(' · '))}</div>` : ''}
+    </div>`;
+  });
+  // planned
+  const upcoming = SPRINT_PLAN.filter(p => new Date(p.date + 'T12:00:00') > TODAY);
+  if (upcoming.length) {
+    html += `<details class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4 fade-up"><summary class="text-[11px] font-extrabold uppercase tracking-widest text-ink-400 dark:text-ink-500 cursor-pointer">Planned · ${upcoming.length} sprint days to Dec 21</summary>
+      <div class="mt-2 divide-y divide-ink-100 dark:divide-ink-800">${upcoming.map(p => `<button data-open-day="${p.date}" class="w-full text-left py-2 flex items-center gap-2"><span class="text-[11px] font-bold text-ink-400 dark:text-ink-500 tabular-nums w-[74px] shrink-0">${fmtDate(p.date)}</span><span class="text-[9px] font-extrabold uppercase tracking-widest px-1.5 py-0.5 rounded-md bg-blue-600 text-white shrink-0">${escapeHtml(p.cat)} D${p.day}</span><span class="text-[12px] font-semibold truncate">${escapeHtml(p.title)}</span></button>`).join('')}</div>
+    </details>`;
+  }
+  html += `<p class="text-center text-[10px] text-ink-300 dark:text-ink-600 mt-2">Log lives in journal.js — one entry per day, appended at the close of each session.</p>`;
+  root.innerHTML = html;
+  root.querySelectorAll('[data-rkey]').forEach(cb => cb.addEventListener('change', () => { roadmapToggle(cb.dataset.rkey); renderWorkLog(); }));
+  root.querySelectorAll('[data-open-day]').forEach(b => b.addEventListener('click', () => openDayModal(new Date(b.dataset.openDay + 'T12:00:00'))));
+  root.querySelectorAll('[data-expand]').forEach(b => b.addEventListener('click', () => { workExpanded[b.dataset.expand] = !workExpanded[b.dataset.expand]; renderWorkLog(); }));
+}
+
+/* =====================================================================
+   STUDY › ARABIC — the 60-day Quranic Arabic course (progress cloud-synced)
+===================================================================== */
+const HAS_AR = /[\u0600-\u06FF]/;
+function arRatio(str) { const s = String(str || ''); const ar = (s.match(/[\u0600-\u06FF]/g) || []).length; const letters = (s.match(/[A-Za-z\u0600-\u06FF]/g) || []).length; return letters ? ar / letters : 0; }
+function renderBlock(b) {
+  if (b.h) return `<h4>${escapeHtml(b.h)}</h4>`;
+  if (b.p != null) return arRatio(b.p) > 0.5 ? `<p class="ar ar-md text-right">${escapeHtml(b.p)}</p>` : `<p>${escapeHtml(b.p)}</p>`;
+  if (b.list) return `<ul>${b.list.map(li => `<li class="${arRatio(li) > 0.5 ? 'ar ar-md text-right list-none' : ''}">${escapeHtml(li)}</li>`).join('')}</ul>`;
+  if (b.tip) return `<div class="tip">💡 ${escapeHtml(b.tip)}</div>`;
+  if (b.table) {
+    const plain = b.table.filter(r => HAS_AR.test(r[0] || '')).length < b.table.length / 2;
+    return `<div class="overflow-x-auto -mx-1 px-1"><table class="lesson-table ${plain ? 'plain' : ''}">${b.head ? `<thead><tr>${b.head.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr></thead>` : ''}<tbody>${b.table.map(r => `<tr>${r.map((c, i) => `<td${i === 0 && !plain ? ' dir="rtl"' : ''}>${escapeHtml(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  }
+  if (b.ar) return `<div class="my-2 rounded-xl bg-violet-50 dark:bg-violet-950/30 border border-violet-200/70 dark:border-violet-900/60 p-3"><div class="ar ar-lg text-right">${escapeHtml(b.ar)}</div>${b.tr ? `<div class="text-[13px] font-semibold text-violet-600 dark:text-violet-300 mt-1">${escapeHtml(b.tr)}</div>` : ''}${b.en ? `<div class="text-[13px] text-ink-600 dark:text-ink-300 mt-1 leading-relaxed">${escapeHtml(b.en)}</div>` : ''}</div>`;
+  return '';
+}
+function renderArabic() {
+  const root = document.getElementById('arabicRoot');
+  if (!root) return;
+  const C = ARABIC_COURSE;
+  const total = C.days.length;
+  const done = arabicDoneCount();
+  const next = arabicNextDay();
+  const pct = total ? Math.round(done / total * 100) : 0;
+  let html = `<div class="rounded-3xl bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 text-white p-5 shadow-glow fade-up relative overflow-hidden">
+    <div class="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-white/10 blur-2xl"></div>
+    <div class="relative">
+      <div class="text-[11px] font-semibold uppercase tracking-widest text-violet-100">Quranic Arabic · zero to fusha</div>
+      <div class="flex items-end justify-between gap-3 mt-1">
+        <div><div class="text-3xl font-extrabold tracking-tight">Day ${next ? next.n : total}<span class="text-lg text-violet-200 font-bold"> / ${total}</span></div><div class="text-xs font-medium text-violet-100 mt-0.5">${done} done · ${pct}%</div></div>
+        <div class="ar text-3xl font-bold">ٱقْرَأْ</div>
+      </div>
+      <div class="mt-3 h-1.5 bg-white/20 rounded-full overflow-hidden"><div class="h-full bg-white/90 rounded-full transition-all duration-700" style="width:${pct}%"></div></div>
+      <p class="text-[12px] text-violet-100 mt-3 leading-relaxed">${escapeHtml(C.goal)}</p>
+      ${next ? `<button data-open-lesson="${next.n}" class="mt-3 w-full py-3 rounded-2xl bg-white text-violet-700 text-sm font-extrabold shadow-card active:scale-[0.98] transition">${done ? 'Continue' : 'Start'} Day ${next.n} — ${escapeHtml(next.title)} →</button>` : `<div class="mt-3 text-sm font-bold">Course complete — الحمد لله. Keep the habits from Day 60.</div>`}
+      <p class="text-[10px] text-violet-200 mt-2">No dates — a day is a sitting. Mark it done and it lands on the calendar with today's date. Quran and Arabic are one path: every day stands on a passage you memorise.</p>
+    </div>
+  </div>`;
+  // phonetic key
+  html += `<details class="mt-3 bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 p-4 fade-up"><summary class="text-[11px] font-extrabold uppercase tracking-widest text-ink-400 dark:text-ink-500 cursor-pointer">How to read the phonetics</summary>
+    <table class="lesson-table plain mt-2">${(C.key || []).map(k => `<tr><td>${escapeHtml(k[0])}</td><td class="!text-ink-600 dark:!text-ink-300 !font-normal">${escapeHtml(k[1])}</td></tr>`).join('')}</table></details>`;
+  // phases + days
+  (C.phases || []).forEach(ph => {
+    const days = C.days.filter(d => d.phase === ph.id);
+    const pd = days.filter(d => arabicIsDone(d.n)).length;
+    html += `<div class="mt-3 bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/70 dark:border-ink-800 overflow-hidden fade-up">
+      <div class="px-4 py-3 bg-violet-50/80 dark:bg-violet-950/30 border-b border-ink-100 dark:border-ink-800">
+        <div class="flex items-center justify-between gap-2"><div class="text-sm font-extrabold tracking-tight">Phase ${ph.id} · ${escapeHtml(ph.name)}</div><div class="text-[10px] font-bold text-ink-400 dark:text-ink-500">Days ${ph.range[0]}–${ph.range[1]} · ${pd}/${days.length}</div></div>
+        <div class="text-[11px] text-ink-500 dark:text-ink-400 mt-1 leading-snug">${escapeHtml(ph.blurb)}</div>
+      </div>
+      <div class="divide-y divide-ink-100 dark:divide-ink-800">${days.map(d => {
+        const on = arabicIsDone(d.n);
+        const isNext = next && next.n === d.n;
+        return `<div class="flex items-center gap-3 px-4 py-2.5 min-h-[52px] ${isNext ? 'bg-violet-50/60 dark:bg-violet-950/20' : ''}">
+          <input type="checkbox" data-arabic-done="${d.n}" ${on ? 'checked' : ''} class="w-5 h-5 rounded accent-violet-600 shrink-0" />
+          <button data-open-lesson="${d.n}" class="flex-1 min-w-0 text-left">
+            <div class="text-[13px] font-semibold ${on ? 'line-through text-ink-300 dark:text-ink-600' : ''}"><span class="text-[10px] font-extrabold text-violet-500 mr-1.5">D${d.n}</span>${escapeHtml(d.title)}${isNext ? ' <span class="text-[9px] font-extrabold uppercase tracking-widest text-violet-500">next</span>' : ''}</div>
+            <div class="text-[11px] text-ink-400 dark:text-ink-500 truncate">${escapeHtml(d.focus || '')}${on && ARABIC['d' + d.n].date ? ' · ✓ ' + escapeHtml(ARABIC['d' + d.n].date) : ''}</div>
+          </button>
+          <span class="text-[10px] font-bold text-ink-300 dark:text-ink-600 shrink-0">${d.quran ? `📖 ${d.quran.s}:${d.quran.from}${d.quran.to !== d.quran.from ? '–' + d.quran.to : ''}` : ''}</span>
+        </div>`; }).join('')}</div>
+    </div>`;
+  });
+  root.innerHTML = html;
+  root.querySelectorAll('[data-open-lesson]').forEach(b => b.addEventListener('click', () => openLesson(+b.dataset.openLesson)));
+  root.querySelectorAll('[data-arabic-done]').forEach(cb => cb.addEventListener('change', () => { arabicToggle(+cb.dataset.arabicDone); afterArabicChange(); }));
+}
+function afterArabicChange() {
+  renderArabic();
+  try { renderToday(); } catch (e) {}
+  try { renderCalendar(); } catch (e) {}
+  try { renderSummary(); } catch (e) {}
+}
+let openLessonN = null;
+function openLesson(n) {
+  const d = ARABIC_COURSE.days.find(x => x.n === n);
+  if (!d) return;
+  openLessonN = n;
+  const ph = (ARABIC_COURSE.phases || []).find(p => p.id === d.phase);
+  document.getElementById('lessonKicker').textContent = `Phase ${d.phase}${ph ? ' · ' + ph.name : ''} · Day ${n} of ${ARABIC_COURSE.days.length}`;
+  document.getElementById('lessonTitle').textContent = d.title;
+  const body = document.getElementById('lessonBody');
+  const sec = (emoji, label, inner) => `<div class="mt-4"><div class="text-[10px] font-extrabold uppercase tracking-widest text-violet-500 mb-1">${emoji} ${label}</div>${inner}</div>`;
+  let html = `<div class="rounded-xl bg-ink-50/80 dark:bg-ink-800/50 border border-ink-100 dark:border-ink-800 p-3 text-[13px]"><span class="font-bold">Today:</span> ${escapeHtml(d.focus || '')}</div>`;
+  html += sec('📘', 'Learn', (d.learn || []).map(renderBlock).join(''));
+  if (d.quran) {
+    const s = QURAN_SURAHS[d.quran.s - 1];
+    const range = d.quran.from === d.quran.to ? `${d.quran.from}` : `${d.quran.from}–${d.quran.to}`;
+    html += sec('📖', `Quran anchor · ${d.quran.s}. ${s ? s[0] : ''} ${range}`, `${d.quran.note ? `<p class="text-ink-600 dark:text-ink-300">${escapeHtml(d.quran.note)}</p>` : ''}<div id="lessonQuran" class="phon-scope mt-2 rounded-xl border border-ink-200/70 dark:border-ink-800 p-3"><div class="text-center py-4 text-[12px] font-medium text-ink-400 dark:text-ink-500">Loading ayahs…</div></div><button data-open-surah="${d.quran.s}" class="mt-2 text-[11px] font-bold px-3 py-1.5 rounded-lg bg-emerald-600 text-white">Open full surah in the reader</button>`);
+  }
+  if (d.memorize) html += sec('🧠', 'Memorize', `<p class="font-semibold">${escapeHtml(d.memorize)}</p>`);
+  if (d.speak && d.speak.length) html += sec('🗣', 'Say it out loud', `<ul>${d.speak.map(x => `<li>${escapeHtml(x)}</li>`).join('')}</ul>`);
+  if (d.check) html += sec('✅', 'You are done when', `<p class="font-semibold">${escapeHtml(d.check)}</p>`);
+  body.innerHTML = html;
+  body.scrollTop = 0;
+  body.querySelectorAll('[data-open-surah]').forEach(b => b.addEventListener('click', () => openSurah(+b.dataset.openSurah)));
+  updateLessonDoneBtn();
+  document.getElementById('lessonPrev').disabled = n <= 1;
+  document.getElementById('lessonNext').disabled = n >= ARABIC_COURSE.days.length;
+  document.getElementById('lessonModal').classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  if (d.quran) loadLessonQuran(n, d.quran);
+}
+async function loadLessonQuran(n, q) {
+  const box = document.getElementById('lessonQuran');
+  try {
+    const ayahs = await fetchSurahText(q.s);
+    if (openLessonN !== n || !box) return;
+    const rows = ayahs.filter(a => a.n >= q.from && a.n <= q.to);
+    box.innerHTML = (q.from === 1 && q.s !== 1 && q.s !== 9 ? `<div class="ar ar-md text-center text-teal-600 dark:text-teal-400">${BASMALA_EXACT}</div><div class="tr text-center text-[12px] font-semibold text-violet-600 dark:text-violet-300 mb-2">Bismillāhir-raḥmānir-raḥīm</div>` : '') +
+      rows.map(a => `<div class="ayah-row"><div class="flex items-start gap-2"><span class="shrink-0 w-6 h-6 rounded-full bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-[10px] font-bold flex items-center justify-center mt-2">${a.n}</span><div class="ar ar-lg flex-1 text-right">${escapeHtml(a.ar)}</div></div>${a.tr ? `<div class="tr">${escapeHtml(a.tr)}</div>` : ''}<div class="en">${escapeHtml(a.en)}</div></div>`).join('') +
+      `<div class="mt-2 flex items-center justify-between"><span class="text-[10px] text-ink-400 dark:text-ink-500">Uthmani · phonetic · Saheeh International</span><button id="lessonPhon" class="text-[10px] font-bold px-2 py-1 rounded-md bg-ink-100 dark:bg-ink-800 text-ink-500 dark:text-ink-300">Phonetic ${phoneticOn() ? 'on' : 'off'}</button></div>`;
+    applyPhonetic();
+    const pb = document.getElementById('lessonPhon');
+    if (pb) pb.addEventListener('click', () => { try { localStorage.setItem(PHON_KEY, phoneticOn() ? '0' : '1'); } catch (e) {} applyPhonetic(); pb.textContent = 'Phonetic ' + (phoneticOn() ? 'on' : 'off'); });
+  } catch (e) {
+    if (box) box.innerHTML = '<div class="text-center py-3 text-[12px] font-medium text-amber-600 dark:text-amber-300">Could not load the ayahs — check your internet, or open the surah in the reader.</div>';
+  }
+}
+function updateLessonDoneBtn() {
+  const b = document.getElementById('lessonDone');
+  if (!b || openLessonN == null) return;
+  const on = arabicIsDone(openLessonN);
+  b.textContent = on ? `✓ Day ${openLessonN} done — tap to undo` : `✓ Mark Day ${openLessonN} done`;
+  b.classList.toggle('bg-emerald-600', on); b.classList.toggle('hover:bg-emerald-500', on);
+  b.classList.toggle('bg-violet-600', !on); b.classList.toggle('hover:bg-violet-500', !on);
+}
+function closeLesson() { document.getElementById('lessonModal').classList.add('hidden'); document.body.classList.remove('modal-open'); openLessonN = null; }
+document.getElementById('lessonClose').addEventListener('click', closeLesson);
+document.getElementById('lessonModal').addEventListener('click', (e) => { if (e.target.id === 'lessonModal') closeLesson(); });
+document.getElementById('lessonPrev').addEventListener('click', () => { if (openLessonN > 1) openLesson(openLessonN - 1); });
+document.getElementById('lessonNext').addEventListener('click', () => { if (openLessonN < ARABIC_COURSE.days.length) openLesson(openLessonN + 1); });
+document.getElementById('lessonDone').addEventListener('click', () => {
+  if (openLessonN == null) return;
+  const was = arabicIsDone(openLessonN);
+  arabicToggle(openLessonN);
+  updateLessonDoneBtn();
+  afterArabicChange();
+  if (!was) { confetti('🗣📖✨'); setTimeout(closeLesson, 700); }
+});
+
+/* =====================================================================
    TAB SWITCHING
 ===================================================================== */
-function setTab(name) {
+const TABS = ['today','calendar','work','life','fitness','study'];
+const SUBS = { life: ['bills','summary'], fitness: ['workouts','groceries'], study: ['arabic','quran'] };
+const SUB_OF = { bills:'life', summary:'life', workouts:'fitness', groceries:'fitness', arabic:'study', quran:'study' };
+let activeSub = { life: 'bills', fitness: 'workouts', study: 'arabic' };
+function setSub(tab, sub) {
+  if (!SUBS[tab]) return;
+  if (!sub || !SUBS[tab].includes(sub)) sub = activeSub[tab] || SUBS[tab][0];
+  activeSub[tab] = sub;
+  SUBS[tab].forEach(sname => { const el = document.getElementById('tab-' + sname); if (el) el.classList.toggle('hidden', sname !== sub); });
+  document.querySelectorAll(`[data-seg="${tab}"] .segbtn`).forEach(b => b.classList.toggle('seg-on', b.dataset.sub === sub));
+  if (sub === 'bills') renderBills();
+  if (sub === 'summary') renderSummary();
+  if (sub === 'groceries') renderGroceries();
+  if (sub === 'workouts') renderWorkouts();
+  if (sub === 'quran') renderQuran();
+  if (sub === 'arabic') renderArabic();
+}
+function setTab(name, sub) {
+  if (SUB_OF[name]) { sub = name; name = SUB_OF[name]; }   // old names still work: setTab('bills') → Life › Bills
+  if (!TABS.includes(name)) name = 'today';
   activeTab = name;
-  ['today','calendar','bills','summary','groceries','workouts','quran'].forEach(t => {
-    document.getElementById('tab-' + t).classList.toggle('hidden', name !== t);
-  });
+  TABS.forEach(t => { const el = document.getElementById('tab-' + t); if (el) el.classList.toggle('hidden', name !== t); });
   document.querySelectorAll('.tab-btn').forEach(btn => {
     const isActive = btn.dataset.tab === name;
     btn.classList.toggle('text-indigo-600', isActive);
@@ -1848,14 +2354,15 @@ function setTab(name) {
     btn.classList.toggle('dark:text-slate-400', !isActive);
   });
   if (name === 'today') renderToday();
-  if (name === 'bills') renderBills();
-  if (name === 'summary') renderSummary();
-  if (name === 'groceries') renderGroceries();
-  if (name === 'workouts') renderWorkouts();
-  if (name === 'quran') renderQuran();
+  if (name === 'work') renderWorkLog();
+  if (SUBS[name]) setSub(name, sub);
+  window.scrollTo({ top: 0 });
 }
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => setTab(btn.dataset.tab));
+});
+document.querySelectorAll('[data-seg] .segbtn').forEach(btn => {
+  btn.addEventListener('click', () => setSub(btn.closest('[data-seg]').dataset.seg, btn.dataset.sub));
 });
 
 /* =====================================================================
@@ -1922,31 +2429,43 @@ const GROCERIES_DATA = [
   { cat: 'Other', emoji: '🫙', items: [
     { name: 'Salsa', qty: '1 jug', price: '' },
   ]},
+  { cat: 'Monthly stock-up', emoji: '🥣', monthly: true, items: [
+    { name: 'Oatmeal', qty: 'large bag', price: '' },
+    { name: 'Pre-workout', qty: '1 tub', price: '' },
+    { name: 'Protein powder', qty: '1 tub', price: '$150 all three' },
+  ]},
 ];
 const GROC_KEY = 'planner.groceries.checked.v1';
+const GROC_M_KEY = 'planner.groceries.monthly.v1';
 function gLoad() { try { return JSON.parse(localStorage.getItem(GROC_KEY) || '{}'); } catch(e) { return {}; } }
 function gSave(s) { localStorage.setItem(GROC_KEY, JSON.stringify(s)); }
+function gmKey() { const t = new Date(); return t.getFullYear() + '-' + (t.getMonth() + 1); }
+function gmLoad() { try { const all = JSON.parse(localStorage.getItem(GROC_M_KEY) || '{}'); return all[gmKey()] || {}; } catch(e) { return {}; } }
+function gmSave(m) { try { const all = JSON.parse(localStorage.getItem(GROC_M_KEY) || '{}'); all[gmKey()] = m; localStorage.setItem(GROC_M_KEY, JSON.stringify(all)); } catch(e) {} }
 function gId(cat, name) { return cat.toLowerCase() + '__' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
 function gEsc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function renderGroceries() {
   const root = document.getElementById('groceriesList');
   if (!root) return;
   const state = gLoad();
+  const mstate = gmLoad();
   let total = 0, checked = 0;
   const html = GROCERIES_DATA.map(group => {
-    return '<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border border-ink-200/80 dark:border-ink-800 overflow-hidden fade-up">' +
-      '<div class="px-4 py-3 bg-ink-50/80 dark:bg-ink-800/50 border-b border-ink-100 dark:border-ink-800 flex items-center gap-2.5">' +
+    const st = group.monthly ? mstate : state;
+    return '<div class="bg-white dark:bg-ink-850 rounded-2xl shadow-card border ' + (group.monthly ? 'border-orange-300/70 dark:border-orange-800/60' : 'border-ink-200/80 dark:border-ink-800') + ' overflow-hidden fade-up">' +
+      '<div class="px-4 py-3 ' + (group.monthly ? 'bg-orange-50/80 dark:bg-orange-950/30' : 'bg-ink-50/80 dark:bg-ink-800/50') + ' border-b border-ink-100 dark:border-ink-800 flex items-center gap-2.5">' +
         '<span class="text-lg">' + group.emoji + '</span>' +
-        '<h3 class="font-bold text-sm tracking-tight">' + gEsc(group.cat) + '</h3>' +
+        '<h3 class="font-bold text-sm tracking-tight flex-1">' + gEsc(group.cat) + '</h3>' +
+        (group.monthly ? '<span class="text-[10px] font-extrabold uppercase tracking-widest text-orange-600 dark:text-orange-300">once a month · first Monday · $150</span>' : '') +
       '</div>' +
       '<ul class="divide-y divide-ink-100 dark:divide-ink-800">' +
       group.items.map(it => {
         const id = gId(group.cat, it.name);
-        const ch = !!state[id];
-        total++; if (ch) checked++;
+        const ch = !!st[id];
+        if (!group.monthly) { total++; if (ch) checked++; }
         return '<li>' +
           '<label class="flex items-center gap-3 px-4 py-3 cursor-pointer active:bg-ink-50 dark:active:bg-ink-800/60 min-h-[56px] transition">' +
-            '<input type="checkbox" data-gid="' + id + '" ' + (ch ? 'checked' : '') +
+            '<input type="checkbox" data-gid="' + id + '" data-monthly="' + (group.monthly ? '1' : '') + '" ' + (ch ? 'checked' : '') +
             ' class="w-5 h-5 rounded accent-emerald-600 border-ink-300 dark:border-ink-600 shrink-0" />' +
             '<div class="flex-1 min-w-0">' +
               '<div class="text-sm font-semibold ' + (ch ? 'line-through text-ink-300 dark:text-ink-600' : '') + '">' + gEsc(it.name) + '</div>' +
@@ -1960,18 +2479,25 @@ function renderGroceries() {
   }).join('');
   root.innerHTML = html;
   const prog = document.getElementById('groceriesProgress');
-  if (prog) prog.textContent = checked + ' of ' + total + ' items checked';
+  if (prog) prog.textContent = checked + ' of ' + total + ' weekly items checked';
   const bar = document.getElementById('groceriesBar');
   if (bar) bar.style.width = (total ? Math.round((checked/total)*100) : 0) + '%';
   root.querySelectorAll('input[data-gid]').forEach(cb => {
     cb.addEventListener('change', () => {
+      if (cb.dataset.monthly) {
+        const m = gmLoad();
+        if (cb.checked) m[cb.dataset.gid] = true; else delete m[cb.dataset.gid];
+        gmSave(m);
+        renderGroceries();
+        return;
+      }
       const s = gLoad();
       if (cb.checked) s[cb.dataset.gid] = true; else delete s[cb.dataset.gid];
       gSave(s);
       renderGroceries();
       const s2 = gLoad();
       let t2 = 0, c2 = 0;
-      GROCERIES_DATA.forEach(g => g.items.forEach(it => { t2++; if (s2[gId(g.cat, it.name)]) c2++; }));
+      GROCERIES_DATA.forEach(g => { if (g.monthly) return; g.items.forEach(it => { t2++; if (s2[gId(g.cat, it.name)]) c2++; }); });
       if (t2 && c2 === t2) confetti('🛒✅🥦');
     });
   });
@@ -2188,6 +2714,8 @@ refreshAll();
 renderGroceries();
 renderQuran();
 if (typeof renderWorkouts === 'function') renderWorkouts();
+renderArabic();
+renderWorkLog();
 renderToday();
 </script>
 
