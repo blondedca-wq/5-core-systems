@@ -61,6 +61,18 @@ input[type="checkbox"] { cursor:pointer; }
   localStorage.setItem(K,JSON.stringify(o));
   localStorage.setItem(S,'1');
 }catch(e){}})();
+/* Day 19 (Sep 18-19 2026): Category B Day 2 boxes 1-3 and Day 3 boxes 1, 3 and 4 landed and were re-read from
+   the live database. Seeded once per device. Left open on purpose: Day 2 box 4 (ten real photo sets through the
+   deployed vision call) and Day 3 box 2 (the droplet install). */
+(function(){try{
+  var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day19';
+  if(localStorage.getItem(S)) return;
+  var o=JSON.parse(localStorage.getItem(K)||'{}');
+  ['bB-4','bB-5','bB-6','bB-8','bB-10','bB-11']
+    .forEach(function(k){o[k]=1;});
+  localStorage.setItem(K,JSON.stringify(o));
+  localStorage.setItem(S,'1');
+}catch(e){}})();
 </script>
 
 <!-- Header -->
@@ -472,18 +484,18 @@ const BLOCKS = [
         'Rate card live and re-verified: nine tables with RLS, the overlap guard, five pricing functions; Fennwick 25 services, Grand River 46 — both installed through sr_onboard_rate_card',
         'Quote guardrails are registry config (v10, committed Day 17): photo_to_quote ships max_variance_pct capped at 10, owner_approval_required, quote_as_range, approved_suppliers — and the form maps them onto machine_configs',
         'The Ontario 10% rule is a database rule: an estimate refuses an envelope over 10%, and a quote superseding an estimate cannot leave draft more than 10% above it — a change order the customer agrees to is the only way up' ]},
-      { d:'Day 2 · Tue Sep 15', t:'Photo → Quote AI I — vision pipeline', steps:[
-        'Photo intake: upload from phone → Supabase Storage → signed URLs',
-        'Vision model extracts scope: what it is, dimensions, materials, condition, access',
-        'Scope draft saved as structured data against the contact and job',
-        'Ten seeded photo sets through the pipeline — measure how often scope extraction is usable' ]},
-      { d:'Day 3 · Fri Sep 18', t:'Photo → Quote AI II — wire the pre-built pricing engine', steps:[
-        'Engine already built and proven offline on Sep 9 — 128 assertions pass, contains no AI, shared by Photo Quote, Blueprint and Change Orders untouched',
-        'Wire it behind sr-pricing on the droplet; run the conformance matrix so the engine and the database can never drift apart',
-        'Outside the rules → approval queue; inside the rules → still approval by default',
-        'Same ten photo sets → priced quotes; the time this frees is what starts Blueprint early' ]},
-      { d:'Day 4 · Sat Sep 19', t:'Photo → Quote AI III — the deliverable', steps:[
-        'Formal quote document generated: scope, exclusions, price, terms, the solicitor-approved wording',
+      { d:'Day 2 · Tue Sep 15', t:'Photo → Quote AI I — vision pipeline built; the real-photo run is still mine', steps:[
+        'Photo intake live: phone upload → the private job-photos bucket, locked to the business → sr_photo_intake → signed URLs',
+        'Scope contract fixed and proven on 8 web stand-in photos (Claude was the vision model): what it is, dimensions, materials, condition, access, hazards. The deployed Haiku call in n8n has never run — that is the last box',
+        'Scope draft saved as structured data against the contact and job; "usable" is a database rule (sr_scope_usable), not a habit',
+        'STILL OPEN — import + publish scope-extract-workflow.json in n8n, then 10 real photo sets through it (no faces, plates, addresses, paperwork; one deliberately bad) → the real usable rate. Stand-in run: 8 web photos → 5 usable, 62.5%' ]},
+      { d:'Day 3 · Fri Sep 18', t:'Photo → Quote AI II — pricing engine rebuilt, proven on production, wired; five priced quotes waiting for approval', steps:[
+        'The Sep 9 engine was never saved anywhere, so it was rebuilt from the live sr_price_line: no AI, integer cents, shared untouched by Photo Quote, Blueprint and Change Orders. 162 offline checks · 34,000 random cases identical to the real Postgres function · public repo blondedca-wq/sr-pricing',
+        'Wired and proven on production: sr_save_priced_quote re-prices every line itself and refuses the whole quote on one cent of drift; live conformance 290/290 quick + 939/939 full; three latent bugs fixed in the pricing SQL. STILL OPEN — the droplet install (one paste line, in the repo README) starts the 15-minute runner and the 3:40 nightly proof',
+        'Outside the rules → approval queue with the reasons in plain English; inside the rules → approval queue anyway. There is no send and no auto-approve path in this machine at all',
+        'The 5 usable stand-in photos → 5 priced draft quotes waiting for approval on Grand River: $333.35 · $2,474.70 ×2 · $4,011.50 · $6,808.25. The ten REAL photo sets are still owed — see the open box on Day 2' ]},
+      { d:'Day 4 · Sat Sep 19', t:'Photo → Quote AI III — the deliverable (carry-ins: droplet install · n8n vision workflow + one real photo)', steps:[
+        'Formal quote document generated: scope, exclusions, price, terms — wording is a marked placeholder until the solicitor has reviewed it (not booked yet)',
         'Delivery by SMS or email with an accept link, logged to events',
         'Accepted → job created; silent → handed to the Estimate Follow-up ladder automatically',
         'Live-fire: photograph something real, hand yourself a quote before you leave the room' ]},
@@ -491,7 +503,7 @@ const BLOCKS = [
         'Blueprint / PDF ingestion: page parsing, scale detection, room and element extraction',
         'Material takeoff generated: quantities per material per area',
         'Takeoff stored structured so the pricing engine consumes it untouched — no new pricing code',
-        'Lovable credits refresh today: the console gets wired against the Day 15 views. Both fit only because the engine landed early — neither slips' ]},
+        'Lovable credits refresh today: the console gets wired against the Day 15 views plus the two new quote views (v_console_quotes, v_console_photo_quote) — decide how the demo login, which sees Fennwick, shows Grand River quote cards' ]},
       { d:'Day 6 · Wed Sep 23', t:'Blueprint AI II — priced quote', steps:[
         'Takeoff → pricing engine → full material list + labour + quote, same approval rules',
         'Accuracy pass: tune until the known-job comparison lands inside the variance guardrail',
@@ -824,11 +836,11 @@ const SCORED = [
   ['Upsell engine','runner · never auto-sends','done'],
   ['Estimate follow-up ladder','Build 5 · quote_log','done'],
   ['Error watchdog','runs every minute · but logged nothing for 10 days','next'],
-  ['Rate card + pricing engine','Category B · engine proven Sep 9','done'],
+  ['Rate card + pricing engine','engine rebuilt Sep 18 from the live DB · 939/939 identical on production','done'],
   ['Email identifier + reply','built, unpublished Sep 6 — PII leak','blocked'],
   ['DM rescue (IG/FB)','Watch proven · zero real IG messages ever received','blocked'],
   ['Owner console','five views live Sep 10 · Field Command painting them','next'],
-  ['Quote from photo','Category B Day 2 · rate card banked','next'],
+  ['Quote from photo','B Days 2–3 · 5 priced drafts waiting for approval · the quote document is Day 4','next'],
   ['Missed-appointment reminder','banked Aug 12, never documented','next'],
   ['Change order capture','Category B Day 7','todo'],
   ['Lien / prompt-payment tracker','construction library','todo'],
