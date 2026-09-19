@@ -61,15 +61,26 @@ input[type="checkbox"] { cursor:pointer; }
   localStorage.setItem(K,JSON.stringify(o));
   localStorage.setItem(S,'1');
 }catch(e){}})();
-/* Day 19 (Sep 18-19 2026): Category B Day 2 boxes 1-3 and Day 3 boxes 1, 3 and 4 landed and were re-read from
-   the live database. Seeded once per device. Left open on purpose: Day 2 box 4 (ten real photo sets through the
-   deployed vision call) and Day 3 box 2 (the droplet install). */
+/* Day 19 (Sep 18-19 2026): Category B Day 2 boxes 2-3 and Day 3 boxes 1, 3 and 4 landed and were re-read from
+   the live database. Seeded once per device. Left open on purpose: Day 2 box 1 (no photo has ever been uploaded -
+   storage holds 0 objects), Day 2 box 4 (ten real photo sets through the deployed vision call) and Day 3 box 2
+   (the droplet install). */
 (function(){try{
   var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day19';
   if(localStorage.getItem(S)) return;
   var o=JSON.parse(localStorage.getItem(K)||'{}');
-  ['bB-4','bB-5','bB-6','bB-8','bB-10','bB-11']
+  ['bB-5','bB-6','bB-8','bB-10','bB-11']
     .forEach(function(k){o[k]=1;});
+  localStorage.setItem(K,JSON.stringify(o));
+  localStorage.setItem(S,'1');
+}catch(e){}})();
+/* Correction, same day: the first version of the Day 19 seed also ticked Day 2 box 1 (bB-4), minutes before the
+   live database showed storage holds 0 objects. Un-tick it once per device - "built" is not "done". */
+(function(){try{
+  var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day19b';
+  if(localStorage.getItem(S)) return;
+  var o=JSON.parse(localStorage.getItem(K)||'{}');
+  delete o['bB-4'];
   localStorage.setItem(K,JSON.stringify(o));
   localStorage.setItem(S,'1');
 }catch(e){}})();
@@ -484,8 +495,8 @@ const BLOCKS = [
         'Rate card live and re-verified: nine tables with RLS, the overlap guard, five pricing functions; Fennwick 25 services, Grand River 46 — both installed through sr_onboard_rate_card',
         'Quote guardrails are registry config (v10, committed Day 17): photo_to_quote ships max_variance_pct capped at 10, owner_approval_required, quote_as_range, approved_suppliers — and the form maps them onto machine_configs',
         'The Ontario 10% rule is a database rule: an estimate refuses an envelope over 10%, and a quote superseding an estimate cannot leave draft more than 10% above it — a change order the customer agrees to is the only way up' ]},
-      { d:'Day 2 · Tue Sep 15', t:'Photo → Quote AI I — vision pipeline built; the real-photo run is still mine', steps:[
-        'Photo intake live: phone upload → the private job-photos bucket, locked to the business → sr_photo_intake → signed URLs',
+      { d:'Day 2 · Tue Sep 15', t:'Photo → Quote AI I — vision pipeline built, never fed a real photo; the real-photo run is still mine', steps:[
+        'Photo intake BUILT, never exercised: the private job-photos bucket locked to the business, sr_photo_intake and signed-URL minting all exist — but read live on Sep 19 the bucket holds 0 objects. No photo has ever been uploaded; the first real upload rides with the last box',
         'Scope contract fixed and proven on 8 web stand-in photos (Claude was the vision model): what it is, dimensions, materials, condition, access, hazards. The deployed Haiku call in n8n has never run — that is the last box',
         'Scope draft saved as structured data against the contact and job; "usable" is a database rule (sr_scope_usable), not a habit',
         'STILL OPEN — import + publish scope-extract-workflow.json in n8n, then 10 real photo sets through it (no faces, plates, addresses, paperwork; one deliberately bad) → the real usable rate. Stand-in run: 8 web photos → 5 usable, 62.5%' ]},
