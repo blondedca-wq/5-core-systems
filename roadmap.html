@@ -84,6 +84,16 @@ input[type="checkbox"] { cursor:pointer; }
   localStorage.setItem(K,JSON.stringify(o));
   localStorage.setItem(S,'1');
 }catch(e){}})();
+/* Later the same day: Ahmed pasted the droplet install (162/162 then CONFORMANT 290/290 over the API path,
+   both timers running), so Day 3 box 2 (bB-9) lands. Category B Day 3 is now 4/4. */
+(function(){try{
+  var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day19c';
+  if(localStorage.getItem(S)) return;
+  var o=JSON.parse(localStorage.getItem(K)||'{}');
+  o['bB-9']=1;
+  localStorage.setItem(K,JSON.stringify(o));
+  localStorage.setItem(S,'1');
+}catch(e){}})();
 </script>
 
 <!-- Header -->
@@ -497,15 +507,15 @@ const BLOCKS = [
         'The Ontario 10% rule is a database rule: an estimate refuses an envelope over 10%, and a quote superseding an estimate cannot leave draft more than 10% above it — a change order the customer agrees to is the only way up' ]},
       { d:'Day 2 · Tue Sep 15', t:'Photo → Quote AI I — vision pipeline built, never fed a real photo; the real-photo run is still mine', steps:[
         'Photo intake BUILT, never exercised: the private job-photos bucket locked to the business, sr_photo_intake and signed-URL minting all exist — but read live on Sep 19 the bucket holds 0 objects. No photo has ever been uploaded; the first real upload rides with the last box',
-        'Scope contract fixed and proven on 8 web stand-in photos (Claude was the vision model): what it is, dimensions, materials, condition, access, hazards. The deployed Haiku call in n8n has never run — that is the last box',
+        'Scope contract fixed and proven on 8 web stand-in photos (Claude was the vision model): what it is, dimensions, materials, condition, access, hazards. The n8n workflow is now published (Sep 19) and refuses a bad key or another business\u2019s photo, but the Haiku vision call itself has still never run \u2014 it needs a photo that exists',
         'Scope draft saved as structured data against the contact and job; "usable" is a database rule (sr_scope_usable), not a habit',
-        'STILL OPEN — import + publish scope-extract-workflow.json in n8n, then 10 real photo sets through it (no faces, plates, addresses, paperwork; one deliberately bad) → the real usable rate. Stand-in run: 8 web photos → 5 usable, 62.5%' ]},
+        'Workflow imported, six defects fixed and PUBLISHED Sep 19 (SCOPE — Photo to Scope Extract); three live tests pass and it writes nothing on a failure. STILL OPEN — 10 real photo sets through it (no faces, plates, addresses, paperwork; one deliberately bad) → the real usable rate. Stand-in run: 8 web photos → 5 usable, 62.5%' ]},
       { d:'Day 3 · Fri Sep 18', t:'Photo → Quote AI II — pricing engine rebuilt, proven on production, wired; five priced quotes waiting for approval', steps:[
         'The Sep 9 engine was never saved anywhere, so it was rebuilt from the live sr_price_line: no AI, integer cents, shared untouched by Photo Quote, Blueprint and Change Orders. 162 offline checks · 34,000 random cases identical to the real Postgres function · public repo blondedca-wq/sr-pricing',
-        'Wired and proven on production: sr_save_priced_quote re-prices every line itself and refuses the whole quote on one cent of drift; live conformance 290/290 quick + 939/939 full; three latent bugs fixed in the pricing SQL. STILL OPEN — the droplet install (one paste line, in the repo README) starts the 15-minute runner and the 3:40 nightly proof',
+        'Wired and proven on production: sr_save_priced_quote re-prices every line itself and refuses the whole quote on one cent of drift; live conformance 290/290 quick + 939/939 full; three latent bugs fixed in the pricing SQL. Droplet installed Sep 19 10:41 UTC — 162/162 then CONFORMANT 290/290 over the API path, first time, and both timers are running',
         'Outside the rules → approval queue with the reasons in plain English; inside the rules → approval queue anyway. There is no send and no auto-approve path in this machine at all',
         'The 5 usable stand-in photos → 5 priced draft quotes waiting for approval on Grand River: $333.35 · $2,474.70 ×2 · $4,011.50 · $6,808.25. The ten REAL photo sets are still owed — see the open box on Day 2' ]},
-      { d:'Day 4 · Sat Sep 19', t:'Photo → Quote AI III — the deliverable (carry-ins: droplet install · n8n vision workflow + one real photo)', steps:[
+      { d:'Day 4 · Sat Sep 19', t:'Photo → Quote AI III — the deliverable (carry-in: the first real photo, to prove the vision call)', steps:[
         'Formal quote document generated: scope, exclusions, price, terms — wording is a marked placeholder until the solicitor has reviewed it (not booked yet)',
         'Delivery by SMS or email with an accept link, logged to events',
         'Accepted → job created; silent → handed to the Estimate Follow-up ladder automatically',
