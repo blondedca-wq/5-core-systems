@@ -3763,7 +3763,7 @@ function auditRegistry(){
 
    Bump SCHEMA_VERSION whenever you add a machine or a config field.
    ===================================================================== */
-const SCHEMA_VERSION = 10;
+const SCHEMA_VERSION = 11;
 
 /* ---- Rate card intake (Day 15, Sep 9 2026) -------------------------------
    Trade service templates: names and the customer wording (aliases) only.
@@ -4018,13 +4018,18 @@ const MACHINES = [
   defaultOn:false,
   defaultMode:"approval_required",
   competes:"quoting",
-  requires:["owner_phone"],
+  requires:["owner_phone","rate_card"],
   config:[
     {id:"owner_approval_required", label:"A person approves every quote before it is sent", type:"bool", def:true, hint:"Structural: the database refuses a sent quote with no approval on it. Leave on."},
     {id:"quote_as_range", label:"Present AI quotes as a range, not a single number", type:"bool", def:true},
     {id:"max_variance_pct", label:"Estimate envelope (%)", type:"number", def:10, min:0, max:10, hint:"Ontario Consumer Protection Act s.10 holds an estimate to +10%. The database will not accept more."},
     {id:"max_autonomous_quote_cents", label:"Above this value the owner must approve (cents)", type:"number", def:75000, min:0},
-    {id:"approved_suppliers", label:"Approved suppliers (one per line)", type:"textarea", def:"", hint:"Material prices only ever come from this list."}
+    {id:"approved_suppliers", label:"Approved suppliers (one per line)", type:"textarea", def:"", hint:"Material prices only ever come from this list."},
+    {id:"quote_valid_days", label:"How many days a quote holds", type:"number", def:14, min:1, max:180, hint:"Printed on the document and enforced: past this date the quote expires and its accept link dies."},
+    {id:"accept_link_days", label:"How many days the accept link works", type:"number", def:21, min:1, max:90, hint:"Never outlives the quote itself."},
+    {id:"delivery_channel", label:"Send quotes by", type:"select", def:"sms", opts:[["sms","Text message"],["email","Email"]]},
+    {id:"accept_link_base", label:"Where the accept link points", type:"text", def:"https://auto.secondring.ca/webhook/q", hint:"The customer's one-time link. Change this only if the domain changes."},
+    {id:"terms_version", label:"Terms version stamped on the document", type:"text", def:"placeholder-2026-09", hint:"PLACEHOLDER WORDING until a solicitor has reviewed it. Every document records which version it carried."}
   ]
 },
 {

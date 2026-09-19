@@ -166,8 +166,20 @@ window.JOURNAL = [
              'Vision workflow imported, corrected and PUBLISHED (SCOPE — Photo to Scope Extract). Reading it first found six defects that would have bitten on the first real photo: the Sign URL address was not an n8n expression so every sign would have failed; the prompt line breaks were double-escaped; the tenant and file ids were read from the wrong place; a failed sign or vision call saved an empty "not usable" draft and would have quietly poisoned the usable rate; it answered ok on a refused save; and nothing checked that the photo sits under the business it claims. Three live webhook tests pass and it writes nothing on a failure — verified in the database. The Haiku call itself is still unproven; it needs a photo that exists.',
              'Every production write was pasted by Ahmed — my writes to the live database were blocked by the permission system even after his "go", and were not worked around. Still open: the droplet install (one paste line; DigitalOcean wants his sign-in), the n8n vision workflow + one real photo, ten real photo sets, the solicitor booking, and rate_card in photo_to_quote.requires with the schema bump to 11.'],
     sources:['SecondRing Vault/Day 19/day-19-findings.md','SecondRing Vault/Day 19/day-19-study-guide.md','github.com/blondedca-wq/sr-pricing'] },
+  { date:'2026-09-19', group:'work', tag:'B · Day 4',
+    title:'Photo → Quote III — the deliverable, and the runner proves itself',
+    bullets:[
+      'Days 1–3 re-checked against the live database before starting. All hold: 9 rate-card tables, 75 templates, 46 + 25 priced services, 8 scope drafts with 5 usable, the two-tenant demo still $525.45 vs $537.35.',
+      'Day 4 live: schema 11, eight new functions, quote_accept_tokens with RLS, two console views, 32 tables. 69 checks on a mirror of the real schema, applied twice.',
+      'The quote document, the send through the gate, a one-time link of which only the SHA-256 is stored, accept → booked job, decline → declined, silence → the follow-up ladder, and a rollback for a send that never went out.',
+      'Storage is no longer empty — three photos in job-photos, registered through sr_photo_intake, the Day 18 door that had never been used.',
+      'Two approval cards answered: the water heater approved, the P-trap rejected because the price list has no trap line. At 08:30:03 price.js PASS 2 carried both onto the quotes by itself — the last unproven leg of Day 3, closed.',
+      'The console sign-in was mapped to Grand River, so every console screen must now pick a business.',
+      'Not done: no text has reached a customer (a response-code bug of mine, since fixed), the vision call has still never run, and no quote document has been rendered.',
+      'Settled: the CRON_TZ lines are being ignored — the runners fire on UTC, 06:00 and 06:15 Toronto.'
+    ],
+    sources:['claude/day-20-findings.md','claude/day-20-study-guide.md','vault Day 20/'] }
 ];
-
 /* Dated sprint plan — generated from roadmap.html BLOCKS (regenerate when the roadmap changes). keys[] are the roadmap checkbox ids in localStorage lab.roadmap.done.v1. */
 window.SPRINT_PLAN = [
   {"cat":"A","catName":"Category A — Revenue machines","day":1,"date":"2026-08-12","title":"Clean slate + machine catalogue","steps":["ONE big purge: every test row out of Supabase and Sheets — quote_log smoke tests, TEST LEAD / DEDUPE contacts, Aug 9 review rows carrying a real name and number","Fix the sr_tenant_by_number RPC empty-body bug — tenant lookup must work before machine #6, not after","Register the 5 banked builds as catalogue machines with machine_configs rows each","Flip one machine through all four modes — autonomous, approval, observe, paused — and verify each actually changes behaviour","Replace the demo tenant placeholder review_link with a real one"],"keys":["bA-0","bA-1","bA-2","bA-3","bA-4"]},
