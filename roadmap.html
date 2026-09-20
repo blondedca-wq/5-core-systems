@@ -94,6 +94,31 @@ input[type="checkbox"] { cursor:pointer; }
   localStorage.setItem(K,JSON.stringify(o));
   localStorage.setItem(S,'1');
 }catch(e){}})();
+/* Day 21 (Sun Sep 20 2026): Category B Day 2 box 1 lands — photo intake has now been exercised end to end: three
+   photos in storage, registered through sr_photo_intake, and READ by the deployed vision workflow. Nothing on Day 4 or
+   Day 5 is ticked yet: all of it is proven on the mirror and live in n8n, and none of it has run on production,
+   because b5-day21.sql has not been pasted. "Built" is not "done". */
+(function(){try{
+  var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day21';
+  if(localStorage.getItem(S)) return;
+  var o=JSON.parse(localStorage.getItem(K)||'{}');
+  o['bB-4']=1;
+  localStorage.setItem(K,JSON.stringify(o));
+  localStorage.setItem(S,'1');
+}catch(e){}})();
+/* Day 21, second pass (Sun Sep 20 2026, 11:20): two Day 4 boxes really landed on production — the quote document was
+   rendered, stored and put on record (bB-12), and the quote was texted through the gate with a working accept link
+   (bB-13). Accept has not been pressed and the live-fire photo has not been taken, so bB-14 / bB-15 stay open.
+   Nothing on Day 5 is ticked: the database side is on production, no plan has been read there yet, and the console
+   build has compiled but has not been walked. */
+(function(){try{
+  var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day21b';
+  if(localStorage.getItem(S)) return;
+  var o=JSON.parse(localStorage.getItem(K)||'{}');
+  o['bB-12']=1; o['bB-13']=1;
+  localStorage.setItem(K,JSON.stringify(o));
+  localStorage.setItem(S,'1');
+}catch(e){}})();
 </script>
 
 <!-- Header -->
@@ -505,26 +530,26 @@ const BLOCKS = [
         'Rate card live and re-verified: nine tables with RLS, the overlap guard, five pricing functions; Fennwick 25 services, Grand River 46 — both installed through sr_onboard_rate_card',
         'Quote guardrails are registry config (v10, committed Day 17): photo_to_quote ships max_variance_pct capped at 10, owner_approval_required, quote_as_range, approved_suppliers — and the form maps them onto machine_configs',
         'The Ontario 10% rule is a database rule: an estimate refuses an envelope over 10%, and a quote superseding an estimate cannot leave draft more than 10% above it — a change order the customer agrees to is the only way up' ]},
-      { d:'Day 2 · Tue Sep 15', t:'Photo → Quote AI I — vision pipeline built, never fed a real photo; the real-photo run is still mine', steps:[
-        'Photo intake BUILT, never exercised: the private job-photos bucket locked to the business, sr_photo_intake and signed-URL minting all exist — but read live on Sep 19 the bucket holds 0 objects. No photo has ever been uploaded; the first real upload rides with the last box',
-        'Scope contract fixed and proven on 8 web stand-in photos (Claude was the vision model): what it is, dimensions, materials, condition, access, hazards. The n8n workflow is now published (Sep 19) and refuses a bad key or another business\u2019s photo, but the Haiku vision call itself has still never run \u2014 it needs a photo that exists',
+      { d:'Day 2 · Tue Sep 15', t:'Photo → Quote AI I — the deployed vision call RAN Sep 20 (stand-in photos); ten real photo sets are still mine', steps:[
+        'Photo intake EXERCISED: three stand-in photos uploaded Sep 19 and registered through sr_photo_intake. Since Sep 20 the workflow signs the object FIRST and registers nothing if it is not in storage, then finds or registers the file itself — so a photo with no console behind it (a text message, a dashboard upload) can still be read',
+        'Scope contract fixed. The Haiku vision call RAN on Sep 20: image-by-URL off a Supabase signed link, about 5 seconds, claude-haiku-4-5 → claude-haiku-4-5-20251001. The first prompt came back "not usable" on a good photo — a prompt defect, not plumbing. v3 shows the model the contractor’s own service NAMES (never a price), throws away any service code it invents, and only asks for more photos when it cannot even ballpark',
         'Scope draft saved as structured data against the contact and job; "usable" is a database rule (sr_scope_usable), not a habit',
-        'Workflow imported, six defects fixed and PUBLISHED Sep 19 (SCOPE — Photo to Scope Extract); three live tests pass and it writes nothing on a failure. STILL OPEN — 10 real photo sets through it (no faces, plates, addresses, paperwork; one deliberately bad) → the real usable rate. Stand-in run: 8 web photos → 5 usable, 62.5%' ]},
+        'SCOPE — Photo to Scope Extract v3 published Sep 20 as a NEW workflow (v2 unpublished). Three stand-ins through the deployed call: water heater usable 78% · European panel "needs another photo" · 1904 furnace drawing 35% — the dud was caught. At 10:15:03 price.js priced the usable one BY ITSELF: Q-1D046B, $429.40, card filed — photo → scope → price → card with no paste anywhere. STILL OPEN — 10 real photo sets (no faces, plates, addresses, paperwork; one deliberately bad) → the real usable rate' ]},
       { d:'Day 3 · Fri Sep 18', t:'Photo → Quote AI II — pricing engine rebuilt, proven on production, wired; five priced quotes waiting for approval', steps:[
         'The Sep 9 engine was never saved anywhere, so it was rebuilt from the live sr_price_line: no AI, integer cents, shared untouched by Photo Quote, Blueprint and Change Orders. 162 offline checks · 34,000 random cases identical to the real Postgres function · public repo blondedca-wq/sr-pricing',
         'Wired and proven on production: sr_save_priced_quote re-prices every line itself and refuses the whole quote on one cent of drift; live conformance 290/290 quick + 939/939 full; three latent bugs fixed in the pricing SQL. Droplet installed Sep 19 10:41 UTC — 162/162 then CONFORMANT 290/290 over the API path, first time, and both timers are running',
         'Outside the rules → approval queue with the reasons in plain English; inside the rules → approval queue anyway. There is no send and no auto-approve path in this machine at all',
         'The 5 usable stand-in photos → 5 priced draft quotes waiting for approval on Grand River: $333.35 · $2,474.70 ×2 · $4,011.50 · $6,808.25. The ten REAL photo sets are still owed — see the open box on Day 2' ]},
-      { d:'Day 4 · Sat Sep 19', t:'Photo → Quote AI III — the deliverable (carry-in: the first real photo, to prove the vision call)', steps:[
-        'Formal quote document generated: scope, exclusions, price, terms — wording is a marked placeholder until the solicitor has reviewed it (not booked yet)',
-        'Delivery by SMS or email with an accept link, logged to events',
-        'Accepted → job created; silent → handed to the Estimate Follow-up ladder automatically',
-        'Live-fire: photograph something real, hand yourself a quote before you leave the room' ]},
-      { d:'Day 5 · Sun Sep 20', t:'Blueprint AI I — takeoff', steps:[
-        'Blueprint / PDF ingestion: page parsing, scale detection, room and element extraction',
-        'Material takeoff generated: quantities per material per area',
-        'Takeoff stored structured so the pricing engine consumes it untouched — no new pricing code',
-        'Console: Field Command is already built in Lovable — six screens, the MODELLED banner, "— not live yet", and a sign-in added Day 16 — but it predates all seven views and nobody has ever signed into it against live data. Sep 19: sign in and walk it first, then ONE build for the quote screen and a working Approve / Reject, so answering a card stops being a SQL paste. Settled Sep 19: the demo login gets mapped to Grand River as well, so every screen must pick a business — a switcher is required, not optional' ]},
+      { d:'Day 4 · Sat Sep 19', t:'Photo → Quote AI III — the deliverable: the FIRST REAL QUOTE was texted Sep 20 11:01 — gate passed as owner_approved, document stored, link opened 11:07; Accept is the last unproven tap', steps:[
+        'Formal quote document: RENDERED AND STORED for a real quote on Sep 20 — Q-E1D52F-v1.html, 7,433 bytes in the quote-docs bucket and on record in files (kind quote_doc). Scope, every line, HST, the Ontario 10% ceiling in dollars, exclusions; the terms are still a marked placeholder until the solicitor has reviewed them (not booked yet)',
+        'Delivery by SMS with an accept link, through the gate — DONE Sep 20 11:01:42: Q-E1D52F ($2,474.70) texted to my own phone by QUOTE — Deliver & Accept v2. The gate passed it as owner_approved (lifting above_autonomous_limit, on its own log line), Twilio accepted it, and I opened the link at 11:07 (quote.viewed). FIVE faults stood in the way, each enough on its own: gen_random_bytes out of reach · no approved-card answer to the money check · the bucket refusing a web page · every customer link a 404 · and, found by the first live attempt at 10:45, my own “did it store?” check misreading what storage answers and rolling back a good send. The rollback itself did its job: quote back to approved, link dead, logged in a sentence',
+        'Accepted → job created; silent → handed to the Estimate Follow-up ladder: the ladder row is written on production (quote_log, stage 0) and the link is live until Oct 5. Accept has not been pressed yet — pressing it is the last unproven step on production (mirror: 69/69 against the real gate). sr_expire_quotes() has a caller since Sep 20: sr-expire-quotes-hourly, five past every hour',
+        'Live-fire: photograph something real, hand yourself a quote before you leave the room — since the Sep 20 console build this is Quotes → Photo → quote, from the phone (the build compiled; it has not been walked signed in yet)' ]},
+      { d:'Day 5 · Sun Sep 20', t:'Blueprint AI I — takeoff: on production since the Sep 20 paste (schema 12); the ONE console build compiled 11:17; the first production plan read goes through its Plans screen', steps:[
+        'Blueprint / PDF ingestion: BLUEPRINT — Plan to Takeoff v1 is live in n8n. The PDF goes to Claude as a document by URL; sheet by sheet it reads the pages, the scale AS PRINTED (never assumed), rooms with printed dimensions only (never measured by eye), and every plumbing / HVAC / electrical symbol per room with a confidence per count. A read cut off at the token limit fails loudly. The database side has been on production since 10:40 Sep 20 (schema 12 · blueprint_takeoffs + lines · Blueprint AI switched on for Grand River in Ask-me through the real onboarding door). NOT yet run on a plan on production',
+        'Material takeoff: quantities per item per room (blueprint_takeoff_lines), each line looked up on the contractor’s OWN price list with sr_find_rate_item; waste applies to lengths and areas, never to a count; no money column anywhere. "Usable" is one database rule. 116/116 checks on a mirror that now carries the REAL gate',
+        'Stored so the engine consumes it untouched: the handoff writes scope drafts on ONE job (price-list code as the hint, room quantities summed) and the UNEDITED price.js prices them into ONE quote. Mirror proof: 22 lines, 6 rooms → 14 service lines, $38,826.80, equal to sr_price_line line by line. Over 50 of one item, a unit the rules do not carry, a count under 55% sure: held back out loud, never priced as one',
+        'Console: Field Command WAS signed into and wired to live data on Sep 10 (Lovable’s own history says so) — but to ONE business, with a dead master switch and nothing you can answer. The ONE build went to Lovable Sep 20 11:07 — every view, column and function name checked against production first — and compiled clean at 11:17 (not published): business switcher · approvals inbox with a pending badge · Quotes with Send through a 120-second one-time ticket (no key in a browser) · Photo → quote from the phone · Plans · the master switch. Lovable could not click through it (its sandbox has no login): the seven acceptance checks still have to be walked signed in, on both businesses' ]},
       { d:'Day 6 · Wed Sep 23', t:'Blueprint AI II — priced quote', steps:[
         'Takeoff → pricing engine → full material list + labour + quote, same approval rules',
         'Accuracy pass: tune until the known-job comparison lands inside the variance guardrail',
