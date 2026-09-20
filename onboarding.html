@@ -3763,7 +3763,7 @@ function auditRegistry(){
 
    Bump SCHEMA_VERSION whenever you add a machine or a config field.
    ===================================================================== */
-const SCHEMA_VERSION = 11;
+const SCHEMA_VERSION = 12;
 
 /* ---- Rate card intake (Day 15, Sep 9 2026) -------------------------------
    Trade service templates: names and the customer wording (aliases) only.
@@ -4035,16 +4035,17 @@ const MACHINES = [
 {
   key:"blueprint_takeoff",
   name:"Blueprint AI — takeoff",
-  blurb:"Drop in a plan or PDF and get a material takeoff: quantities per material per area, priced off the same price list as everything else. Missing scale or partial plans fail loudly — it never guesses quietly.",
+  blurb:"Drop in a plan as a PDF and get a takeoff: what is drawn, how many, in which room — each line matched to YOUR price list, then priced by the same engine as everything else and sent to you to approve. A plan with no scale, a shaky count, or more of one item than the rules carry is stopped out loud — it never guesses quietly.",
   suite:"Sales",
   status:"building",
   defaultOn:false,
   defaultMode:"approval_required",
   competes:"estimating_takeoff",
-  requires:["owner_phone"],
+  requires:["owner_phone","rate_card"],
   config:[
-    {id:"require_scale", label:"Refuse plans with no readable scale", type:"bool", def:true},
-    {id:"waste_factor_pct", label:"Waste factor added to material quantities (%)", type:"number", def:10, min:0, max:30}
+    {id:"require_scale", label:"Refuse plans with no readable scale", type:"bool", def:true, hint:"A plan with no printed scale is read and kept, but never handed to pricing."},
+    {id:"waste_factor_pct", label:"Waste factor added to material quantities (%)", type:"number", def:10, min:0, max:30, hint:"Applies to lengths and areas only. A count of fixtures is never padded."},
+    {id:"min_takeoff_confidence", label:"Minimum confidence to hand a takeoff to pricing", type:"number", def:0.6, min:0.3, max:0.95, hint:"Below this the takeoff is kept for you to look at and nothing is priced. Any single line under 55% sure is always held back for you."}
   ]
 },
 {
