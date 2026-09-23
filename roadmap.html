@@ -146,6 +146,18 @@ input[type="checkbox"] { cursor:pointer; }
   localStorage.setItem(K,JSON.stringify(o));
   localStorage.setItem(S,'1');
 }catch(e){}})();
+/* Day 22, second pass (Wed Sep 23 2026, 17:40): bB-15 landed ON PRODUCTION — nine real job photos through the
+   console on Grand River (7 usable, 2 sent back), all 7 priced by the runner at 17:30, one approved AND SENT from the
+   console at 17:33 (the first Send ever pressed there: gate, text, document, ladder row). Category B Day 4 is 4/4.
+   Day 6 still ticks nothing: it is built and rehearsed, not on production. */
+(function(){try{
+  var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day22';
+  if(localStorage.getItem(S)) return;
+  var o=JSON.parse(localStorage.getItem(K)||'{}');
+  o['bB-15']=1;
+  localStorage.setItem(K,JSON.stringify(o));
+  localStorage.setItem(S,'1');
+}catch(e){}})();
 </script>
 
 <!-- Header -->
@@ -567,11 +579,11 @@ const BLOCKS = [
         'Wired and proven on production: sr_save_priced_quote re-prices every line itself and refuses the whole quote on one cent of drift; live conformance 290/290 quick + 939/939 full; three latent bugs fixed in the pricing SQL. Droplet installed Sep 19 10:41 UTC — 162/162 then CONFORMANT 290/290 over the API path, first time, and both timers are running',
         'Outside the rules → approval queue with the reasons in plain English; inside the rules → approval queue anyway. There is no send and no auto-approve path in this machine at all',
         'The 5 usable stand-in photos → 5 priced draft quotes waiting for approval on Grand River: $333.35 · $2,474.70 ×2 · $4,011.50 · $6,808.25. The ten REAL photo sets are still owed — see the open box on Day 2' ]},
-      { d:'Day 4 · Sat Sep 19', t:'Photo → Quote AI III — the deliverable: PROVEN END TO END on production Sep 20 — texted 11:01, opened 11:07, accepted 18:22, job booked at $2,474.70. Only the live-fire with a real photo is open', steps:[
+      { d:'Day 4 · Sat Sep 19', t:'Photo → Quote AI III — the deliverable: PROVEN END TO END on production Sep 20 — texted 11:01, opened 11:07, accepted 18:22, job booked at $2,474.70 — and the live-fire landed Sep 23 with real photos, the first Send ever pressed in the console. 4/4', steps:[
         'Formal quote document: RENDERED AND STORED for a real quote on Sep 20 — Q-E1D52F-v1.html, 7,433 bytes in the quote-docs bucket and on record in files (kind quote_doc). Scope, every line, HST, the Ontario 10% ceiling in dollars, exclusions; the terms are still a marked placeholder until the solicitor has reviewed them (not booked yet)',
         'Delivery by SMS with an accept link, through the gate — DONE Sep 20 11:01:42: Q-E1D52F ($2,474.70) texted to my own phone by QUOTE — Deliver & Accept v2. The gate passed it as owner_approved (lifting above_autonomous_limit, on its own log line), Twilio accepted it, and I opened the link at 11:07 (quote.viewed). FIVE faults stood in the way, each enough on its own: gen_random_bytes out of reach · no approved-card answer to the money check · the bucket refusing a web page · every customer link a 404 · and, found by the first live attempt at 10:45, my own “did it store?” check misreading what storage answers and rolling back a good send. The rollback itself did its job: quote back to approved, link dead, logged in a sentence',
         'Accepted → job created; silent → handed to the ladder — DONE on production Sep 20 18:22:42: I pressed Accept on my phone and the database did the rest by itself — quote accepted → job created and booked at $2,474.70 under the same customer → the one-time link burned → the follow-up ladder stopped → one plain sentence in the log. sr_expire_quotes() has a caller since Sep 20: sr-expire-quotes-hourly, five past every hour',
-        'Live-fire: photograph something real, hand yourself a quote before you leave the room. The path exists and ran on production Sep 20 18:43 with a stand-in photo: console → Quotes → Photo → quote → a one-time ticket → read in under 10 seconds → “needs another photo”, with the list of what it still wants. STILL MINE: do it from my phone with a REAL photo' ]},
+        'Live-fire: photograph something real, hand yourself a quote before you leave the room — DONE on production Wed Sep 23 17:22–17:33 (my call: nine licensed photos of real equipment off the web instead of my phone): through the console on Grand River, 7 read usable and 2 were sent back for another photo — a rusted outdoor pipe it took for a downspout and a deliberate before/after collage; at 17:30 the runner priced all 7 by itself (sump pump $1,491.60 · leaking pipe $531.10 · faucet $333.35 · breaker $322.05 · three diagnostic calls $203.40), every card “needs your eye”; the faucet quote approved from the console 17:32 and SENT from the console 17:33 — the first time that button was pressed: gate passed, texted, document stored, ladder row written. One honest miss: a clear gas water heater priced as a diagnostic call — the fuzzy matcher tied, and the card said so' ]},
       { d:'Day 5 · Sun Sep 20', t:'Blueprint AI I — takeoff: PROVEN END TO END on production Sep 20 — plan read 18:39, priced by the untouched runner at 19:00 into ONE quote ($38,998.56), every card answered from the console at 19:11. 4/4. The count was the Day 6 problem: duplex receptacles 18 of 32', steps:[
         'Blueprint / PDF ingestion — DONE on production Sep 20 18:39: the stand-in plan (2 sheets, 101 symbols, answer known to the unit) read in 82 seconds. Scale exact (1/4" = 1\'-0", checked against a printed dimension) · all 9 rooms with their printed dimensions · every one-off item found. The first attempt FAILED LOUDLY and saved nothing: the workflow picked “the newest Sonnet” by itself, that model thinks by default, and it spent its whole 16,000-token allowance thinking and wrote nothing. Now: a model the machine was built against, thinking switched off out loud, and a failure that says “a fault on our side” instead of “split your plan”',
         'Material takeoff — DONE on production: 50 lines, quantities per item per room, each looked up on Grand River’s OWN price list (38 matched; 12 honestly “nothing on your price list matches this” — switches, the fan, floor drains; the tub is site-visit-only). Visible room by room in the console under Plans. Against the known answer: 41 of 51 room-by-item counts exact, 85 of 101 symbols. Nearly all of the miss is ONE symbol — duplex receptacles, 18 of 32 — and it told us: those were its least-sure lines (78%), but the hold-back line is 55%',
