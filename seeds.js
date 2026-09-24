@@ -137,3 +137,17 @@
 /* Day 22, third pass (Wed Sep 23 2026, 18:55): two of the three Day 6 landings are in — b6-day22.sql on production
    (schema 13, his paste ~18:00) and sr-plans installed and healthy on the droplet (18:47, through the DO web console).
    The n8n publishes are parked at his call, so nothing reaches the magnifier yet: Day 6 stays 0/4 on purpose. No seed. */
+/* Day 23 (Thu Sep 24 2026): Category B Day 6 (bB-20..23) and Day 7 (bB-24..27) — every box read back from production.
+   Day 6: the publishes in, read 3 of the stand-in priced into Q-13D443 (+0.4 % like-for-like, receptacles 31 of 32),
+   approved → sent to Ahmed's phone → opened → declined from the customer page; no-scale, partial-set and
+   magnifier-stopped refusals seen in their own words. Day 7: b7-day23.sql (schema 14), the CHANGE workflow, ten
+   scenarios on production, five priced by the runner into Q-17411E ($3,993.36, new job total $6,468.06), the tile. */
+(function(){try{
+  var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day23';
+  if(localStorage.getItem(S)) return;
+  var o=JSON.parse(localStorage.getItem(K)||'{}');
+  o['bB-20']=1; o['bB-21']=1; o['bB-22']=1; o['bB-23']=1;
+  o['bB-24']=1; o['bB-25']=1; o['bB-26']=1; o['bB-27']=1;
+  localStorage.setItem(K,JSON.stringify(o));
+  localStorage.setItem(S,'1');
+}catch(e){}})();
