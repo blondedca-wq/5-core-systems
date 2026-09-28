@@ -163,3 +163,13 @@
   localStorage.setItem(K,JSON.stringify(o));
   localStorage.setItem(S,'1');
 }catch(e){}})();
+/* Day 24, later (Mon Sep 28 2026): Category B Day 8 box 4 — Q-8A32E6 signed 14:01:04 as "Jn" (signature a6d002dc, hash re-computed,
+   job 646,806 → 689,040 cents ($6,890.40), change_order.signed on the job): 1 h 47 m wall clock (4:22 words-to-phone, 23 s on the page, the phone unattended in between) from the words to the signed copy. Read back from production. */
+(function(){try{
+  var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day24b';
+  if(localStorage.getItem(S)) return;
+  var o=JSON.parse(localStorage.getItem(K)||'{}');
+  o['bB-31']=1;
+  localStorage.setItem(K,JSON.stringify(o));
+  localStorage.setItem(S,'1');
+}catch(e){}})();
