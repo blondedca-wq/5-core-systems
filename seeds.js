@@ -151,3 +151,15 @@
   localStorage.setItem(K,JSON.stringify(o));
   localStorage.setItem(S,'1');
 }catch(e){}})();
+/* Day 24 (Mon Sep 28 2026): Category B Day 8 (bB-28..30) — each box read back from production, not the mirror.
+   b8-day24.sql pasted 07:27 (schema 15: quote_signatures, trg_quotes_approval_guard, the typed-name e-sign); QUOTE v3 published 11:59;
+   Q-17411E signed 11:58:53 ("J bone", signature 1e44c537, hash re-computed, job 247470 → 646806, change_order.signed on the job);
+   the timed run Q-8A32E6: words 12:12:50 → priced 12:15:03 → approved from the console inbox 12:16:18 → sent 12:17:32; bB-31 waits for the signature to be read back. */
+(function(){try{
+  var K='lab.roadmap.done.v1', S='lab.roadmap.seed.day24';
+  if(localStorage.getItem(S)) return;
+  var o=JSON.parse(localStorage.getItem(K)||'{}');
+  o['bB-28']=1; o['bB-29']=1; o['bB-30']=1;
+  localStorage.setItem(K,JSON.stringify(o));
+  localStorage.setItem(S,'1');
+}catch(e){}})();
